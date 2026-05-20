@@ -4,6 +4,8 @@ import { professionalContext } from '@/lib/professionalContext'
 import { buildSystemPrompt } from '@/lib/buildSystemPrompt'
 import type { FitResult } from '@/lib/types'
 
+const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+
 const FIT_SYSTEM_PROMPT = `${buildSystemPrompt(professionalContext)}
 
 ---
@@ -33,8 +35,6 @@ export async function POST(req: NextRequest) {
   if (!body || typeof body.jobDescription !== 'string' || !body.jobDescription.trim()) {
     return NextResponse.json({ error: 'jobDescription is required' }, { status: 400 })
   }
-
-  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
   const response = await client.messages.create({
     model: 'claude-sonnet-4-6',
