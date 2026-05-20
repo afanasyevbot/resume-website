@@ -43,6 +43,7 @@ export default function FitAssessment() {
           value={jd}
           onChange={(e) => setJd(e.target.value)}
           placeholder="Paste the job description here..."
+          aria-label="Job description"
           rows={4}
           className="w-full bg-bg border border-border rounded-lg px-4 py-4 text-[14px] text-text-faint placeholder:text-text-ghost placeholder:italic resize-none"
         />
@@ -60,7 +61,7 @@ export default function FitAssessment() {
         {result && (
           <div className="mt-7 pt-7 border-t border-border-inner">
             <div className="flex items-baseline gap-3 mb-6">
-              <span className="font-display text-[68px] font-semibold text-gold leading-none">{result.score}%</span>
+              <span className="font-display text-[68px] font-semibold text-gold leading-none">{Math.round(Math.min(100, Math.max(0, result.score)))}%</span>
               <span className="text-[14px] text-text-dim">{result.verdict}</span>
             </div>
 

@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from 'react'
 interface Message {
   role: 'user' | 'assistant'
   content: string
+  id: number
 }
 
 const SUGGESTED_CHIPS = [
@@ -15,6 +16,7 @@ const SUGGESTED_CHIPS = [
 ]
 
 const QUESTION_LIMIT = 5
+let msgId = 0
 
 export default function ChatSection() {
   const [messages, setMessages] = useState<Message[]>([])
@@ -33,23 +35,23 @@ export default function ChatSection() {
     const trimmed = text.trim()
     if (!trimmed || loading || limitReached) return
 
-    const userMessage: Message = { role: 'user', content: trimmed }
+    const userMessage: Message = { role: 'user', content: trimmed, id: ++msgId }
     const newMessages = [...messages, userMessage]
     setMessages(newMessages)
     setInput('')
     setLoading(true)
-    setQuestionCount((c) => c + 1)
 
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: trimmed, history: messages }),
+        body: JSON.stringify({ message: trimmed, history: messages.map(({ role, content }) => ({ role, content })) }),
       })
       const data = await res.json()
-      setMessages([...newMessages, { role: 'assistant', content: data.reply || data.error || 'Something went wrong.' }])
+      setQuestionCount((c) => c + 1)
+      setMessages([...newMessages, { role: 'assistant', content: data.reply || data.error || 'Something went wrong.', id: ++msgId }])
     } catch {
-      setMessages([...newMessages, { role: 'assistant', content: 'Something went wrong. Please try again.' }])
+      setMessages([...newMessages, { role: 'assistant', content: 'Something went wrong. Please try again.', id: ++msgId }])
     } finally {
       setLoading(false)
     }
@@ -103,15 +105,15 @@ export default function ChatSection() {
         {/* Messages */}
         {messages.length > 0 && (
           <div className="px-8 py-6 flex flex-col gap-4 min-h-[180px] max-h-[420px] overflow-y-auto">
-            {messages.map((msg, i) =>
+            {messages.map((msg) =>
               msg.role === 'user' ? (
-                <div key={i} className="self-end max-w-[70%]">
+                <div key={msg.id} className="self-end max-w-[70%]">
                   <div className="bg-[#1e1a14] border border-border rounded-[10px_10px_2px_10px] px-4 py-2.5 text-[14px] text-text-secondary italic">
                     {msg.content}
                   </div>
                 </div>
               ) : (
-                <div key={i} className="self-start max-w-[88%]">
+                <div key={msg.id} className="self-start max-w-[88%]">
                   <p className="text-[10px] tracking-[2px] uppercase text-text-ghost font-semibold mb-1.5">AI · Based on Matthew&apos;s record</p>
                   <div className="bg-surface-deep border border-border rounded-[2px_10px_10px_10px] px-5 py-3.5 text-[14px] text-text-secondary leading-[1.8]">
                     {msg.content}
@@ -150,12 +152,14 @@ export default function ChatSection() {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Ask anything about Matthew's background..."
+              aria-label="Your question"
               disabled={loading}
               className="flex-1 bg-bg border border-border rounded text-[14px] text-text-secondary placeholder:text-text-ghost placeholder:italic px-4 py-3 disabled:opacity-50"
             />
             <button
               onClick={() => sendMessage(input)}
               disabled={loading || !input.trim()}
+              aria-label="Send question"
               className="text-gold border border-gold/40 rounded px-5 py-3 text-[13px] font-semibold hover:bg-gold/5 transition-colors disabled:opacity-40"
             >
               Ask →

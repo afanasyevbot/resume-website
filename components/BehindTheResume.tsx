@@ -29,8 +29,8 @@ const roles: RoleCard[] = [
   {
     id: 'fidelis',
     title: 'Founder · Fidelis Strategy LLC',
-    company: 'Jan 2026 – Present · Concurrent',
-    dates: '',
+    company: 'Fidelis Strategy LLC',
+    dates: 'Jan 2026 – Present · Concurrent',
     preview: 'Built 6 production AI systems while carrying full quota. Growth consultancy serving $1M–$10M businesses. Shipped a monetized SaaS product from scratch.',
     situation: 'After years of selling to businesses and seeing the same operational inefficiencies repeatedly, started building AI tools to solve them — while still carrying full quota at SPS Commerce.',
     approach: 'Build production systems, not prototypes. Every tool shipped has real users, real infrastructure, and real constraints. Used Anthropic API across all projects: chat advisors, agent pipelines, scoring engines, lead generation workflows.',
@@ -96,16 +96,21 @@ export default function BehindTheResume() {
                   : 'bg-surface border-border cursor-pointer hover:border-gold/20'
               }`}
               onClick={() => !isActive && toggle(role.id)}
+              role={isActive ? undefined : 'button'}
+              tabIndex={isActive ? undefined : 0}
+              onKeyDown={isActive ? undefined : (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(role.id) } }}
+              aria-expanded={isActive}
             >
               {isActive ? (
                 <div className="p-6">
                   <div className="flex justify-between items-start mb-5">
                     <p className="text-[14px] text-text-muted">
                       ↑ {role.title}{' '}
-                      <span className="text-text-ghost">· {role.dates || role.company}</span>
+                      <span className="text-text-ghost">· {role.dates}</span>
                     </p>
                     <button
                       onClick={(e) => { e.stopPropagation(); toggle(role.id) }}
+                      aria-label="Collapse"
                       className="text-[11px] text-text-ghost hover:text-text-dim tracking-wider uppercase ml-4 shrink-0"
                     >
                       Collapse ↑
@@ -128,7 +133,7 @@ export default function BehindTheResume() {
                 <div className="p-6">
                   <h3 className="text-[15px] font-semibold text-text-bright mb-1">{role.title}</h3>
                   <p className="text-[12px] text-gold font-medium mb-3">
-                    {role.company}{role.dates ? ` · ${role.dates}` : ''}
+                    {role.company} · {role.dates}
                   </p>
                   <p className="text-[13px] text-text-muted leading-[1.75]">{role.preview}</p>
                   <p className="text-[11px] text-text-ghost uppercase tracking-wide mt-4">↳ View full context</p>
