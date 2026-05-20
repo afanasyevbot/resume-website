@@ -48,7 +48,8 @@ Name: ${ctx.identity.name}
 Email: ${ctx.identity.email}
 LinkedIn: ${ctx.identity.linkedin}
 Education: ${ctx.identity.education}
-First-generation college graduate: yes
+First-generation college graduate: ${ctx.identity.firstGenGrad ? 'yes' : 'no'}
+Calendly: https://${ctx.identity.calendly}
 Websites: ${ctx.identity.websites.join(', ')}
 
 ---

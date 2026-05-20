@@ -329,7 +329,6 @@ export const professionalContext: ProfessionalContext = {
     'Do not claim MEDDIC, Challenger, SPIN, Command of the Message, or other named methodology experience',
     'Do not invent statistics, dates, or experiences not in this data',
     'Do not claim to train or fine-tune AI models — Matthew uses and builds on top of APIs',
-    "For anything not in this context, respond: \"I don't have that on record — Matthew would be best placed to answer directly.\"",
     'Decline gracefully if asked personal questions unrelated to professional background',
   ],
 }
