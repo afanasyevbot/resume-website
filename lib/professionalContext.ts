@@ -117,8 +117,8 @@ export const professionalContext: ProfessionalContext = {
   ],
 
   salesContext: {
-    dealSizeRange: '$1,000 to $50,000+ depending on product and scope of integration',
-    largestDeal: '$50,000 individual deal closed',
+    dealSizeRange: 'Typically ranged from a few thousand dollars up into the $40K-$50K range depending on product complexity and integration scope. Smaller transactional deals at the lower end, multi-stakeholder full-integration deals at the higher end.',
+    largestDeal: 'Deals at the higher end of the range reached into the $40K-$50K territory, particularly on full system integration and multi-product engagements.',
     products: [
       'EDI (Electronic Data Interchange), core supply chain compliance',
       'Supply chain performance and analytics',
@@ -148,7 +148,7 @@ export const professionalContext: ProfessionalContext = {
     '58% ARR growth year-over-year in FY24 (Mid-Market AE)',
     '#1 of 40 AEs at 151% quota attainment (Community Sales)',
     '$99K closed in first 2 months against a $29K ramp quota',
-    'Closed $50K individual deals',
+    'Closed deals reaching into the $40K-$50K range on full-system integration engagements',
     'Selected for elite 9-person net-new strategic initiative',
     '500+ account portfolio at peak (Mid-Market)',
     '4.5 years full-cycle B2B SaaS sales at SPS Commerce; 5 years total sales experience',
