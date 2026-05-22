@@ -6,7 +6,7 @@ interface HeroProps {
 }
 
 const stats = [
-  { number: '#1', label: 'Q1 2026 · Net New' },
+  { number: '#1', label: 'Net New Performer · Q1 2026' },
   { number: '58%', label: 'ARR Growth · FY24' },
   { number: '6+', label: 'AI Systems Shipped' },
   { number: '5yr', label: 'Sales Experience' },
