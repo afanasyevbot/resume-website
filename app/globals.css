@@ -1,21 +1,21 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-bg: #111009;
-  --color-surface: #161210;
-  --color-surface-deep: #130f0a;
-  --color-border: #2a2218;
-  --color-border-inner: #221e18;
-  --color-gold: #c9a96e;
-  --color-gold-dim: rgba(201, 169, 110, 0.25);
-  --color-text-bright: #f5f0e8;
-  --color-text-primary: #d4c4ae;
-  --color-text-secondary: #a89278;
-  --color-text-muted: #8a7a68;
-  --color-text-dim: #7a6b58;
-  --color-text-faint: #6b5e4e;
-  --color-text-ghost: #4a3f32;
-  --color-text-whisper: #3a3028;
+  --color-bg: #13100a;
+  --color-surface: #1e1a12;
+  --color-surface-deep: #191510;
+  --color-border: #352c1e;
+  --color-border-inner: #2c2419;
+  --color-gold: #d4b278;
+  --color-gold-dim: rgba(212, 178, 120, 0.25);
+  --color-text-bright: #f8f4ee;
+  --color-text-primary: #e2d5c0;
+  --color-text-secondary: #c8ae90;
+  --color-text-muted: #b09a80;
+  --color-text-dim: #9a8468;
+  --color-text-faint: #7e6e58;
+  --color-text-ghost: #5e5040;
+  --color-text-whisper: #4a3e30;
 
   --font-display: var(--font-cormorant), serif;
   --font-sans: var(--font-inter), sans-serif;
@@ -32,14 +32,14 @@ html {
 }
 
 body {
-  background-color: #111009;
-  color: #e8ddd0;
+  background-color: #13100a;
+  color: #e2d5c0;
   font-family: var(--font-inter), sans-serif;
 }
 
 ::selection {
-  background: rgba(201, 169, 110, 0.2);
-  color: #f5f0e8;
+  background: rgba(212, 178, 120, 0.2);
+  color: #f8f4ee;
 }
 
 textarea:focus,
