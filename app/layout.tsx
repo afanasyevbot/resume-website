@@ -34,10 +34,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           className="fixed inset-0 pointer-events-none z-0"
           style={{
             background: `
-              radial-gradient(ellipse 90% 55% at 50% -5%, rgba(201,169,110,0.22) 0%, transparent 60%),
-              radial-gradient(ellipse 60% 40% at 90% 10%, rgba(180,140,80,0.10) 0%, transparent 50%),
-              radial-gradient(ellipse 50% 60% at 10% 80%, rgba(160,120,60,0.06) 0%, transparent 50%),
-              #111009
+              radial-gradient(ellipse 100% 65% at 50% -10%, rgba(212,178,120,0.38) 0%, rgba(180,140,80,0.12) 45%, transparent 70%),
+              radial-gradient(ellipse 70% 50% at 95% 5%, rgba(200,155,80,0.20) 0%, transparent 55%),
+              radial-gradient(ellipse 60% 70% at 5% 85%, rgba(170,130,60,0.14) 0%, transparent 55%),
+              radial-gradient(ellipse 80% 40% at 50% 100%, rgba(140,100,40,0.10) 0%, transparent 60%),
+              #1a1510
             `,
           }}
         />
