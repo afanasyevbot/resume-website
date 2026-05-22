@@ -53,7 +53,7 @@ export default function Hero({ onAskAI, onAnalyzeFit }: HeroProps) {
 
       {/* Consistent top performer */}
       <p className="text-[12px] tracking-[2px] uppercase text-gold font-medium mt-4">
-        Consistent top performer · Every role · 5 years
+        Consistent top performer · 5 years
       </p>
 
       {/* CTAs */}
