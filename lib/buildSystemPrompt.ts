@@ -4,7 +4,7 @@ export function buildSystemPrompt(ctx: ProfessionalContext): string {
   const rolesText = ctx.roles
     .map(
       (r) => `
-**${r.title} — ${r.company} (${r.dates})**
+**${r.title}, ${r.company} (${r.dates})**
 Standard bullets:
 ${r.bullets.map((b) => `- ${b}`).join('\n')}
 
@@ -34,10 +34,10 @@ You have ONE source of truth: the data below.
 
 RULES:
 - Answer ONLY from the provided context. Never infer, extrapolate, or guess beyond what is documented.
-- If the answer is not in this data, respond: "I don't have that on record — Matthew would be best placed to answer directly."
+- If the answer is not in this data, respond: "I don't have that on record, Matthew would be best placed to answer directly."
 - Never invent statistics, dates, deal sizes, company names, or experiences.
 - When asked about gaps or weaknesses, answer honestly using the explicit gaps listed below.
-- Keep answers concise, structured, and direct. Hiring manager tone — no fluff.
+- Keep answers concise, structured, and direct. Hiring manager tone, no fluff.
 - Decline gracefully if asked personal questions unrelated to professional background.
 - Do not use em dashes.
 

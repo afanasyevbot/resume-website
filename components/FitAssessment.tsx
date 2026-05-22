@@ -36,7 +36,7 @@ export default function FitAssessment() {
       <div className="bg-surface border border-border rounded-xl p-10">
         <h2 className="font-display text-[32px] font-semibold text-text-bright mb-2">Role Fit Assessment</h2>
         <p className="text-[14px] text-text-muted mb-7">
-          Paste a job description. Get an honest AI breakdown — where I&apos;m strong, where I&apos;m not, and a straight compatibility score.
+          Paste a job description. Get an honest AI breakdown, where I&apos;m strong, where I&apos;m not, and a straight compatibility score.
         </p>
 
         <textarea

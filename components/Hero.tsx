@@ -48,7 +48,7 @@ export default function Hero({ onAskAI, onAnalyzeFit }: HeroProps) {
       <p className="text-[17px] text-text-secondary leading-[1.85] font-light">
         <strong className="text-text-primary font-medium">I close deals. I ship AI systems.</strong><br />
         Most reps can&apos;t build. Most builders can&apos;t sell.<br />
-        I&apos;ve been on both sides — and I do both well.
+        I&apos;ve been on both sides, and I do both well.
       </p>
 
       {/* Consistent top performer */}

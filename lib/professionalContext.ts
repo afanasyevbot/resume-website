@@ -8,7 +8,7 @@ export const professionalContext: ProfessionalContext = {
     linkedin: 'linkedin.com/in/matthewafanasiev',
     calendly: 'calendly.com/mafanasiev-fidelisstrategy/30min',
     websites: ['fidelisstrategy.net', 'fidelispulse.com'],
-    education: 'BBA, Marketing Management — University of St. Thomas, 2017–2021',
+    education: 'BBA, Marketing Management, University of St. Thomas, 2017–2021',
     firstGenGrad: true,
   },
 
@@ -27,7 +27,7 @@ export const professionalContext: ProfessionalContext = {
         situation:
           'Selected for an elite 9-person net-new focused unit after strong Mid-Market performance. Started with zero inherited pipeline against a high quota bar. Had to build from scratch in new verticals while simultaneously running full cycles.',
         approach:
-          'ICP mapping by vertical pain signal — prioritized accounts with the clearest workflow pain first. Multi-threaded from day 1 across IT, finance, and operations contacts. ROI-first discovery: always quantified the cost of the current state before positioning any solution.',
+          'ICP mapping by vertical pain signal, prioritized accounts with the clearest workflow pain first. Multi-threaded from day 1 across IT, finance, and operations contacts. ROI-first discovery: always quantified the cost of the current state before positioning any solution.',
         results:
           'Ranked #1 in net-new production on the team company-wide. 5th of 30 AEs overall in FY25 at 102.6% attainment. Highest close rate in the division. Recognized as top performer Q1 2026.',
         lessons:
@@ -40,15 +40,15 @@ export const professionalContext: ProfessionalContext = {
       dates: 'Jan 2026 – Present (concurrent with SPS Commerce)',
       bullets: [
         'Founded a growth strategy consultancy serving early- and growth-stage businesses ($1M–$10M) on strategic planning, revenue operations, and AI enablement',
-        'Built 6 production AI systems using Anthropic API and LLM platforms — not demos, shipped working products',
+        'Built 6 production AI systems using Anthropic API and LLM platforms, not demos, shipped working products',
         'Developed proprietary 4D Growth Engine framework (Diagnose, Design, Deliver, Drive); first engagement projected $2M in revenue impact',
         'Fidelis Pulse: live SaaS financial dashboard with Stripe billing, multi-tenant architecture, and Claude-powered AI advisor',
       ],
       aiContext: {
         situation:
-          'After years of selling to businesses and seeing the same operational inefficiencies repeatedly, started building AI tools to solve them. Founded Fidelis Strategy while still carrying full quota at SPS Commerce — running both in parallel.',
+          'After years of selling to businesses and seeing the same operational inefficiencies repeatedly, started building AI tools to solve them. Founded Fidelis Strategy while still carrying full quota at SPS Commerce, running both in parallel.',
         approach:
-          'Build production systems, not prototypes. Every tool shipped has real users, real infrastructure (Next.js, Supabase, Railway, Stripe), and real constraints. Used Anthropic API across all projects — chat advisors, agent pipelines, scoring engines, and lead generation workflows.',
+          'Build production systems, not prototypes. Every tool shipped has real users, real infrastructure (Next.js, Supabase, Railway, Stripe), and real constraints. Used Anthropic API across all projects, chat advisors, agent pipelines, scoring engines, and lead generation workflows.',
         results:
           '6 production AI systems delivered. Fidelis Pulse launched with live Stripe billing at two price tiers ($349/mo Operating, $499/mo Exit Ready). M&A client engagement projected $2M revenue impact. Multiple client lead generation and buyer intelligence platforms shipped.',
         lessons:
@@ -67,13 +67,13 @@ export const professionalContext: ProfessionalContext = {
       ],
       aiContext: {
         situation:
-          'Inherited an underperforming territory with no playbook. Was taking a reactive approach — responding to inbound requests rather than driving proactively. Missed quota early. Recognized the pattern was the process, not the market.',
+          'Inherited an underperforming territory with no playbook. Was taking a reactive approach, responding to inbound requests rather than driving proactively. Missed quota early. Recognized the pattern was the process, not the market.',
         approach:
           'Ran a full territory audit. Built a structured ICP matrix using Salesforce CRM and Power BI to identify which accounts had the highest pain signal and lowest competitive risk. Shifted from reactive to proactive: dedicated outreach blocks per segment, consistent weekly cadence, multi-threaded from the start.',
         results:
           '58% ARR growth year-over-year in FY24 across a 500+ account portfolio. Managed companies up to $150M in revenue. Built expansion playbooks that the team adopted.',
         lessons:
-          'Data tells you where to go. Process determines whether you get there. The market was never the problem — the approach was.',
+          'Data tells you where to go. Process determines whether you get there. The market was never the problem, the approach was.',
       },
     },
     {
@@ -87,9 +87,9 @@ export const professionalContext: ProfessionalContext = {
       ],
       aiContext: {
         situation:
-          'Entry-level AE role — high volume, retailer-mandated deadlines, non-technical buyers. Had to close quickly and translate technical compliance requirements into business language.',
+          'Entry-level AE role, high volume, retailer-mandated deadlines, non-technical buyers. Had to close quickly and translate technical compliance requirements into business language.',
         approach:
-          'Disciplined cadence. Simplified the value message — focused on what happens if they miss the deadline (chargebacks, lost retail relationships) rather than features. Built rapport fast, moved quickly.',
+          'Disciplined cadence. Simplified the value message, focused on what happens if they miss the deadline (chargebacks, lost retail relationships) rather than features. Built rapport fast, moved quickly.',
         results: '#1 of 40 AEs. 151% quota attainment. Consistent top performer from day one.',
         lessons:
           'Consultative selling works at every speed. Even in high-volume environments, taking 60 seconds to ask the right question beats pitching immediately.',
@@ -100,7 +100,7 @@ export const professionalContext: ProfessionalContext = {
       company: 'UnitedHealth Group',
       dates: 'Jun 2021 – Nov 2021',
       bullets: [
-        'Top performer on the team — converted high-volume inbound calls into enrolled members',
+        'Top performer on the team, converted high-volume inbound calls into enrolled members',
         'Conducted consultative needs assessments in a heavily regulated healthcare environment',
       ],
       aiContext: {
@@ -120,13 +120,13 @@ export const professionalContext: ProfessionalContext = {
     dealSizeRange: '$1,000 to $50,000+ depending on product and scope of integration',
     largestDeal: '$50,000 individual deal closed',
     products: [
-      'EDI (Electronic Data Interchange) — core supply chain compliance',
+      'EDI (Electronic Data Interchange), core supply chain compliance',
       'Supply chain performance and analytics',
       'POS (Point of Sale) data solutions',
       'Revenue recovery solutions',
       'Chargeback solutions',
       'Basic web portal options for order management',
-      'Full system integrations — deep ERP and platform connectivity',
+      'Full system integrations, deep ERP and platform connectivity',
       'Logistics solutions',
     ],
     industries: [
@@ -137,7 +137,7 @@ export const professionalContext: ProfessionalContext = {
       'Food and beverage',
       'Fashion and apparel',
       'Mom-and-pop small businesses through established mid-market companies ($150M revenue)',
-      'No vertical restrictions — has sold successfully across all of the above',
+      'No vertical restrictions, has sold successfully across all of the above',
     ],
   },
 
@@ -159,7 +159,7 @@ export const professionalContext: ProfessionalContext = {
     {
       title: 'Building Pipeline from Nothing',
       summary:
-        'Stepped into a new territory with zero pipeline. Mapped territory, segmented by intent signals, prioritized quick wins. Closed $40K Month 1, $30K Month 2 — $99K in two months against a $29K ramp quota.',
+        'Stepped into a new territory with zero pipeline. Mapped territory, segmented by intent signals, prioritized quick wins. Closed $40K Month 1, $30K Month 2, $99K in two months against a $29K ramp quota.',
     },
     {
       title: 'Winning a Skeptical Executive',
@@ -169,7 +169,7 @@ export const professionalContext: ProfessionalContext = {
     {
       title: 'ROI Changed the Outcome',
       summary:
-        'Used Power BI to find a customer paying a discount rate for one integration while using free portals and competitors for everything else. Ran discovery, quantified the hidden cost. Despite higher price, the ROI case won. Replicated this model across the portfolio — contributed to 58% ARR growth.',
+        'Used Power BI to find a customer paying a discount rate for one integration while using free portals and competitors for everything else. Ran discovery, quantified the hidden cost. Despite higher price, the ROI case won. Replicated this model across the portfolio, contributed to 58% ARR growth.',
     },
     {
       title: 'Multi-Stakeholder Long Cycle',
@@ -179,7 +179,7 @@ export const professionalContext: ProfessionalContext = {
     {
       title: 'Persistence Pays Off',
       summary:
-        'Used Power BI to identify an underutilized account. Prospect initially said they planned to cancel. Kept checking in every two weeks. Months later, the president called directly — their IT contact had been let go. Ran discovery, closed $20K with growth potential.',
+        'Used Power BI to identify an underutilized account. Prospect initially said they planned to cancel. Kept checking in every two weeks. Months later, the president called directly, their IT contact had been let go. Ran discovery, closed $20K with growth potential.',
     },
     {
       title: 'Failure: Skipped Discovery',
@@ -194,7 +194,7 @@ export const professionalContext: ProfessionalContext = {
     {
       title: 'Adapting to New Product Launch',
       summary:
-        'SPS acquired a new analytics tool (vendor scorecard/chargeback data). Dove into product docs, built an AI-powered knowledge base with segment-specific talk tracks. Generated 20+ qualified opportunities — tied for team leader in deals closed on the new product.',
+        'SPS acquired a new analytics tool (vendor scorecard/chargeback data). Dove into product docs, built an AI-powered knowledge base with segment-specific talk tracks. Generated 20+ qualified opportunities, tied for team leader in deals closed on the new product.',
     },
     {
       title: 'Turning a Miss into 58% Growth',
@@ -227,8 +227,8 @@ export const professionalContext: ProfessionalContext = {
       link: 'https://fidelispulse.com',
     },
     {
-      name: 'M&A Advisory — Buyer Intelligence Engine',
-      badge: 'AI Agents — Client Work',
+      name: 'M&A Advisory, Buyer Intelligence Engine',
+      badge: 'AI Agents, Client Work',
       description:
         'Multi-agent platform for a PE advisory firm. Discovers, enriches, and semantically ranks acquisition targets. Uses pgvector for semantic search, Python FastAPI workers for data processing, and Anthropic Managed Agents + Claude Agent SDK for autonomous research tasks. Built as a Turborepo monorepo with Next.js frontend and Supabase backend.',
       stack: [
@@ -241,15 +241,15 @@ export const professionalContext: ProfessionalContext = {
       ],
     },
     {
-      name: 'M&A Advisory — Lead Generation Platform',
-      badge: 'Lead Generation — Client Work',
+      name: 'M&A Advisory, Lead Generation Platform',
+      badge: 'Lead Generation, Client Work',
       description:
         'Automated acquisition target discovery and qualification for an M&A advisory client. Claude-powered scoring against buyer criteria, persistent lead database, weekly automated reports for the advisory team. Deployed on Railway with cron-triggered pipeline.',
       stack: ['Next.js', 'Claude API', 'SQLite', 'Railway', 'Sentry'],
     },
     {
-      name: 'Real Estate Tech — AI Prospecting Engine',
-      badge: 'Lead Generation — Client Work',
+      name: 'Real Estate Tech, AI Prospecting Engine',
+      badge: 'Lead Generation, Client Work',
       description:
         'Automated prospect discovery for a real estate SaaS client. Playwright web and LinkedIn scraping, multi-provider enrichment (Apollo, Hunter, Snov, Dropcontact), AI-scored ICP matching, and outreach draft generation. Deployed on Railway with cron-triggered pipeline. Vitest test suite.',
       stack: [
@@ -279,7 +279,7 @@ export const professionalContext: ProfessionalContext = {
       ],
     },
     {
-      name: 'Grace Church — Full Technology Buildout',
+      name: 'Grace Church, Full Technology Buildout',
       badge: 'Pro Bono',
       description:
         'Complete technology modernization for Grace Evangelical Church: Microsoft 365 business tenant setup, staff email accounts, donation platform integration, spend management workflow, full site redesign with new brand system, and content tooling for a non-technical team. Phase 2: QuickBooks Online implementation.',
@@ -298,7 +298,7 @@ export const professionalContext: ProfessionalContext = {
       'Full-cycle B2B SaaS sales (hunting, discovery, demo, negotiation, close)',
       'Consultative discovery and ROI modeling with C-suite buyers',
       'AI systems building with Claude API, Anthropic Agent SDK, and RAG pipelines',
-      'Pipeline building from zero — prospecting, ICP targeting, territory strategy',
+      'Pipeline building from zero, prospecting, ICP targeting, territory strategy',
       'Multi-stakeholder sales cycles across IT, finance, and operations',
     ],
     conversant: [
@@ -308,27 +308,27 @@ export const professionalContext: ProfessionalContext = {
       'CRM analytics (Salesforce, Power BI)',
     ],
     notMyZone: [
-      'Enterprise deals (Fortune 500 / 100,000+ seat organizations) — background is mid-market',
-      'Pure backend or infrastructure engineering — builds on platforms and APIs, is not a software engineer',
-      'Channel or partner sales motion — all experience is direct sales',
-      'Inbound-led or PLG sales models — background is outbound hunting',
+      'Enterprise deals (Fortune 500 / 100,000+ seat organizations), background is mid-market',
+      'Pure backend or infrastructure engineering, builds on platforms and APIs, is not a software engineer',
+      'Channel or partner sales motion, all experience is direct sales',
+      'Inbound-led or PLG sales models, background is outbound hunting',
     ],
   },
 
   explicitGaps: [
-    'No enterprise (Fortune 500, 100K+ seat) deal experience — mid-market is the sweet spot',
-    'Not a software engineer — builds production AI systems on top of APIs and platforms, does not write low-level systems code',
-    'No channel or partner sales experience — all direct',
+    'No enterprise (Fortune 500, 100K+ seat) deal experience, mid-market is the sweet spot',
+    'Not a software engineer, builds production AI systems on top of APIs and platforms, does not write low-level systems code',
+    'No channel or partner sales experience, all direct',
     'No inbound or PLG sales motion experience',
-    'Primary verticals closed: supply chain, retail, food, manufacturing — not fintech, insurance, or healthcare directly (has researched these for specific interviews)',
+    'Primary verticals closed: supply chain, retail, food, manufacturing, not fintech, insurance, or healthcare directly (has researched these for specific interviews)',
     'Quota size has been growing but is below $1M+ enterprise AE range',
   ],
 
   doNotSay: [
-    'Do not claim enterprise experience — Matthew is mid-market',
+    'Do not claim enterprise experience, Matthew is mid-market',
     'Do not claim MEDDIC, Challenger, SPIN, Command of the Message, or other named methodology experience',
     'Do not invent statistics, dates, or experiences not in this data',
-    'Do not claim to train or fine-tune AI models — Matthew uses and builds on top of APIs',
+    'Do not claim to train or fine-tune AI models, Matthew uses and builds on top of APIs',
     'Decline gracefully if asked personal questions unrelated to professional background',
   ],
 }

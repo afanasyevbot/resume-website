@@ -86,7 +86,7 @@ export default function ChatSection() {
           </div>
         </div>
 
-        {/* Suggested chips — shown only before first message */}
+        {/* Suggested chips, shown only before first message */}
         {messages.length === 0 && !limitReached && (
           <div className="px-8 py-4 flex flex-wrap gap-2">
             {SUGGESTED_CHIPS.map((chip) => (
@@ -134,7 +134,7 @@ export default function ChatSection() {
         {/* Input or limit CTA */}
         {limitReached ? (
           <div className="px-8 py-8 border-t border-border-inner text-center">
-            <p className="font-display text-[22px] text-text-primary mb-5">&ldquo;That&apos;s enough — just set the call with Matthew.&rdquo;</p>
+            <p className="font-display text-[22px] text-text-primary mb-5">&ldquo;That&apos;s enough, just set the call with Matthew.&rdquo;</p>
             <a
               href="https://calendly.com/mafanasiev-fidelisstrategy/30min"
               target="_blank"

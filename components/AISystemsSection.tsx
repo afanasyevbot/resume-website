@@ -13,26 +13,26 @@ const projects: Project[] = [
     badge: '◉ Live SaaS Product',
     description:
       "Financial dashboard SaaS for owner-operators. Multi-tenant firm isolation, per-client Stripe billing, QuickBooks + Xero + Plaid integrations, and a Claude-powered AI advisor that generates narrative commentary on each client's financials.",
-    stack: ['Next.js 15 App Router', 'Stripe billing — live mode', 'Claude API — AI advisor', 'Railway Postgres', 'QuickBooks + Xero + Plaid OAuth'],
+    stack: ['Next.js 15 App Router', 'Stripe billing, live mode', 'Claude API, AI advisor', 'Railway Postgres', 'QuickBooks + Xero + Plaid OAuth'],
     link: 'https://fidelispulse.com',
     wide: true,
   },
   {
-    name: 'M&A Advisory — Buyer Intelligence Engine',
+    name: 'M&A Advisory, Buyer Intelligence Engine',
     badge: 'AI Agents · Client',
     description:
       'Multi-agent platform for a PE advisory firm. Discovers, enriches, and ranks acquisition targets using semantic search, Python FastAPI workers, and Anthropic Managed Agents for autonomous research tasks.',
     stack: ['Anthropic Agent SDK', 'pgvector', 'Supabase', 'FastAPI'],
   },
   {
-    name: 'M&A Advisory — Lead Generation Platform',
+    name: 'M&A Advisory, Lead Generation Platform',
     badge: 'Lead Gen · Client',
     description:
       'Automated acquisition target discovery and qualification. Claude-powered scoring against buyer criteria, persistent lead database, weekly automated reports.',
     stack: ['Next.js', 'Claude API', 'SQLite', 'Railway'],
   },
   {
-    name: 'Real Estate Tech — AI Prospecting Engine',
+    name: 'Real Estate Tech, AI Prospecting Engine',
     badge: 'Lead Gen · Client',
     description:
       'Playwright scraping, multi-provider enrichment (Apollo, Hunter, Snov), AI-scored ICP matching, and outreach draft generation. Cron-triggered pipeline on Railway.',
@@ -42,11 +42,11 @@ const projects: Project[] = [
     name: 'Glow Routine',
     badge: 'Consumer PWA',
     description:
-      'Skincare tracking PWA — AM/PM checklists, streaks, journal photos, web push reminders, AI advisor. Sentry + PostHog instrumented.',
+      'Skincare tracking PWA, AM/PM checklists, streaks, journal photos, web push reminders, AI advisor. Sentry + PostHog instrumented.',
     stack: ['Supabase', 'Web Push', 'PostHog'],
   },
   {
-    name: 'Grace Church — Full Technology Buildout',
+    name: 'Grace Church, Full Technology Buildout',
     badge: 'Pro Bono',
     description:
       'Microsoft 365 tenant, staff email setup, donation platform, spend management, site redesign, and content tooling. Phase 2: QuickBooks Online implementation.',
@@ -110,7 +110,7 @@ export default function AISystemsSection() {
   return (
     <section id="ai-systems" className="mt-24">
       <p className="text-[11px] tracking-[4px] uppercase text-text-faint font-semibold mb-2">AI Systems Shipped</p>
-      <p className="text-[15px] text-text-muted mb-8 font-light">Production systems — not prototypes. Built while carrying full quota.</p>
+      <p className="text-[15px] text-text-muted mb-8 font-light">Production systems, not prototypes. Built while carrying full quota.</p>
       <div className="grid grid-cols-2 gap-3.5">
         {projects.map((p) => <ProjectCard key={p.name} project={p} />)}
       </div>
