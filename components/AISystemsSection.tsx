@@ -69,7 +69,7 @@ function ProjectCard({ project }: { project: Project }) {
             <h3 className="font-display text-[24px] font-semibold text-text-bright mb-3">{project.name}</h3>
             <p className="text-[14px] text-text-muted leading-[1.75]">{project.description}</p>
             {project.link && (
-              <a href={project.link} target="_blank" rel="noopener noreferrer" className="text-[11px] text-gold/85 tracking-wide mt-3 block hover:text-gold transition-colors">
+              <a href={project.link} target="_blank" rel="noopener noreferrer" className="text-[13px] text-gold font-medium tracking-wide mt-3 block hover:text-gold/80 transition-colors">
                 {project.link.replace('https://', '')} ↗
               </a>
             )}
@@ -89,7 +89,7 @@ function ProjectCard({ project }: { project: Project }) {
           <h3 className="font-display text-[24px] font-semibold text-text-bright mb-3">{project.name}</h3>
           <p className="text-[14px] text-text-muted leading-[1.75]">{project.description}</p>
           {project.link && (
-            <a href={project.link} target="_blank" rel="noopener noreferrer" className="text-[11px] text-gold/85 tracking-wide mt-3 block hover:text-gold transition-colors">
+            <a href={project.link} target="_blank" rel="noopener noreferrer" className="text-[13px] text-gold font-medium tracking-wide mt-3 block hover:text-gold/80 transition-colors">
               {project.link.replace('https://', '')} ↗
             </a>
           )}
