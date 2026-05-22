@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import ReactMarkdown from 'react-markdown'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -23,13 +24,15 @@ export default function ChatSection() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [questionCount, setQuestionCount] = useState(0)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   const limitReached = questionCount >= QUESTION_LIMIT
 
+  // Scroll within the chat container only — not the whole page
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
+    const el = scrollContainerRef.current
+    if (el) el.scrollTop = el.scrollHeight
+  }, [messages, loading])
 
   async function sendMessage(text: string) {
     const trimmed = text.trim()
@@ -86,7 +89,7 @@ export default function ChatSection() {
           </div>
         </div>
 
-        {/* Suggested chips, shown only before first message */}
+        {/* Suggested chips — shown only before first message */}
         {messages.length === 0 && !limitReached && (
           <div className="px-8 py-4 flex flex-wrap gap-2">
             {SUGGESTED_CHIPS.map((chip) => (
@@ -102,9 +105,12 @@ export default function ChatSection() {
           </div>
         )}
 
-        {/* Messages */}
+        {/* Messages — scrolls internally, never moves the page */}
         {messages.length > 0 && (
-          <div className="px-8 py-6 flex flex-col gap-4 min-h-[180px] max-h-[420px] overflow-y-auto">
+          <div
+            ref={scrollContainerRef}
+            className="px-8 py-6 flex flex-col gap-4 min-h-[180px] max-h-[480px] overflow-y-auto"
+          >
             {messages.map((msg) =>
               msg.role === 'user' ? (
                 <div key={msg.id} className="self-end max-w-[70%]">
@@ -115,10 +121,19 @@ export default function ChatSection() {
               ) : (
                 <div key={msg.id} className="self-start max-w-[88%]">
                   <p className="text-[10px] tracking-[2px] uppercase text-text-ghost font-semibold mb-1.5">AI · Based on Matthew&apos;s record</p>
-                  <div className="bg-surface-deep border border-border rounded-[2px_10px_10px_10px] px-5 py-3.5 text-[14px] text-text-secondary leading-[1.8] space-y-3">
-                    {msg.content.split('\n\n').filter(Boolean).map((para, i) => (
-                      <p key={i}>{para.trim()}</p>
-                    ))}
+                  <div className="bg-surface-deep border border-border rounded-[2px_10px_10px_10px] px-5 py-3.5 text-[14px] text-text-secondary leading-[1.8] prose-chat">
+                    <ReactMarkdown
+                      components={{
+                        p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                        strong: ({ children }) => <strong className="text-text-primary font-semibold">{children}</strong>,
+                        ul: ({ children }) => <ul className="mt-2 mb-2 space-y-1 pl-4">{children}</ul>,
+                        li: ({ children }) => <li className="list-disc text-text-secondary">{children}</li>,
+                        h2: ({ children }) => <h2 className="text-[13px] font-semibold text-text-primary uppercase tracking-wide mt-3 mb-1.5">{children}</h2>,
+                        h3: ({ children }) => <h3 className="text-[13px] font-semibold text-text-primary mt-3 mb-1">{children}</h3>,
+                      }}
+                    >
+                      {msg.content}
+                    </ReactMarkdown>
                   </div>
                 </div>
               )
@@ -129,7 +144,6 @@ export default function ChatSection() {
                 <div className="bg-surface-deep border border-border rounded-[2px_10px_10px_10px] px-5 py-3.5 text-[14px] text-text-ghost">Thinking...</div>
               </div>
             )}
-            <div ref={messagesEndRef} />
           </div>
         )}
 
