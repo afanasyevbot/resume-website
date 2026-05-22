@@ -14,9 +14,9 @@ const stats = [
 
 export default function Hero({ onAskAI, onAnalyzeFit }: HeroProps) {
   return (
-    <section className="pt-20 pb-20 relative">
+    <section className="pt-20 pb-20 relative text-center">
       {/* Site links */}
-      <div className="flex gap-6 items-center mb-8">
+      <div className="flex gap-6 items-center justify-center mb-8">
         <a
           href="https://fidelisstrategy.net"
           target="_blank"
@@ -37,15 +37,15 @@ export default function Hero({ onAskAI, onAnalyzeFit }: HeroProps) {
       </div>
 
       {/* Name */}
-      <h1 className="font-display text-[100px] font-semibold leading-[0.92] tracking-[-3px] text-text-bright mb-8">
+      <h1 className="font-display text-[120px] font-semibold leading-[0.92] tracking-[-3px] text-text-bright mb-8">
         Matthew<br />Afanasiev
       </h1>
 
       {/* Rule */}
-      <div className="w-10 h-px mb-6" style={{ background: 'linear-gradient(90deg, #c9a96e, transparent)' }} />
+      <div className="w-10 h-px mb-6 mx-auto" style={{ background: 'linear-gradient(90deg, transparent, #c9a96e, transparent)' }} />
 
       {/* Tagline */}
-      <p className="text-[17px] text-text-secondary leading-[1.85] max-w-[500px] font-light">
+      <p className="text-[17px] text-text-secondary leading-[1.85] font-light">
         <strong className="text-text-primary font-medium">I close deals. I ship AI systems.</strong><br />
         Most reps can&apos;t build. Most builders can&apos;t sell.<br />
         I&apos;ve been on both sides — and I do both well.
@@ -57,7 +57,7 @@ export default function Hero({ onAskAI, onAnalyzeFit }: HeroProps) {
       </p>
 
       {/* CTAs */}
-      <div className="flex gap-3 flex-wrap items-center mt-10">
+      <div className="flex gap-3 flex-wrap items-center justify-center mt-10">
         <button
           onClick={onAskAI}
           className="text-gold border border-gold/50 px-6 py-3 rounded text-[13px] font-semibold tracking-wide hover:bg-gold/5 transition-colors"

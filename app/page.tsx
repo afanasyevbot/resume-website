@@ -23,10 +23,10 @@ export default function Page() {
   return (
     <main className="max-w-page mx-auto px-12 pb-24">
       <Hero onAskAI={scrollToChat} onAnalyzeFit={scrollToFit} />
-      <AISystemsSection />
       <div ref={chatRef}>
         <ChatSection />
       </div>
+      <AISystemsSection />
       <BehindTheResume />
       <SkillsMatrix />
       <div ref={fitRef}>
