@@ -12,12 +12,18 @@ export default function Page() {
   const chatRef = useRef<HTMLDivElement>(null)
   const fitRef = useRef<HTMLDivElement>(null)
 
+  function scrollTo(ref: React.RefObject<HTMLDivElement | null>, offset = 40) {
+    if (!ref.current) return
+    const top = ref.current.getBoundingClientRect().top + window.scrollY - offset
+    window.scrollTo({ top, behavior: 'smooth' })
+  }
+
   function scrollToChat() {
-    chatRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    scrollTo(chatRef)
   }
 
   function scrollToFit() {
-    fitRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    scrollTo(fitRef)
   }
 
   return (
