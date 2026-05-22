@@ -117,8 +117,8 @@ export const professionalContext: ProfessionalContext = {
   ],
 
   salesContext: {
-    dealSizeRange: 'Typically ranged from a few thousand dollars up into the $40K-$50K range depending on product complexity and integration scope. Smaller transactional deals at the lower end, multi-stakeholder full-integration deals at the higher end.',
-    largestDeal: 'Deals at the higher end of the range reached into the $40K-$50K territory, particularly on full system integration and multi-product engagements.',
+    dealSizeRange: 'Deal sizes varied significantly based on product and scope. Simple compliance and portal solutions were smaller transactional deals. Complex engagements involving full system integrations, multi-product combinations (analytics, POS data, revenue recovery, chargeback), and ERP connectivity with multiple stakeholders across IT, finance, and operations were considerably larger. The range reflected the breadth of what was being sold, not a fixed deal motion.',
+    largestDeal: 'The more complex deals involving full integrations and multiple products across multiple stakeholders represented the higher end of the range.',
     products: [
       'EDI (Electronic Data Interchange), core supply chain compliance',
       'Supply chain performance and analytics',
@@ -159,12 +159,12 @@ export const professionalContext: ProfessionalContext = {
     {
       title: 'Building Pipeline from Nothing',
       summary:
-        'Stepped into a new territory with zero pipeline. Mapped territory, segmented by intent signals, prioritized quick wins. Closed $40K Month 1, $30K Month 2, $99K in two months against a $29K ramp quota.',
+        'Stepped into a new territory with zero pipeline. Mapped territory, segmented by intent signals, prioritized quick wins. Closed $99K in two months against a $29K ramp quota across a mix of transactional and integration-level deals.',
     },
     {
       title: 'Winning a Skeptical Executive',
       summary:
-        'Prospect had a trust deficit with the product. Waited for their acquisition to close, coordinated internal resources, brought in implementation experts, rebuilt trust step by step. Boxed out competition, closed $30K net-new.',
+        'Prospect had a trust deficit with the product. Waited for their acquisition to close, coordinated internal resources, brought in implementation experts, rebuilt trust step by step. Navigated a multi-stakeholder cycle and boxed out the competition to close a net-new integration deal.',
     },
     {
       title: 'ROI Changed the Outcome',
@@ -174,12 +174,12 @@ export const professionalContext: ProfessionalContext = {
     {
       title: 'Multi-Stakeholder Long Cycle',
       summary:
-        'Prospect was automating EDI during an ERP migration. Key decision-maker constantly traveling. Recorded a financial presentation walkthrough and sent it directly, removing the scheduling bottleneck. The recording got internal traction and closed a $30K deal.',
+        'Prospect was automating EDI during an ERP migration with IT, finance, and operations all involved. Key decision-maker constantly traveling. Recorded a financial presentation walkthrough and sent it directly, removing the scheduling bottleneck. The recording got internal traction across the buying committee and closed the deal.',
     },
     {
       title: 'Persistence Pays Off',
       summary:
-        'Used Power BI to identify an underutilized account. Prospect initially said they planned to cancel. Kept checking in every two weeks. Months later, the president called directly, their IT contact had been let go. Ran discovery, closed $20K with growth potential.',
+        'Used Power BI to identify an underutilized account. Prospect initially said they planned to cancel. Kept checking in. Months later, the president called directly after a personnel change left them without IT support. Ran fresh discovery, identified expanded needs, and closed a deal with meaningful growth potential.',
     },
     {
       title: 'Failure: Skipped Discovery',
@@ -204,7 +204,7 @@ export const professionalContext: ProfessionalContext = {
     {
       title: 'Creating Repeatable Pipeline',
       summary:
-        'Pipeline slowing with fewer trigger events. Identified opportunity to convert variable-usage customers to annual commitments using a cost-saving angle. Generated $25K+ in ARR and replicated the motion across accounts.',
+        'Pipeline slowing with fewer trigger events. Identified opportunity to convert variable-usage customers to annual commitments using a cost-saving angle. Generated meaningful ARR and replicated the motion across the portfolio.',
     },
   ],
 
