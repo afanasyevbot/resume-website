@@ -141,7 +141,7 @@ export default function ChatSection() {
             {loading && (
               <div className="self-start max-w-[88%]">
                 <p className="text-[10px] tracking-[2px] uppercase text-text-ghost font-semibold mb-1.5">AI · Based on Matthew&apos;s record</p>
-                <div className="bg-surface-deep border border-border rounded-[2px_10px_10px_10px] px-5 py-3.5 text-[14px] text-text-ghost">Thinking...</div>
+                <div className="bg-surface-deep border border-border rounded-[2px_10px_10px_10px] px-5 py-3.5 text-[14px] text-text-secondary animate-pulse">Thinking...</div>
               </div>
             )}
           </div>
