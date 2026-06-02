@@ -35,6 +35,7 @@ export interface ProfessionalContext {
   }
   roles: Role[]
   salesContext: {
+    inboundExperience: string
     dealSizeRange: string
     largestDeal: string
     products: string[]

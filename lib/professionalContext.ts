@@ -135,6 +135,7 @@ export const professionalContext: ProfessionalContext = {
   ],
 
   salesContext: {
+    inboundExperience: 'Has worked both outbound and inbound motions. At UnitedHealth Group, converted high-volume inbound calls into enrolled health plan members — pure inbound qualification and conversion. At SPS Commerce Community Sales, worked retailer-driven inbound campaigns where suppliers were mandated to onboard, requiring fast qualification and closing under deadline pressure. Primary outbound experience across the SPS Commerce mid-market and net-new roles.',
     dealSizeRange: 'Deal sizes varied significantly based on product and scope. Simple compliance and portal solutions were smaller transactional deals. Complex engagements involving full system integrations, multi-product combinations (analytics, POS data, revenue recovery, chargeback), and ERP connectivity with multiple stakeholders across IT, finance, and operations were considerably larger. The range reflected the breadth of what was being sold, not a fixed deal motion.',
     largestDeal: 'The more complex deals involving full integrations and multiple products across multiple stakeholders represented the higher end of the range.',
     products: [
@@ -340,7 +341,7 @@ export const professionalContext: ProfessionalContext = {
       'Enterprise deals (Fortune 500 / 100,000+ seat organizations), background is mid-market',
       'Pure backend or infrastructure engineering, builds on platforms and APIs, is not a software engineer',
       'Channel or partner sales motion, all experience is direct sales',
-      'Inbound-led or PLG sales models, background is outbound hunting',
+      'PLG (product-led growth) sales models, no experience converting self-serve free trial users specifically',
     ],
   },
 
@@ -348,7 +349,7 @@ export const professionalContext: ProfessionalContext = {
     'No enterprise (Fortune 500, 100K+ seat) deal experience, mid-market is the sweet spot',
     'Not a software engineer, builds production AI systems on top of APIs and platforms, does not write low-level systems code',
     'No channel or partner sales experience, all direct',
-    'No inbound or PLG sales motion experience',
+    'No PLG (product-led growth) sales motion experience — no documented experience converting self-serve free trial users specifically',
     'Primary verticals closed: supply chain, retail, food, manufacturing, not fintech, insurance, or healthcare directly (has researched these for specific interviews)',
     'Quota size has been growing but is below $1M+ enterprise AE range',
   ],

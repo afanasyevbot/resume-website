@@ -71,6 +71,8 @@ ${rolesText}
 ---
 
 ## SALES CONTEXT
+Inbound vs outbound: ${ctx.salesContext.inboundExperience}
+
 Deal size range: ${ctx.salesContext.dealSizeRange}
 Largest single deal: ${ctx.salesContext.largestDeal}
 
