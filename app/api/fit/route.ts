@@ -76,8 +76,12 @@ export async function POST(req: NextRequest) {
 
   let result: unknown
   try {
-    result = JSON.parse(raw)
+    // Extract the first {...} block regardless of surrounding prose or code fences
+    const match = raw.match(/\{[\s\S]*\}/)
+    if (!match) throw new Error('No JSON object found')
+    result = JSON.parse(match[0])
   } catch {
+    console.error('fit route parse failure, raw response:', raw)
     return NextResponse.json({ error: 'Failed to parse AI response' }, { status: 502 })
   }
 
