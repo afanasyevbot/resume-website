@@ -2,10 +2,15 @@ import Anthropic from '@anthropic-ai/sdk'
 import { NextRequest, NextResponse } from 'next/server'
 import { professionalContext } from '@/lib/professionalContext'
 import { buildSystemPrompt } from '@/lib/buildSystemPrompt'
+import { getClientId, rateLimit } from '@/lib/rateLimit'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
 export async function POST(req: NextRequest) {
+  if (!rateLimit(getClientId(req), 15, 60_000)) {
+    return NextResponse.json({ error: 'Too many requests. Please slow down.' }, { status: 429 })
+  }
+
   const body = await req.json().catch(() => null)
 
   if (!body || typeof body.message !== 'string' || !body.message.trim()) {

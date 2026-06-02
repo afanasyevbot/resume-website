@@ -78,7 +78,7 @@ export default function ChatSection() {
 
       <div className="bg-surface border border-border rounded-xl overflow-hidden">
         {/* Header */}
-        <div className="px-8 pt-7 pb-6 border-b border-border-inner flex justify-between items-end">
+        <div className="px-5 sm:px-8 pt-7 pb-6 border-b border-border-inner flex justify-between items-end">
           <div>
             <h2 className="font-display text-[32px] font-semibold text-text-bright">What do you want to know?</h2>
             <p className="text-[13px] text-text-dim mt-1">Powered by Claude · Answers drawn from Matthew&apos;s complete professional record</p>
@@ -91,7 +91,7 @@ export default function ChatSection() {
 
         {/* Suggested chips — shown only before first message */}
         {messages.length === 0 && !limitReached && (
-          <div className="px-8 py-4 flex flex-wrap gap-2">
+          <div className="px-5 sm:px-8 py-4 flex flex-wrap gap-2">
             {SUGGESTED_CHIPS.map((chip) => (
               <button
                 key={chip}
@@ -109,7 +109,7 @@ export default function ChatSection() {
         {messages.length > 0 && (
           <div
             ref={scrollContainerRef}
-            className="px-8 py-6 flex flex-col gap-4 min-h-[180px] max-h-[480px] overflow-y-auto"
+            className="px-5 sm:px-8 py-6 flex flex-col gap-4 min-h-[180px] max-h-[480px] overflow-y-auto"
           >
             {messages.map((msg) =>
               msg.role === 'user' ? (
@@ -149,7 +149,7 @@ export default function ChatSection() {
 
         {/* Input or limit CTA */}
         {limitReached ? (
-          <div className="px-8 py-8 border-t border-border-inner text-center">
+          <div className="px-5 sm:px-8 py-8 border-t border-border-inner text-center">
             <p className="font-display text-[22px] text-text-primary mb-5">&ldquo;That&apos;s enough, just set the call with Matthew.&rdquo;</p>
             <a
               href="https://calendly.com/mafanasiev-fidelisstrategy/30min"
@@ -185,7 +185,7 @@ export default function ChatSection() {
 
         {/* Question counter */}
         {!limitReached && questionCount > 0 && (
-          <div className="px-8 pb-3 text-right">
+          <div className="px-5 sm:px-8 pb-3 text-right">
             <span className="text-[10px] text-text-ghost">
               {QUESTION_LIMIT - questionCount} question{QUESTION_LIMIT - questionCount !== 1 ? 's' : ''} remaining
             </span>

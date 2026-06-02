@@ -1,7 +1,9 @@
 export interface Role {
   title: string
+  shortTitle: string
   company: string
   dates: string
+  preview: string
   bullets: string[]
   aiContext: {
     situation: string
@@ -20,6 +22,7 @@ export interface Project {
 }
 
 export interface ProfessionalContext {
+  summary: string
   identity: {
     name: string
     email: string
@@ -37,9 +40,11 @@ export interface ProfessionalContext {
     products: string[]
     industries: string[]
   }
+  headlineMetrics: { value: string; label: string }[]
   keyStats: string[]
   starStories: Array<{ title: string; summary: string }>
   projects: Project[]
+  proBono: Project[]
   skills: {
     deep: string[]
     conversant: string[]

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Cormorant_Garamond, Inter } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 const cormorant = Cormorant_Garamond({
@@ -17,11 +18,14 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://matthew-afanasiev.vercel.app'),
   title: 'Matthew Afanasiev',
-  description: 'I close deals. I ship AI systems.',
+  description: 'I close deals. I build AI systems.',
   openGraph: {
     title: 'Matthew Afanasiev',
     description: 'Revenue × AI — SaaS Sales Executive & AI Systems Builder',
+    url: 'https://matthew-afanasiev.vercel.app',
+    type: 'website',
   },
 }
 
@@ -31,7 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         {/* Fixed gradient background */}
         <div
-          className="fixed inset-0 pointer-events-none z-0"
+          className="fixed inset-0 pointer-events-none z-0 print:hidden"
           style={{
             background: `
               radial-gradient(ellipse 100% 65% at 50% -10%, rgba(212,178,120,0.38) 0%, rgba(180,140,80,0.12) 45%, transparent 70%),
@@ -43,6 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
         <div className="relative z-10">{children}</div>
+        <Analytics />
       </body>
     </html>
   )

@@ -46,3 +46,98 @@ textarea:focus,
 input:focus {
   outline: none;
 }
+
+textarea:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 1px;
+}
+
+/* ── Résumé route ───────────────────────────────────────── */
+.resume-root {
+  background: #15110c;
+}
+
+.resume-sheet {
+  background: #faf7f1;
+  color: #2a2418;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+}
+
+.resume-name {
+  color: #1c1810;
+}
+
+.resume-subtitle {
+  color: #8a6d3b;
+}
+
+.resume-contact {
+  color: #5b5240;
+}
+
+.resume-contact a {
+  color: #8a6d3b;
+  text-decoration: none;
+}
+
+.resume-contact a:hover {
+  text-decoration: underline;
+}
+
+.resume-heading {
+  color: #8a6d3b;
+  border-bottom: 1px solid #d8cdb6;
+}
+
+.resume-body {
+  color: #3a3326;
+}
+
+.resume-role {
+  color: #1c1810;
+}
+
+.resume-company {
+  color: #6b5d40;
+}
+
+.resume-dates {
+  color: #8a7c5e;
+}
+
+.resume-bullet {
+  color: #b89a5e;
+}
+
+.resume-link {
+  color: #8a6d3b;
+  text-decoration: none;
+}
+
+.resume-link:hover {
+  text-decoration: underline;
+}
+
+/* ── Print ──────────────────────────────────────────────── */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+  }
+
+  .resume-root {
+    background: #fff !important;
+    padding: 0 !important;
+  }
+
+  .resume-sheet {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+}

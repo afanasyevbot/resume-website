@@ -65,7 +65,7 @@ export default function FitAssessment() {
               <span className="text-[14px] text-text-dim">{result.verdict}</span>
             </div>
 
-            <div className="grid grid-cols-2 gap-6 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
               <div>
                 <p className="text-[10px] tracking-[3px] uppercase text-gold font-semibold mb-3">Strengths Aligned</p>
                 <ul className="space-y-1.5">

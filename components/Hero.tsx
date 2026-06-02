@@ -1,22 +1,26 @@
 'use client'
 
+import { professionalContext } from '@/lib/professionalContext'
+
 interface HeroProps {
   onAskAI: () => void
   onAnalyzeFit: () => void
 }
 
+const [topPerformer, arrGrowth, salesExperience] = professionalContext.headlineMetrics
+
 const stats = [
-  { number: '#1', label: 'Net New Performer · Q1 2026' },
-  { number: '58%', label: 'ARR Growth · FY24' },
-  { number: '6+', label: 'AI Systems Shipped' },
-  { number: '5yr', label: 'Sales Experience' },
+  { number: topPerformer.value, label: topPerformer.label },
+  { number: arrGrowth.value, label: arrGrowth.label },
+  { number: String(professionalContext.projects.length), label: 'AI Systems Built' },
+  { number: salesExperience.value, label: salesExperience.label },
 ]
 
 export default function Hero({ onAskAI, onAnalyzeFit }: HeroProps) {
   return (
     <section className="pt-20 pb-20 relative text-center">
       {/* Site links */}
-      <div className="flex gap-6 items-center justify-center mb-8">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 items-center justify-center mb-8">
         <a
           href="https://fidelisstrategy.net"
           target="_blank"
@@ -25,7 +29,7 @@ export default function Hero({ onAskAI, onAnalyzeFit }: HeroProps) {
         >
           fidelisstrategy.net ↗
         </a>
-        <span className="text-border text-xs">·</span>
+        <span className="text-border text-xs hidden sm:inline">·</span>
         <a
           href="https://fidelispulse.com"
           target="_blank"
@@ -37,7 +41,7 @@ export default function Hero({ onAskAI, onAnalyzeFit }: HeroProps) {
       </div>
 
       {/* Name */}
-      <h1 className="font-display text-[120px] font-semibold leading-[0.92] tracking-[-3px] text-text-bright mb-8">
+      <h1 className="font-display text-[64px] sm:text-[120px] font-semibold leading-[0.92] tracking-[-2px] sm:tracking-[-3px] text-text-bright mb-8">
         Matthew<br />Afanasiev
       </h1>
 
@@ -46,7 +50,7 @@ export default function Hero({ onAskAI, onAnalyzeFit }: HeroProps) {
 
       {/* Tagline */}
       <p className="text-[17px] text-text-secondary leading-[1.85] font-light">
-        <strong className="text-text-primary font-medium">I close deals. I ship AI systems.</strong><br />
+        <strong className="text-text-primary font-medium">I close deals. I build AI systems.</strong><br />
         Most reps can&apos;t build. Most builders can&apos;t sell.<br />
         I&apos;ve been on both sides, and I do both well.
       </p>
@@ -81,7 +85,7 @@ export default function Hero({ onAskAI, onAnalyzeFit }: HeroProps) {
       </div>
 
       {/* Stats bar */}
-      <div className="grid grid-cols-4 gap-px bg-border rounded-xl overflow-hidden mt-16">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-border rounded-xl overflow-hidden mt-16">
         {stats.map((stat) => (
           <div key={stat.label} className="bg-surface py-7 px-5 text-center">
             <div className="font-display text-[42px] font-semibold text-text-bright leading-none">

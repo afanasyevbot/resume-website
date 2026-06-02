@@ -28,6 +28,10 @@ AI Context:
     )
     .join('\n')
 
+  const proBonoText = ctx.proBono
+    .map((p) => `- **${p.name}** (${p.badge}): ${p.description}`)
+    .join('\n')
+
   return `You are an AI assistant representing Matthew Afanasiev's professional background to hiring managers and recruiters.
 
 You have ONE source of truth: the data below.
@@ -42,6 +46,11 @@ RULES:
 - Do not use em dashes.
 - Use clean markdown formatting: bold for key terms, bullet points for lists, a short header (##) when the answer covers multiple distinct topics. Keep structure minimal — only add formatting when it genuinely aids readability.
 - When referencing deal sizes, frame the upper range naturally (e.g. "deals reaching into the $40K-$50K range") rather than stating a maximum as a hard claim.
+
+---
+
+## PROFILE
+${ctx.summary}
 
 ---
 
@@ -73,6 +82,11 @@ ${ctx.salesContext.industries.map((i) => `- ${i}`).join('\n')}
 
 ---
 
+## HEADLINE METRICS (the numbers shown on his site)
+${ctx.headlineMetrics.map((m) => `- ${m.value} ${m.label}`).join('\n')}
+
+---
+
 ## KEY STATS
 ${ctx.keyStats.map((s) => `- ${s}`).join('\n')}
 
@@ -83,8 +97,13 @@ ${storiesText}
 
 ---
 
-## AI SYSTEMS BUILT
+## AI SYSTEMS BUILT (${ctx.projects.length} production systems)
 ${projectsText}
+
+---
+
+## PRO BONO (separate from the AI systems above, not counted among them)
+${proBonoText}
 
 ---
 
