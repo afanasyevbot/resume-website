@@ -70,14 +70,22 @@ export default async function EngineDashboard() {
         }}
       />
 
-      {/* Main grid: role queue + activity feed */}
-      <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-8">
-          <RoleQueueTable rows={queue} />
-        </div>
-        <aside className="lg:col-span-4">
-          <ActivityFeed events={activity} />
-        </aside>
+      {/* Role queue (full width — cards are wider) */}
+      <section>
+        <RoleQueueTable rows={queue} />
+      </section>
+
+      {/* Secondary dashed divider */}
+      <div
+        className="my-8"
+        style={{
+          borderTop: '1px dashed rgba(212,178,120,0.08)',
+        }}
+      />
+
+      {/* Activity feed below */}
+      <section>
+        <ActivityFeed events={activity} />
       </section>
     </main>
   )

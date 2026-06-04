@@ -1,23 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { RoleRow } from '@/lib/engine/dashboard'
-import FitBar from './FitBar'
-import StatusBadge from './StatusBadge'
 import EmptyState from './EmptyState'
 import AddRoleForm from './AddRoleForm'
-import TailorAction, { TailorPackagePanel } from './TailorAction'
 import SourceAction from './SourceAction'
+import RoleCard from './RoleCard'
+import FilterPills, { type FilterKey, computeCounts, rowMatches } from './FilterPills'
 
-const ROUTE_BORDER: Record<string, string> = {
-  tailor:  '#d4b278',
-  flag:    '#b88940',
-  discard: '#5a5040',
-}
-
-const DEFAULT_BORDER = '#352c1e'
-
-// Dashed circle SVG for empty state
 function IdleIcon() {
   return (
     <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -41,17 +31,18 @@ interface RoleQueueTableProps {
 
 export default function RoleQueueTable({ rows }: RoleQueueTableProps) {
   const [addOpen, setAddOpen] = useState(false)
-  // Track expanded package per role-id (UI-only, doesn't persist across reloads).
+  const [filter, setFilter] = useState<FilterKey>('all')
   const [expandedId, setExpandedId] = useState<number | null>(null)
+
+  const counts = useMemo(() => computeCounts(rows), [rows])
+  const visible = useMemo(() => rows.filter((r) => rowMatches(r, filter)), [rows, filter])
 
   return (
     <div
       className="vellum rounded-lg overflow-hidden"
-      style={{
-        border: '1px solid var(--color-border)',
-      }}
+      style={{ border: '1px solid var(--color-border)' }}
     >
-      {/* Section label + add toggle */}
+      {/* Header: section label + action buttons */}
       <div
         className="px-5 py-3 flex items-center justify-between"
         style={{ borderBottom: '1px dashed rgba(212,178,120,0.10)' }}
@@ -72,7 +63,11 @@ export default function RoleQueueTable({ rows }: RoleQueueTableProps) {
               className="text-[11px] tabular-nums"
               style={{ color: 'var(--color-text-ghost)', fontFamily: 'var(--font-sans)' }}
             >
-              {rows.length} role{rows.length === 1 ? '' : 's'}
+              {visible.length}
+              {visible.length !== rows.length && (
+                <span style={{ color: 'var(--color-text-whisper)' }}> / {rows.length}</span>
+              )}{' '}
+              role{visible.length === 1 ? '' : 's'}
             </p>
           )}
           <SourceAction />
@@ -101,109 +96,48 @@ export default function RoleQueueTable({ rows }: RoleQueueTableProps) {
 
       {addOpen && <AddRoleForm onClose={() => setAddOpen(false)} />}
 
+      {/* Filter pills (only when there's content to filter) */}
+      {rows.length > 0 && (
+        <div
+          style={{
+            borderBottom: '1px dashed rgba(212,178,120,0.08)',
+          }}
+        >
+          <FilterPills active={filter} onChange={setFilter} counts={counts} />
+        </div>
+      )}
+
+      {/* Cards / empty state */}
       {rows.length === 0 ? (
         <EmptyState
           icon={<IdleIcon />}
           title="The engine is idle."
-          subtitle="Drop in a JD with “+ Add role” above to score your first one."
+          subtitle="Drop in a JD with “+ Add role” above, or click “Source” to poll your target companies."
         />
+      ) : visible.length === 0 ? (
+        <div
+          className="flex items-center justify-center py-12"
+          style={{
+            color: 'var(--color-text-ghost)',
+            fontFamily: 'var(--font-sans)',
+            fontSize: 12,
+          }}
+        >
+          — no roles match this filter —
+        </div>
       ) : (
-        <ul className="divide-y" style={{ borderColor: 'var(--color-border-inner)' }}>
-          {rows.map((row) => {
-            const borderColor = ROUTE_BORDER[row.route?.toLowerCase() ?? ''] ?? DEFAULT_BORDER
-            const showTailor =
-              row.route === 'tailor' && ['scored', 'tailored'].includes(row.status)
-            const hasPackage = !!row.package_json
-            const isExpanded = expandedId === row.id
-
-            return (
-              <li
-                key={row.id}
-                className="role-queue-row block transition-colors"
-                style={{
-                  borderLeft: `2px solid ${borderColor}`,
-                }}
-              >
-                <div className="flex items-start gap-0">
-                <div className="flex-1 px-5 py-4 min-w-0">
-                  {/* Line 1: company + route arrow */}
-                  <div className="flex items-center gap-2">
-                    <span
-                      className="text-[14px] font-medium truncate"
-                      style={{
-                        color: 'var(--color-text-bright)',
-                        fontFamily: 'var(--font-sans)',
-                      }}
-                    >
-                      {row.company}
-                    </span>
-                    {row.route === 'tailor' && (
-                      <span
-                        className="text-[11px]"
-                        style={{ color: '#d4b278' }}
-                        aria-label="Tailor"
-                      >
-                        →
-                      </span>
-                    )}
-                    {row.route === 'flag' && (
-                      <span
-                        className="text-[11px]"
-                        style={{ color: '#b88940' }}
-                        aria-label="Flag"
-                      >
-                        ⚑
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Line 2: title · location · fit · status */}
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
-                    <span
-                      className="text-[12px] truncate"
-                      style={{
-                        color: 'var(--color-text-secondary)',
-                        fontFamily: 'var(--font-sans)',
-                      }}
-                    >
-                      {row.title}
-                      {row.location ? (
-                        <span style={{ color: 'var(--color-text-faint)' }}>
-                          {' · '}
-                          {row.location}
-                        </span>
-                      ) : null}
-                    </span>
-
-                    {row.fit_score !== null && (
-                      <span className="flex-shrink-0">
-                        <FitBar score={row.fit_score} route={row.route} />
-                      </span>
-                    )}
-
-                    <StatusBadge status={row.status} />
-                  </div>
-                </div>
-                {showTailor && (
-                  <div className="px-5 py-4 flex-shrink-0">
-                    <TailorAction
-                      roleId={row.id}
-                      hasPackage={hasPackage}
-                      expanded={isExpanded}
-                      onToggleExpanded={() =>
-                        setExpandedId(isExpanded ? null : row.id)
-                      }
-                    />
-                  </div>
-                )}
-                </div>
-                {isExpanded && row.package_json && (
-                  <TailorPackagePanel pkg={row.package_json} />
-                )}
-              </li>
-            )
-          })}
-        </ul>
+        <div className="p-4 grid grid-cols-1 lg:grid-cols-2 gap-3">
+          {visible.map((row) => (
+            <RoleCard
+              key={row.id}
+              row={row}
+              expanded={expandedId === row.id}
+              onToggleExpanded={() =>
+                setExpandedId(expandedId === row.id ? null : row.id)
+              }
+            />
+          ))}
+        </div>
       )}
     </div>
   )

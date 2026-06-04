@@ -29,6 +29,8 @@ export interface RoleRow {
   company: string
   title: string
   location: string | null
+  url: string | null
+  source: string | null
   fit_score: number | null
   segment: string | null
   ai_native: boolean | null
@@ -89,7 +91,7 @@ export async function listQueue(limit = 30): Promise<RoleRow[]> {
   // LEFT JOIN LATERAL grabs the most-recent application_package per role (if any).
   const rows = await sql`
     select
-      r.id, r.company, r.title, r.location, r.fit_score, r.segment,
+      r.id, r.company, r.title, r.location, r.url, r.source, r.fit_score, r.segment,
       r.ai_native, r.route, r.status, r.created_at,
       p.package_json
     from roles r
