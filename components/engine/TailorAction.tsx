@@ -127,11 +127,11 @@ export function TailorPackagePanel({ pkg }: { pkg: TailoredPackage }) {
       <Artifact title={`Summary · ${archetypeLabel(pkg.archetype)}`} content={pkg.summary} />
       <Artifact
         title="Emphasized bullets"
-        content={pkg.emphasizedBullets.map((b) => `• ${b}`).join('\n')}
+        content={(pkg.emphasizedBullets ?? []).map((b) => `• ${b}`).join('\n')}
       />
       <Artifact title="Cover letter" content={pkg.coverLetter} />
       <Artifact title="Outreach draft" content={pkg.outreachDraft} />
-      {pkg.notes.length > 0 && (
+      {(pkg.notes?.length ?? 0) > 0 && (
         <div className="lg:col-span-2">
           <p
             className="text-[11px] uppercase tracking-widest"
@@ -147,13 +147,13 @@ export function TailorPackagePanel({ pkg }: { pkg: TailoredPackage }) {
             className="mt-2 space-y-1 text-[12px]"
             style={{ color: 'var(--color-text-muted)', fontFamily: 'var(--font-sans)' }}
           >
-            {pkg.notes.map((n, i) => (
+            {(pkg.notes ?? []).map((n, i) => (
               <li key={i}>· {n}</li>
             ))}
           </ul>
         </div>
       )}
-      {pkg.lintIssues.length > 0 && (
+      {(pkg.lintIssues?.length ?? 0) > 0 && (
         <div className="lg:col-span-2">
           <p
             className="text-[11px] uppercase tracking-widest"
@@ -165,7 +165,7 @@ export function TailorPackagePanel({ pkg }: { pkg: TailoredPackage }) {
             className="mt-2 space-y-1 text-[12px]"
             style={{ color: '#d49a8a', fontFamily: 'var(--font-sans)' }}
           >
-            {pkg.lintIssues.map((n, i) => (
+            {(pkg.lintIssues ?? []).map((n, i) => (
               <li key={i}>· {n}</li>
             ))}
           </ul>
