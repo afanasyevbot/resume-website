@@ -5,6 +5,7 @@ import { timeAgo } from '@/lib/engine/dashboard'
 import TailorAction, { TailorPackagePanel } from './TailorAction'
 import ApplyAction from './ApplyAction'
 import AgentTrail from './AgentTrail'
+import FeedbackButtons from './FeedbackButtons'
 
 /** Statuses where "Mark applied" is offered — pre-applied, not-discarded. */
 const APPLYABLE_STATUSES = new Set(['scored', 'tailored', 'queued'])
@@ -240,6 +241,7 @@ export default function RoleCard({ row, expanded, onToggleExpanded }: RoleCardPr
 
         {/* Actions */}
         <div className="flex items-center gap-2 mt-5">
+          <FeedbackButtons roleId={row.id} currentRating={row.user_rating} />
           {row.url && (
             <a
               href={row.url}
