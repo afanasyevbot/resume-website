@@ -111,7 +111,14 @@ export async function listQueue(limit = 30): Promise<RoleRow[]> {
       r.created_at desc
     limit ${limit}
   `
-  return rows as RoleRow[]
+  // Neon HTTP returns Postgres BIGINT as string. Coerce to number so the
+  // RoleRow TypeScript type matches runtime and the client-side routes
+  // (apply/tailor/feedback) get a real number to validate.
+  return (rows as Array<RoleRow & { id: string | number; package_id: string | number | null }>).map((r) => ({
+    ...r,
+    id: Number(r.id),
+    package_id: r.package_id == null ? null : Number(r.package_id),
+  })) as RoleRow[]
 }
 
 export async function listActivity(limit = 20): Promise<ActivityEvent[]> {
