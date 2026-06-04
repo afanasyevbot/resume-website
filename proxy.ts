@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifySessionToken, SESSION_COOKIE } from '@/lib/engine/auth'
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   // Allow the login page and its API through unauthenticated.
   const { pathname } = req.nextUrl
   if (pathname === '/engine/login' || pathname.startsWith('/api/engine/login')) {
