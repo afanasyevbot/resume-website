@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import type { RoleRow } from '@/lib/engine/dashboard'
 import { timeAgo } from '@/lib/engine/dashboard'
 import TailorAction, { TailorPackagePanel } from './TailorAction'
@@ -132,6 +133,15 @@ export default function RoleCard({ row, expanded, onToggleExpanded }: RoleCardPr
       }}
     >
       <div className="p-5">
+        {/* Body — wrapped in a Link so the avatar/title/data/trail area
+            navigates to the drilldown. Action buttons sit OUTSIDE the link
+            so Tailor/Apply/Feedback clicks never trigger navigation. */}
+        <Link
+          href={`/engine/roles/${row.id}`}
+          className="block"
+          style={{ textDecoration: 'none', color: 'inherit' }}
+          aria-label={`Open ${row.company} — ${row.title}`}
+        >
         {/* Top row: avatar + company/title + score */}
         <div className="flex items-start gap-3">
           <div
@@ -238,6 +248,7 @@ export default function RoleCard({ row, expanded, onToggleExpanded }: RoleCardPr
         <div className="mt-5 pt-4" style={{ borderTop: '1px dashed rgba(212,178,120,0.08)' }}>
           <AgentTrail status={row.status} hasPackage={hasPackage} source={row.source} />
         </div>
+        </Link>
 
         {/* Actions */}
         <div className="flex items-center gap-2 mt-5">
