@@ -45,7 +45,16 @@ export async function assessRole(client: Anthropic, role: RoleInput): Promise<Ma
     model: 'claude-sonnet-4-6',
     max_tokens: 800,
     temperature: 0,
-    system: MATCH_SYSTEM_PROMPT,
+    // System prompt is large + identical per call — mark cacheable to
+    // amortize input tokens across scores. ~70% input-cost reduction
+    // once the cache warms.
+    system: [
+      {
+        type: 'text',
+        text: MATCH_SYSTEM_PROMPT,
+        cache_control: { type: 'ephemeral' },
+      },
+    ],
     messages: [
       {
         role: 'user',
