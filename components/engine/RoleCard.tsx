@@ -3,7 +3,11 @@
 import type { RoleRow } from '@/lib/engine/dashboard'
 import { timeAgo } from '@/lib/engine/dashboard'
 import TailorAction, { TailorPackagePanel } from './TailorAction'
+import ApplyAction from './ApplyAction'
 import AgentTrail from './AgentTrail'
+
+/** Statuses where "Mark applied" is offered — pre-applied, not-discarded. */
+const APPLYABLE_STATUSES = new Set(['scored', 'tailored', 'queued'])
 
 interface RoleCardProps {
   row: RoleRow
@@ -264,6 +268,9 @@ export default function RoleCard({ row, expanded, onToggleExpanded }: RoleCardPr
                 onToggleExpanded={onToggleExpanded}
               />
             </div>
+          )}
+          {APPLYABLE_STATUSES.has(row.status.toLowerCase()) && (
+            <ApplyAction roleId={row.id} status={row.status} />
           )}
         </div>
       </div>
