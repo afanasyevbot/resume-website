@@ -11,7 +11,12 @@ function greetingFor(hour: number): string {
   return 'Burning the midnight oil'
 }
 
-export default function EngineHeader() {
+interface EngineHeaderProps {
+  /** Server-rendered "since last visit" slot. Optional. */
+  digestSlot?: React.ReactNode
+}
+
+export default function EngineHeader({ digestSlot }: EngineHeaderProps) {
   const router = useRouter()
   // Compute greeting on the client after mount — avoids server/client time mismatch.
   const [greeting, setGreeting] = useState<string>('Welcome back')
@@ -47,8 +52,9 @@ export default function EngineHeader() {
         >
           Job Engine
         </h1>
+        {digestSlot}
         <div
-          className="flex items-center gap-2 mt-2"
+          className="flex items-center gap-2 mt-3"
           style={{ color: 'var(--color-text-faint)', fontSize: 13 }}
         >
           {/* Pulse dot */}
