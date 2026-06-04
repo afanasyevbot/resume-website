@@ -125,8 +125,8 @@ Auto-submit (Phase 2) stays OFF until:
 
 ## 12. Open Questions (for implementation planning)
 
-- Auth mechanism: magic-link vs. simple password gate.
-- DB: Neon vs. Supabase (both connected).
+- Auth mechanism: **DECIDED — simple password gate** (single user) on `/engine/*`.
+- DB: **DECIDED — Neon Postgres.**
 - Email digest in Phase 1, or dashboard-only to start?
 - Format/parser for ingesting the HTML tracker's embedded `CANONICAL` / `merged` arrays.
 - Maintained target-company list: seed manually vs. agent-discovered first.
