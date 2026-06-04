@@ -1,4 +1,5 @@
 import { sql } from './db'
+import { listDueReminders, type Reminder } from './reminders'
 
 export interface KpiCounts {
   sourced: number
@@ -50,6 +51,7 @@ export interface DashboardData {
   deltas: KpiDeltas
   queue: RoleRow[]
   activity: ActivityEvent[]
+  reminders: Reminder[]
 }
 
 export async function getCounts(): Promise<KpiCounts> {
@@ -156,13 +158,14 @@ export async function listActivity(limit = 20): Promise<ActivityEvent[]> {
 }
 
 export async function loadDashboard(): Promise<DashboardData> {
-  const [counts, deltas, queue, activity] = await Promise.all([
+  const [counts, deltas, queue, activity, reminders] = await Promise.all([
     getCounts(),
     getDeltas(),
     listQueue(),
     listActivity(),
+    listDueReminders(),
   ])
-  return { counts, deltas, queue, activity }
+  return { counts, deltas, queue, activity, reminders }
 }
 
 /** Compact "2m / 3h / 1d / Jun 4" relative time. PURE — testable. */

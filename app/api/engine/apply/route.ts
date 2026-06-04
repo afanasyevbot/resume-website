@@ -35,12 +35,17 @@ export async function POST(req: Request) {
   }
 
   const detail = JSON.stringify({ method })
+  // Atomic: status bump + applied event + both LinkedIn reminders. If any
+  // statement fails, none commit — Matthew never sees a half-applied role.
+  // Reminders are nudges only; the engine NEVER auto-sends LinkedIn outreach.
   await tx((txn) => [
     txn`update roles set status = 'applied', updated_at = now() where id = ${roleId}`,
     txn`
       insert into events (role_id, kind, detail)
       values (${roleId}, 'applied', ${detail}::jsonb)
     `,
+    txn`insert into reminders (role_id, kind, due_at) values (${roleId}, 'linkedin_follow_up', now() + interval '3 days')`,
+    txn`insert into reminders (role_id, kind, due_at) values (${roleId}, 'linkedin_check_in', now() + interval '7 days')`,
   ])
 
   return NextResponse.json({ ok: true, roleId, method })
