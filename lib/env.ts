@@ -4,6 +4,22 @@ import { join } from 'node:path'
 let cached: string | undefined
 
 /**
+ * Strip a single matched pair of surrounding quotes (single or double).
+ * Mimics how dotenv treats quoted values like `KEY="value"` or `KEY='value'`.
+ * Exported for unit testing; treat as module-private otherwise.
+ */
+export function stripQuotes(s: string): string {
+  if (s.length < 2) return s
+  if (
+    (s.startsWith('"') && s.endsWith('"')) ||
+    (s.startsWith("'") && s.endsWith("'"))
+  ) {
+    return s.slice(1, -1)
+  }
+  return s
+}
+
+/**
  * Returns the Anthropic API key, robust to a common dev annoyance:
  * a parent shell may have `ANTHROPIC_API_KEY=""` set (Claude Code, a
  * stale profile entry, etc.), and Next.js prefers shell env over
@@ -31,7 +47,7 @@ export function anthropicKey(): string {
     const content = readFileSync(path, 'utf8')
     const line = content.split('\n').find((l) => l.startsWith('ANTHROPIC_API_KEY='))
     if (!line) throw new Error('ANTHROPIC_API_KEY not in .env.local')
-    const value = line.slice('ANTHROPIC_API_KEY='.length).trim()
+    const value = stripQuotes(line.slice('ANTHROPIC_API_KEY='.length).trim())
     if (!value.startsWith('sk-ant-') || value.length <= 50) {
       throw new Error('ANTHROPIC_API_KEY in .env.local is not a valid key')
     }
