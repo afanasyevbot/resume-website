@@ -36,6 +36,18 @@ describe('isMatchAssessment', () => {
   it('rejects a missing field', () => {
     expect(isMatchAssessment({ score: 80, reasons: [], aiNative: true })).toBe(false)
   })
+
+  it('rejects a score above 100', () => {
+    expect(isMatchAssessment({ ...goodAssessment, score: 150 })).toBe(false)
+  })
+
+  it('rejects a negative score', () => {
+    expect(isMatchAssessment({ ...goodAssessment, score: -5 })).toBe(false)
+  })
+
+  it('rejects a non-integer score', () => {
+    expect(isMatchAssessment({ ...goodAssessment, score: 82.5 })).toBe(false)
+  })
 })
 
 describe('assessRole', () => {

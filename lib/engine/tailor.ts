@@ -3,6 +3,7 @@ import { professionalContext } from '@/lib/professionalContext'
 import { buildSystemPrompt } from '@/lib/buildSystemPrompt'
 import type { TailoredPackage, TailorInput, Archetype } from './tailorTypes'
 import { lintPackage } from './tailorLint'
+import { extractJsonObject } from './jsonExtract'
 
 const TAILOR_SYSTEM_PROMPT = `${buildSystemPrompt(professionalContext)}
 
@@ -103,9 +104,7 @@ async function callTailor(
     messages: [{ role: 'user', content: buildUserMessage(input, lintFeedback) }],
   })
   const raw = response.content[0]?.type === 'text' ? response.content[0].text : ''
-  const match = raw.match(/\{[\s\S]*\}/)
-  if (!match) throw new Error('tailor: no JSON object in response')
-  const parsed: unknown = JSON.parse(match[0])
+  const parsed: unknown = JSON.parse(extractJsonObject(raw, 'tailor'))
   if (!isPlainPackage(parsed)) throw new Error('tailor: invalid package shape')
   return { ...parsed, lintIssues: [] }
 }

@@ -2,6 +2,7 @@ import type Anthropic from '@anthropic-ai/sdk'
 import { professionalContext } from '@/lib/professionalContext'
 import { buildSystemPrompt } from '@/lib/buildSystemPrompt'
 import { decideRoute } from './decideRoute'
+import { extractJsonObject } from './jsonExtract'
 import type { MatchAssessment, MatchResult, RoleInput, Segment } from './types'
 
 export const MATCH_SYSTEM_PROMPT = `${buildSystemPrompt(professionalContext)}
@@ -31,6 +32,9 @@ export function isMatchAssessment(value: unknown): value is MatchAssessment {
   const r = value as Record<string, unknown>
   return (
     typeof r.score === 'number' &&
+    Number.isInteger(r.score) &&
+    (r.score as number) >= 0 &&
+    (r.score as number) <= 100 &&
     Array.isArray(r.reasons) &&
     r.reasons.every((x) => typeof x === 'string') &&
     typeof r.aiNative === 'boolean' &&
@@ -63,9 +67,7 @@ export async function assessRole(client: Anthropic, role: RoleInput): Promise<Ma
     ],
   })
   const raw = response.content[0]?.type === 'text' ? response.content[0].text : ''
-  const match = raw.match(/\{[\s\S]*\}/)
-  if (!match) throw new Error('matcher: no JSON object in response')
-  const parsed: unknown = JSON.parse(match[0])
+  const parsed: unknown = JSON.parse(extractJsonObject(raw, 'matcher'))
   if (!isMatchAssessment(parsed)) throw new Error('matcher: invalid assessment shape')
   return parsed
 }
