@@ -29,13 +29,15 @@ Matthew is job hunting. Manual applications are slow and response rates are low.
 
 ## 3. Matthew's Profile (matcher seed)
 
-- **Role:** Senior / Strategic Account Executive (also founding-AE / GTM framing). Tech/SaaS sales, ~5 yrs.
+- **Role:** Mid-Market / Strategic Account Executive (also founding-AE / GTM). Tech/SaaS sales, ~5 yrs. Mid-market, not enterprise.
 - **Positioning (headline):** an AE who *builds* AI systems — working portfolio across his project folders. Rare, credible for AI-forward companies. Every package leads with this and cites a concrete project proof-point.
-- **Industry:** AI-forward companies, bias toward low-tech / underserved verticals (legal, tax).
-- **Stage:** startups preferred; skip megacorps unless comp is strong.
+- **Industry:** B2B technology / SaaS broadly, **strong bias to AI-native** companies — AI agents/LLMs (Anthropic, LangChain, Writer, Rox), voice AI (Deepgram, Siro), data infra (Snowflake, Databricks, Datadog), AI-for-verticals incl. legal (Harvey, Supio, Thomson Reuters), fintech/ops + AI workflow (Ramp, Zip, Stampli, Rillet, Mimica). Legal/tax is one vertical, not the boundary.
+- **AI bias (matcher calibration):** AI-native preferred, but still include strong adjacent data/fintech/SaaS roles. Not AI-only.
+- **Location:** remote-first; open to hybrid/onsite in select cities (specific cities TBD).
+- **Stage:** any stage — seed founding-AE through public; judge on the role, not the stage.
 - **Comp:** ~$170k OTE minimum.
-- **Segment:** mid-market, not enterprise.
-- Seeded from the job-application-engine Master Profile + base resume, refined by 👍/👎 over time.
+- **Ranking priority:** optimize for best AI company / career trajectory (where the build-AI edge is leverage), over raw comp or raw speed.
+- **Seed + training:** content from the job-application-engine Master Profile + base resume; the ~45 tailored resumes/cover letters (source of truth) + the tracker's self-assigned fit scores (stale but useful labels) train the matcher. Refined by 👍/👎 over time.
 
 ## 4. Architecture — Pipeline
 
@@ -116,7 +118,7 @@ Auto-submit (Phase 2) stays OFF until:
 ## 11. Existing Assets & Data Sources
 
 - **App:** `resume-website` — Next.js + @anthropic-ai/sdk, deployed on Vercel. Currently in `~/Documents/_Archive/` (relocate to active `Projects/` as implementation step 1).
-- **History:** `~/Documents/Job Search/` — `Resumes/_by-company` (48 tailored resumes), `Cover Letters/` (14), `Research & Prep/job_application_tracker_v5.html` (structured company + status list). Seeds matcher + dedup.
+- **History (source of truth):** `~/Documents/Job Search/` — `Resumes/_by-company` (~45 tailored resumes) + `Cover Letters/` (14). These folders are the authoritative, complete record of where he's applied (broader than the tracker). `Research & Prep/job_application_tracker_v5.html` is a **stale partial snapshot** (16 apps, ~1 month old) — use it only for the self-assigned fit-score labels it contains. Seeds matcher + dedup.
 - **Engine:** `job-application-engine.skill` (packaged) + `Job_Application_Engine_Instructions.md` + base resume DOCX + Master Profile MD.
 
 ## 12. Open Questions (for implementation planning)
