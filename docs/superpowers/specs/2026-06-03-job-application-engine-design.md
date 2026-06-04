@@ -33,7 +33,7 @@ Matthew is job hunting. Manual applications are slow and response rates are low.
 - **Positioning (headline):** an AE who *builds* AI systems — working portfolio across his project folders. Rare, credible for AI-forward companies. Every package leads with this and cites a concrete project proof-point.
 - **Industry:** B2B technology / SaaS broadly, **strong bias to AI-native** companies — AI agents/LLMs (Anthropic, LangChain, Writer, Rox), voice AI (Deepgram, Siro), data infra (Snowflake, Databricks, Datadog), AI-for-verticals incl. legal (Harvey, Supio, Thomson Reuters), fintech/ops + AI workflow (Ramp, Zip, Stampli, Rillet, Mimica). Legal/tax is one vertical, not the boundary.
 - **AI bias (matcher calibration):** AI-native preferred, but still include strong adjacent data/fintech/SaaS roles. Not AI-only.
-- **Location:** Minneapolis, MN-based. Remote-first, explicitly open to relocation (e.g., Boston, Nashville, Austin).
+- **Location:** Minneapolis, MN-based. Remote-first; open to relocation to Chicago, the Carolinas, and Florida.
 - **Stage:** any stage — seed founding-AE through public; judge on the role, not the stage.
 - **Comp:** ~$170k OTE minimum.
 - **Ranking priority:** optimize for best AI company / career trajectory (where the build-AI edge is leverage), over raw comp or raw speed.
@@ -130,4 +130,4 @@ Auto-submit (Phase 2) stays OFF until:
 - Email digest in Phase 1, or dashboard-only to start?
 - Format/parser for ingesting the HTML tracker's embedded `CANONICAL` / `merged` arrays.
 - Maintained target-company list: seed manually vs. agent-discovered first.
-- **Canonical fact sheet (data hygiene) — do before the engine generates anything:** historical resumes disagree on tenure (4 / 4.5 / 5 yrs), AI-system count (5 vs 6), and Fidelis URL (fidelis-dashboard.vercel.app vs fidelispulse.com vs fidelisstrategy.net). Lock one source of truth in the Master Profile so inconsistencies don't propagate.
+- **Canonical fact sheet (data hygiene) — do before the engine generates anything:** historical resumes disagree on canonical facts. **Decided: tenure = 5 years (lead with it).** Still to lock: AI-system count (5 vs 6) and Fidelis URL (fidelis-dashboard.vercel.app vs fidelispulse.com vs fidelisstrategy.net). Lock these in the Master Profile so inconsistencies don't propagate.
