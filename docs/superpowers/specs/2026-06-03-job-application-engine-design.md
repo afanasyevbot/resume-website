@@ -33,7 +33,7 @@ Matthew is job hunting. Manual applications are slow and response rates are low.
 - **Positioning (headline):** an AE who *builds* AI systems — working portfolio across his project folders. Rare, credible for AI-forward companies. Every package leads with this and cites a concrete project proof-point.
 - **Industry:** B2B technology / SaaS broadly, **strong bias to AI-native** companies — AI agents/LLMs (Anthropic, LangChain, Writer, Rox), voice AI (Deepgram, Siro), data infra (Snowflake, Databricks, Datadog), AI-for-verticals incl. legal (Harvey, Supio, Thomson Reuters), fintech/ops + AI workflow (Ramp, Zip, Stampli, Rillet, Mimica). Legal/tax is one vertical, not the boundary.
 - **AI bias (matcher calibration):** AI-native preferred, but still include strong adjacent data/fintech/SaaS roles. Not AI-only.
-- **Location:** remote-first; open to hybrid/onsite in select cities (specific cities TBD).
+- **Location:** Minneapolis, MN-based. Remote-first, explicitly open to relocation (e.g., Boston, Nashville, Austin).
 - **Stage:** any stage — seed founding-AE through public; judge on the role, not the stage.
 - **Comp:** ~$170k OTE minimum.
 - **Ranking priority:** optimize for best AI company / career trajectory (where the build-AI edge is leverage), over raw comp or raw speed.
@@ -58,6 +58,8 @@ Matthew is job hunting. Manual applications are slow and response rates are low.
 - Productionize the existing **job-application-engine** logic as a **server-side callable** (today it runs as a Claude skill outputting DOCX/PDF; the engine needs it as a function/route).
 - Produces: JD analysis, tailored resume (DOCX + PDF), cover letter, optional outreach draft.
 - Enforces the engine's non-negotiables: no em dashes, mid-market only, never fabricate. Leads with the builder-who-sells positioning + a project proof-point.
+- **Archetype selection:** pick one of his 3 proven resume formats by company type — (1) classic ATS single-column, (2) "Claude Code" AI-forward sidebar variant, (3) "REVENUE × AI" two-column builder resume (newest, most aggressive). Apply his implicit tailoring rules: rewrite the profile summary with a company-bridge sentence, swap sidebar keywords to JD vocab, toggle the tools block (generic vs. named stack), select stats by context, retitle the headline to the target role.
+- **Master-profile lint pass (required):** check every generated doc against the master-profile rules before output — flag/fix enterprise claims, em dashes, forbidden words ("Quarterbacked"), and over-specific API naming. His *historical* resumes violate these, so they are style references, not clean exemplars; the engine must not learn ground-truth facts or compliance from them.
 
 ### 4.4 Route (apply on his behalf)
 | Tier | Condition | Action |
@@ -128,3 +130,4 @@ Auto-submit (Phase 2) stays OFF until:
 - Email digest in Phase 1, or dashboard-only to start?
 - Format/parser for ingesting the HTML tracker's embedded `CANONICAL` / `merged` arrays.
 - Maintained target-company list: seed manually vs. agent-discovered first.
+- **Canonical fact sheet (data hygiene) — do before the engine generates anything:** historical resumes disagree on tenure (4 / 4.5 / 5 yrs), AI-system count (5 vs 6), and Fidelis URL (fidelis-dashboard.vercel.app vs fidelispulse.com vs fidelisstrategy.net). Lock one source of truth in the Master Profile so inconsistencies don't propagate.
