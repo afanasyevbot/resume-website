@@ -7,6 +7,7 @@ import StatusBadge from './StatusBadge'
 import EmptyState from './EmptyState'
 import AddRoleForm from './AddRoleForm'
 import TailorAction, { TailorPackagePanel } from './TailorAction'
+import SourceAction from './SourceAction'
 
 const ROUTE_BORDER: Record<string, string> = {
   tailor:  '#d4b278',
@@ -74,6 +75,7 @@ export default function RoleQueueTable({ rows }: RoleQueueTableProps) {
               {rows.length} role{rows.length === 1 ? '' : 's'}
             </p>
           )}
+          <SourceAction />
           <button
             onClick={() => setAddOpen((o) => !o)}
             className="text-[11px] font-medium"
