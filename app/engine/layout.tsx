@@ -31,7 +31,10 @@ export default function EngineLayout({ children }: { children: React.ReactNode }
             'radial-gradient(ellipse 90% 70% at 50% 50%, transparent 0%, rgba(0,0,0,0.35) 100%)',
         }}
       />
-      {children}
+      {/* Content must sit ABOVE the backdrop layers in this local stacking context. */}
+      <div className="relative" style={{ zIndex: 10 }}>
+        {children}
+      </div>
     </>
   )
 }
