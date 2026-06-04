@@ -14,12 +14,11 @@ export default function EngineLayout({ children }: { children: React.ReactNode }
         className="fixed inset-0 pointer-events-none"
         style={{
           zIndex: 1,
-          // Moss-tinted dark — lifts off the near-black warm without going
-          // light. Slight green undertone for a different mood from the
-          // public resume site's gold-warm glow.
-          backgroundColor: '#1c2a1f',
+          // Warm brown — lighter than the original near-black, stays in
+          // the same wood/leather family as the public resume site.
+          backgroundColor: '#2a2118',
           backgroundImage:
-            'linear-gradient(rgba(154,180,138,0.030) 1px, transparent 1px), linear-gradient(90deg, rgba(154,180,138,0.030) 1px, transparent 1px)',
+            'linear-gradient(rgba(212,178,120,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(212,178,120,0.025) 1px, transparent 1px)',
           backgroundSize: '48px 48px',
           backgroundPosition: '-1px -1px',
         }}
