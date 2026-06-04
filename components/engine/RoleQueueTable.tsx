@@ -1,7 +1,11 @@
+'use client'
+
+import { useState } from 'react'
 import type { RoleRow } from '@/lib/engine/dashboard'
 import FitBar from './FitBar'
 import StatusBadge from './StatusBadge'
 import EmptyState from './EmptyState'
+import AddRoleForm from './AddRoleForm'
 
 const ROUTE_BORDER: Record<string, string> = {
   tailor:  '#d4b278',
@@ -34,6 +38,8 @@ interface RoleQueueTableProps {
 }
 
 export default function RoleQueueTable({ rows }: RoleQueueTableProps) {
+  const [addOpen, setAddOpen] = useState(false)
+
   return (
     <div
       className="vellum rounded-lg overflow-hidden"
@@ -41,7 +47,7 @@ export default function RoleQueueTable({ rows }: RoleQueueTableProps) {
         border: '1px solid var(--color-border)',
       }}
     >
-      {/* Section label */}
+      {/* Section label + add toggle */}
       <div
         className="px-5 py-3 flex items-center justify-between"
         style={{ borderBottom: '1px dashed rgba(212,178,120,0.10)' }}
@@ -56,21 +62,45 @@ export default function RoleQueueTable({ rows }: RoleQueueTableProps) {
         >
           Role Queue
         </p>
-        {rows.length > 0 && (
-          <p
-            className="text-[11px] tabular-nums"
-            style={{ color: 'var(--color-text-ghost)', fontFamily: 'var(--font-sans)' }}
+        <div className="flex items-center gap-3">
+          {rows.length > 0 && (
+            <p
+              className="text-[11px] tabular-nums"
+              style={{ color: 'var(--color-text-ghost)', fontFamily: 'var(--font-sans)' }}
+            >
+              {rows.length} role{rows.length === 1 ? '' : 's'}
+            </p>
+          )}
+          <button
+            onClick={() => setAddOpen((o) => !o)}
+            className="text-[11px] font-medium"
+            style={{
+              fontFamily: 'var(--font-sans)',
+              color: addOpen ? 'var(--color-text-faint)' : 'var(--color-gold)',
+              background: 'transparent',
+              border: '1px solid',
+              borderColor: addOpen ? 'var(--color-border-inner)' : 'var(--color-gold-dim)',
+              padding: '4px 10px',
+              borderRadius: 4,
+              cursor: 'pointer',
+              letterSpacing: '0.10em',
+              textTransform: 'uppercase',
+              transition: 'color 0.15s, border-color 0.15s',
+            }}
+            aria-expanded={addOpen}
           >
-            {rows.length} role{rows.length === 1 ? '' : 's'}
-          </p>
-        )}
+            {addOpen ? 'Close' : '+ Add role'}
+          </button>
+        </div>
       </div>
+
+      {addOpen && <AddRoleForm onClose={() => setAddOpen(false)} />}
 
       {rows.length === 0 ? (
         <EmptyState
           icon={<IdleIcon />}
           title="The engine is idle."
-          subtitle="Roles will appear here once sourcing is on. Until then, this is the cockpit."
+          subtitle="Drop in a JD with “+ Add role” above to score your first one."
         />
       ) : (
         <ul className="divide-y" style={{ borderColor: 'var(--color-border-inner)' }}>
