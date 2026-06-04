@@ -82,15 +82,9 @@ export default function RoleQueueTable({ rows }: RoleQueueTableProps) {
             return (
               <li
                 key={row.id}
-                className="flex items-start gap-0 cursor-pointer transition-colors"
+                className="role-queue-row flex items-start gap-0 cursor-pointer transition-colors"
                 style={{
                   borderLeft: `2px solid ${borderColor}`,
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'rgba(34,29,20,0.40)'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent'
                 }}
               >
                 <div className="flex-1 px-5 py-4 min-w-0">

@@ -141,3 +141,11 @@ input:focus-visible {
     padding: 0 !important;
   }
 }
+
+/* ── Engine: role-queue row hover (CSS-only so the table stays a Server Component) ── */
+.role-queue-row {
+  background-color: transparent;
+}
+.role-queue-row:hover {
+  background-color: rgba(34, 29, 20, 0.40);
+}
