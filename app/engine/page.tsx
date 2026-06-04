@@ -5,6 +5,7 @@ import SinceDigest from '@/components/engine/SinceDigest'
 import KpiTile from '@/components/engine/KpiTile'
 import RoleQueueTable from '@/components/engine/RoleQueueTable'
 import ActivityFeed from '@/components/engine/ActivityFeed'
+import ReminderList from '@/components/engine/ReminderList'
 
 export const dynamic = 'force-dynamic'
 
@@ -14,7 +15,7 @@ export default async function EngineDashboard() {
     loadDashboard(),
     recordVisitAndGetDigest(),
   ])
-  const { counts, deltas, queue, activity } = data
+  const { counts, deltas, queue, activity, reminders } = data
 
   return (
     <main
@@ -70,22 +71,15 @@ export default async function EngineDashboard() {
         }}
       />
 
-      {/* Role queue (full width — cards are wider) */}
-      <section>
-        <RoleQueueTable rows={queue} />
-      </section>
-
-      {/* Secondary dashed divider */}
-      <div
-        className="my-8"
-        style={{
-          borderTop: '1px dashed rgba(212,178,120,0.08)',
-        }}
-      />
-
-      {/* Activity feed below */}
-      <section>
-        <ActivityFeed events={activity} />
+      {/* Queue + sidebar (reminders above activity) */}
+      <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="lg:col-span-8">
+          <RoleQueueTable rows={queue} />
+        </div>
+        <aside className="lg:col-span-4 space-y-6">
+          <ReminderList reminders={reminders} />
+          <ActivityFeed events={activity} />
+        </aside>
       </section>
     </main>
   )

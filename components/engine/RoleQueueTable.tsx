@@ -126,7 +126,7 @@ export default function RoleQueueTable({ rows }: RoleQueueTableProps) {
           — no roles match this filter —
         </div>
       ) : (
-        <div className="p-4 grid grid-cols-1 lg:grid-cols-2 gap-3">
+        <div className="p-4 grid grid-cols-1 gap-3">
           {visible.map((row) => (
             <RoleCard
               key={row.id}
