@@ -131,3 +131,14 @@ Auto-submit (Phase 2) stays OFF until:
 - Format/parser for ingesting the HTML tracker's embedded `CANONICAL` / `merged` arrays.
 - Maintained target-company list: seed manually vs. agent-discovered first.
 - **Canonical fact sheet (data hygiene) — do before the engine generates anything:** historical resumes disagreed on canonical facts. **Locked (2026-06-04):** tenure = **5 years** (lead with it); AI systems = **6** (Fidelis Platform/Pulse, Buyer Engine, Lead Gen–M&A, Lead Gen–Real Estate Tech, Valuation System, Glow Routine); URLs — **fidelispulse.com = SaaS product**, **fidelisstrategy.net = consulting business** (drop fidelis-dashboard.vercel.app). These become the Master Profile source of truth.
+
+## Phase 1b carry-over (from the Phase 1a review, 2026-06-04)
+
+Hardening items deferred from the matcher slice — address when wiring the engine (DB/auth/API route):
+
+- **Input validation at the route boundary:** the matcher library deliberately does NOT guard input. The API route must reject empty/whitespace and oversized job descriptions (mirror `app/api/fit/route.ts`).
+- **Wrap `scoreRole` in try/catch at the route layer** → return a clean 502 on an `assessRole` throw (mirror the fit route's error handling).
+- **Harden the JSON extraction regex** (`/\{[\s\S]*\}/`) at BOTH call sites together (`lib/engine/matcher.ts` and `app/api/fit/route.ts`): it's greedy and would swallow two brace blocks into invalid JSON. Use a non-greedy match or balanced-brace scan.
+- **Validate/clamp `score`** to an integer 0–100 (in the matcher or as a DB constraint) so a malformed-but-numeric model score can't persist.
+- **Don't duplicate targeting prefs in the prompt literal:** location / OTE / segment are hardcoded in `MATCH_SYSTEM_PROMPT`; source them from `professionalContext` or config so they can't drift.
+- **Run the eval for real before Phase 2:** the comparison harness is built but unproven against live data. Run it against Matthew's labeled roles and clear an agreement bar before any auto-`tailor` behavior ships.
