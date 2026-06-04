@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { NextRequest } from 'next/server'
 
 vi.mock('@anthropic-ai/sdk', () => ({
   default: vi.fn().mockImplementation(function () {
@@ -19,7 +20,7 @@ describe('POST /api/chat', () => {
 
   it('returns a reply for a valid message', async () => {
     const { POST } = await import('../route')
-    const request = new Request('http://localhost/api/chat', {
+    const request = new NextRequest('http://localhost/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: 'What are his deal sizes?', history: [] }),
@@ -33,7 +34,7 @@ describe('POST /api/chat', () => {
 
   it('returns 400 if message is missing', async () => {
     const { POST } = await import('../route')
-    const request = new Request('http://localhost/api/chat', {
+    const request = new NextRequest('http://localhost/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ history: [] }),

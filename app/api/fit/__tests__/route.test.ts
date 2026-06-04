@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { NextRequest } from 'next/server'
 
 const mockFitResponse = {
   score: 82,
@@ -27,7 +28,7 @@ describe('POST /api/fit', () => {
 
   it('returns structured fit analysis for a valid JD', async () => {
     const { POST } = await import('../route')
-    const request = new Request('http://localhost/api/fit', {
+    const request = new NextRequest('http://localhost/api/fit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ jobDescription: 'We need an AE with 3+ years SaaS experience...' }),
@@ -45,7 +46,7 @@ describe('POST /api/fit', () => {
 
   it('returns 400 if jobDescription is missing', async () => {
     const { POST } = await import('../route')
-    const request = new Request('http://localhost/api/fit', {
+    const request = new NextRequest('http://localhost/api/fit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({}),
