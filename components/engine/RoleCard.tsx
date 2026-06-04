@@ -277,7 +277,7 @@ export default function RoleCard({ row, expanded, onToggleExpanded }: RoleCardPr
 
       {/* Expanded package panel */}
       {expanded && row.package_json && (
-        <TailorPackagePanel pkg={row.package_json} />
+        <TailorPackagePanel pkg={row.package_json} packageId={row.package_id} />
       )}
     </div>
   )

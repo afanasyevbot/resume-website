@@ -115,7 +115,14 @@ export default function TailorAction({
 }
 
 /** Inline package panel rendered BELOW the row when expanded. */
-export function TailorPackagePanel({ pkg }: { pkg: TailoredPackage }) {
+export function TailorPackagePanel({
+  pkg,
+  packageId,
+}: {
+  pkg: TailoredPackage
+  /** application_packages.id — required for the DOCX download links. */
+  packageId: number | null
+}) {
   return (
     <div
       className="grid grid-cols-1 lg:grid-cols-2 gap-5 px-5 py-5"
@@ -124,6 +131,28 @@ export function TailorPackagePanel({ pkg }: { pkg: TailoredPackage }) {
         backgroundColor: 'rgba(212,178,120,0.025)',
       }}
     >
+      {packageId !== null && (
+        <div className="lg:col-span-2 flex items-center gap-3 flex-wrap">
+          <span
+            className="text-[11px] uppercase tracking-widest"
+            style={{
+              color: 'var(--color-text-faint)',
+              fontFamily: 'var(--font-sans)',
+              letterSpacing: '0.14em',
+            }}
+          >
+            Download
+          </span>
+          <DownloadLink
+            href={`/api/engine/package/${packageId}/download?kind=resume`}
+            label="↓ Resume.docx"
+          />
+          <DownloadLink
+            href={`/api/engine/package/${packageId}/download?kind=cover`}
+            label="↓ Cover.docx"
+          />
+        </div>
+      )}
       <Artifact title={`Summary · ${archetypeLabel(pkg.archetype)}`} content={pkg.summary} />
       <Artifact
         title="Emphasized bullets"
@@ -204,6 +233,27 @@ function Artifact({ title, content }: { title: string; content: string }) {
         {content}
       </p>
     </div>
+  )
+}
+
+function DownloadLink({ href, label }: { href: string; label: string }) {
+  return (
+    <a
+      href={href}
+      download
+      className="text-[11px] font-medium px-3 py-1.5 rounded"
+      style={{
+        fontFamily: 'var(--font-sans)',
+        backgroundColor: 'transparent',
+        color: 'var(--color-gold)',
+        border: '1px solid var(--color-gold-dim)',
+        textDecoration: 'none',
+        letterSpacing: '0.08em',
+        textTransform: 'uppercase',
+      }}
+    >
+      {label}
+    </a>
   )
 }
 

@@ -39,6 +39,8 @@ export interface RoleRow {
   created_at: string
   /** Latest tailored package for this role, if any. */
   package_json: TailoredPackage | null
+  /** application_packages.id for the latest package — needed for DOCX downloads. */
+  package_id: number | null
 }
 
 export interface DashboardData {
@@ -93,10 +95,10 @@ export async function listQueue(limit = 30): Promise<RoleRow[]> {
     select
       r.id, r.company, r.title, r.location, r.url, r.source, r.fit_score, r.segment,
       r.ai_native, r.route, r.status, r.created_at,
-      p.package_json
+      p.package_json, p.id as package_id
     from roles r
     left join lateral (
-      select package_json
+      select id, package_json
       from application_packages
       where role_id = r.id
       order by created_at desc
