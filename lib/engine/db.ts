@@ -18,3 +18,8 @@ function getSql(): NeonQueryFunction<false, false> {
 // `sql`...`` call site works. Delegates to the lazy client on each call.
 export const sql = ((strings: TemplateStringsArray, ...values: unknown[]) =>
   getSql()(strings, ...values)) as NeonQueryFunction<false, false>
+
+// Atomic batch over Neon HTTP: all queries succeed or all roll back.
+// Use when multiple writes must stay consistent (e.g. insert + status bump + event log).
+export const tx: NeonQueryFunction<false, false>['transaction'] = (queriesOrFn, opts) =>
+  getSql().transaction(queriesOrFn, opts)

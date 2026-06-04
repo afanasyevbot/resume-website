@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { NextResponse } from 'next/server'
-import { sql } from '@/lib/engine/db'
+import { sql, tx } from '@/lib/engine/db'
 import { tailorRole } from '@/lib/engine/tailor'
 import type { TailorInput } from '@/lib/engine/tailorTypes'
 import { anthropicKey } from '@/lib/env'
@@ -73,20 +73,23 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Tailoring failed. Try again.' }, { status: 502 })
   }
 
-  // Persist the package + bump role status + log event
+  // Persist the package + bump role status + log event atomically:
+  // all three writes commit together or none do.
   const payload = JSON.stringify(pkg)
-  const inserted = await sql`
-    insert into application_packages (role_id, cover_letter, outreach_draft, package_json, status)
-    values (${roleId}, ${pkg.coverLetter}, ${pkg.outreachDraft}, ${payload}::jsonb, 'draft')
-    returning id
-  `
-  const packageId = Number((inserted[0] as { id: number }).id)
-
-  await sql`update roles set status = 'tailored', updated_at = now() where id = ${roleId}`
-  await sql`
-    insert into events (role_id, kind, detail)
-    values (${roleId}, 'tailored', ${payload}::jsonb)
-  `
+  const results = await tx((txn) => [
+    txn`
+      insert into application_packages (role_id, cover_letter, outreach_draft, package_json, status)
+      values (${roleId}, ${pkg.coverLetter}, ${pkg.outreachDraft}, ${payload}::jsonb, 'draft')
+      returning id
+    `,
+    txn`update roles set status = 'tailored', updated_at = now() where id = ${roleId}`,
+    txn`
+      insert into events (role_id, kind, detail)
+      values (${roleId}, 'tailored', ${payload}::jsonb)
+    `,
+  ])
+  const insertedRows = results[0] as Array<{ id: number }>
+  const packageId = Number(insertedRows[0].id)
 
   return NextResponse.json({ packageId, package: pkg })
 }
