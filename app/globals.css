@@ -149,3 +149,30 @@ input:focus-visible {
 .role-queue-row:hover {
   background-color: rgba(34, 29, 20, 0.40);
 }
+
+/* ── Engine: cream-touched dark theme ───────────────────────────────────
+   Same dark cockpit feel, but warmer surfaces + brighter labels + a cream
+   highlight on the top edge of every card so they feel lit by candlelight.
+*/
+.engine-cream {
+  --color-surface: #2c2519;          /* warmer + slightly lighter */
+  --color-surface-deep: #221d14;
+  --color-border: #4a3e2a;           /* more visible on cream-tinted cards */
+  --color-border-inner: #3a3122;
+  /* Lift the faint/muted scale one notch so labels are easier to read */
+  --color-text-secondary: #d4c2a2;
+  --color-text-muted: #c8b39a;
+  --color-text-dim: #b09a80;
+  --color-text-faint: #998970;
+  --color-text-ghost: #7e6e58;
+  --color-text-whisper: #5e5040;
+}
+
+/* Vellum-card treatment: subtle cream gradient + cream inset highlight at
+   the top edge. Apply to any card container in the engine. */
+.engine-cream .vellum {
+  background:
+    linear-gradient(180deg, rgba(248, 244, 238, 0.05) 0%, transparent 35%),
+    var(--color-surface);
+  box-shadow: inset 0 1px 0 rgba(248, 244, 238, 0.10);
+}

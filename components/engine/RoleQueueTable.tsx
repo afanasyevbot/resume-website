@@ -36,11 +36,9 @@ interface RoleQueueTableProps {
 export default function RoleQueueTable({ rows }: RoleQueueTableProps) {
   return (
     <div
-      className="rounded-lg overflow-hidden"
+      className="vellum rounded-lg overflow-hidden"
       style={{
         border: '1px solid var(--color-border)',
-        backgroundColor: 'rgba(34, 29, 20, 0.4)',
-        boxShadow: 'inset 0 1px 0 rgba(212,178,120,0.05)',
       }}
     >
       {/* Section label */}

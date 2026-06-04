@@ -31,8 +31,10 @@ export default function EngineLayout({ children }: { children: React.ReactNode }
             'radial-gradient(ellipse 90% 70% at 50% 50%, transparent 0%, rgba(0,0,0,0.35) 100%)',
         }}
       />
-      {/* Content must sit ABOVE the backdrop layers in this local stacking context. */}
-      <div className="relative" style={{ zIndex: 10 }}>
+      {/* Content must sit ABOVE the backdrop layers in this local stacking context.
+          .engine-cream re-tones the dark theme: warmer surfaces, brighter
+          labels, and a cream highlight on the top edge of every .vellum card. */}
+      <div className="engine-cream relative" style={{ zIndex: 10 }}>
         {children}
       </div>
     </>

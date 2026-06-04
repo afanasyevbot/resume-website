@@ -58,13 +58,9 @@ export default function KpiTile({ label, value, delta, subtext, actionable = fal
 
   return (
     <div
-      className="relative flex flex-col p-5 rounded-lg overflow-hidden"
+      className="vellum relative flex flex-col p-5 rounded-lg overflow-hidden"
       style={{
-        backgroundColor: 'rgba(34, 29, 20, 0.6)',
-        backdropFilter: 'blur(4px)',
         border: '1px solid var(--color-border)',
-        // Inner top glow — echoes the radial bg bleeding through
-        boxShadow: 'inset 0 1px 0 rgba(212,178,120,0.06)',
       }}
     >
       {/* Label */}
