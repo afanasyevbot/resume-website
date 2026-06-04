@@ -22,6 +22,8 @@ export interface ActivityEvent {
   created_at: string
 }
 
+import type { TailoredPackage } from './tailorTypes'
+
 export interface RoleRow {
   id: number
   company: string
@@ -33,6 +35,8 @@ export interface RoleRow {
   route: string | null
   status: string
   created_at: string
+  /** Latest tailored package for this role, if any. */
+  package_json: TailoredPackage | null
 }
 
 export interface DashboardData {
@@ -82,14 +86,25 @@ export async function getDeltas(): Promise<KpiDeltas> {
 }
 
 export async function listQueue(limit = 30): Promise<RoleRow[]> {
+  // LEFT JOIN LATERAL grabs the most-recent application_package per role (if any).
   const rows = await sql`
-    select id, company, title, location, fit_score, segment, ai_native, route, status, created_at
-    from roles
-    where status != 'discarded'
+    select
+      r.id, r.company, r.title, r.location, r.fit_score, r.segment,
+      r.ai_native, r.route, r.status, r.created_at,
+      p.package_json
+    from roles r
+    left join lateral (
+      select package_json
+      from application_packages
+      where role_id = r.id
+      order by created_at desc
+      limit 1
+    ) p on true
+    where r.status != 'discarded'
     order by
-      case route when 'tailor' then 1 when 'flag' then 2 else 3 end,
-      fit_score desc nulls last,
-      created_at desc
+      case r.route when 'tailor' then 1 when 'flag' then 2 else 3 end,
+      r.fit_score desc nulls last,
+      r.created_at desc
     limit ${limit}
   `
   return rows as RoleRow[]

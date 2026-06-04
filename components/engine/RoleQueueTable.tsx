@@ -6,6 +6,7 @@ import FitBar from './FitBar'
 import StatusBadge from './StatusBadge'
 import EmptyState from './EmptyState'
 import AddRoleForm from './AddRoleForm'
+import TailorAction, { TailorPackagePanel } from './TailorAction'
 
 const ROUTE_BORDER: Record<string, string> = {
   tailor:  '#d4b278',
@@ -39,6 +40,8 @@ interface RoleQueueTableProps {
 
 export default function RoleQueueTable({ rows }: RoleQueueTableProps) {
   const [addOpen, setAddOpen] = useState(false)
+  // Track expanded package per role-id (UI-only, doesn't persist across reloads).
+  const [expandedId, setExpandedId] = useState<number | null>(null)
 
   return (
     <div
@@ -106,15 +109,20 @@ export default function RoleQueueTable({ rows }: RoleQueueTableProps) {
         <ul className="divide-y" style={{ borderColor: 'var(--color-border-inner)' }}>
           {rows.map((row) => {
             const borderColor = ROUTE_BORDER[row.route?.toLowerCase() ?? ''] ?? DEFAULT_BORDER
+            const showTailor =
+              row.route === 'tailor' && ['scored', 'tailored'].includes(row.status)
+            const hasPackage = !!row.package_json
+            const isExpanded = expandedId === row.id
 
             return (
               <li
                 key={row.id}
-                className="role-queue-row flex items-start gap-0 cursor-pointer transition-colors"
+                className="role-queue-row block transition-colors"
                 style={{
                   borderLeft: `2px solid ${borderColor}`,
                 }}
               >
+                <div className="flex items-start gap-0">
                 <div className="flex-1 px-5 py-4 min-w-0">
                   {/* Line 1: company + route arrow */}
                   <div className="flex items-center gap-2">
@@ -174,6 +182,22 @@ export default function RoleQueueTable({ rows }: RoleQueueTableProps) {
                     <StatusBadge status={row.status} />
                   </div>
                 </div>
+                {showTailor && (
+                  <div className="px-5 py-4 flex-shrink-0">
+                    <TailorAction
+                      roleId={row.id}
+                      hasPackage={hasPackage}
+                      expanded={isExpanded}
+                      onToggleExpanded={() =>
+                        setExpandedId(isExpanded ? null : row.id)
+                      }
+                    />
+                  </div>
+                )}
+                </div>
+                {isExpanded && row.package_json && (
+                  <TailorPackagePanel pkg={row.package_json} />
+                )}
               </li>
             )
           })}
