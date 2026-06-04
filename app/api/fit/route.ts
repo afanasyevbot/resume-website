@@ -3,9 +3,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { professionalContext } from '@/lib/professionalContext'
 import { buildSystemPrompt } from '@/lib/buildSystemPrompt'
 import { getClientId, rateLimit } from '@/lib/rateLimit'
+import { anthropicKey } from '@/lib/env'
 import type { FitResult } from '@/lib/types'
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+const client = new Anthropic({ apiKey: anthropicKey() })
 
 const FIT_SYSTEM_PROMPT = `${buildSystemPrompt(professionalContext)}
 

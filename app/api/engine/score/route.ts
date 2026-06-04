@@ -2,6 +2,7 @@ import Anthropic from '@anthropic-ai/sdk'
 import { NextResponse } from 'next/server'
 import { scoreRole } from '@/lib/engine/matcher'
 import { persistScoredRole, type PersistableRole } from '@/lib/engine/persistRole'
+import { anthropicKey } from '@/lib/env'
 
 // Anthropic SDK needs Node runtime (not Edge).
 export const runtime = 'nodejs'
@@ -33,7 +34,7 @@ export async function POST(req: Request) {
   const v = validate(body)
   if (!v.ok) return NextResponse.json({ error: v.error }, { status: 400 })
 
-  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+  const client = new Anthropic({ apiKey: anthropicKey() })
   try {
     // Matcher's RoleInput uses `string | undefined`; persistable uses
     // `string | null | undefined`. Bridge by stripping nulls for the matcher.

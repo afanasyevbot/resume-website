@@ -3,8 +3,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { professionalContext } from '@/lib/professionalContext'
 import { buildSystemPrompt } from '@/lib/buildSystemPrompt'
 import { getClientId, rateLimit } from '@/lib/rateLimit'
+import { anthropicKey } from '@/lib/env'
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+const client = new Anthropic({ apiKey: anthropicKey() })
 
 export async function POST(req: NextRequest) {
   if (!rateLimit(getClientId(req), 15, 60_000)) {
