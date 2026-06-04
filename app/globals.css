@@ -155,10 +155,10 @@ input:focus-visible {
    highlight on the top edge of every card so they feel lit by candlelight.
 */
 .engine-cream {
-  --color-surface: #2c2519;          /* warmer + slightly lighter */
-  --color-surface-deep: #221d14;
-  --color-border: #4a3e2a;           /* more visible on cream-tinted cards */
-  --color-border-inner: #3a3122;
+  --color-surface: #3a3024;          /* lifted further toward cream */
+  --color-surface-deep: #2a2419;
+  --color-border: #5a4d36;           /* visible warm border on cream surfaces */
+  --color-border-inner: #4a3e2a;
   /* Lift the faint/muted scale one notch so labels are easier to read */
   --color-text-secondary: #d4c2a2;
   --color-text-muted: #c8b39a;
@@ -168,11 +168,18 @@ input:focus-visible {
   --color-text-whisper: #5e5040;
 }
 
-/* Vellum-card treatment: subtle cream gradient + cream inset highlight at
-   the top edge. Apply to any card container in the engine. */
+/* Vellum-card treatment: stronger cream wash that covers the whole card,
+   plus a bright cream inset highlight at the top edge. Cards now read
+   distinctly creamy against the moss-tinted page backdrop. */
 .engine-cream .vellum {
   background:
-    linear-gradient(180deg, rgba(248, 244, 238, 0.05) 0%, transparent 35%),
+    linear-gradient(180deg,
+      rgba(248, 244, 238, 0.14) 0%,
+      rgba(248, 244, 238, 0.08) 40%,
+      rgba(248, 244, 238, 0.04) 100%
+    ),
     var(--color-surface);
-  box-shadow: inset 0 1px 0 rgba(248, 244, 238, 0.10);
+  box-shadow:
+    inset 0 1px 0 rgba(248, 244, 238, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.12);
 }
