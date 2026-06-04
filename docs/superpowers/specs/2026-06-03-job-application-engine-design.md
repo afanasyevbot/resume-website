@@ -130,4 +130,4 @@ Auto-submit (Phase 2) stays OFF until:
 - Email digest in Phase 1, or dashboard-only to start?
 - Format/parser for ingesting the HTML tracker's embedded `CANONICAL` / `merged` arrays.
 - Maintained target-company list: seed manually vs. agent-discovered first.
-- **Canonical fact sheet (data hygiene) — do before the engine generates anything:** historical resumes disagree on canonical facts. **Decided: tenure = 5 years (lead with it).** Still to lock: AI-system count (5 vs 6) and Fidelis URL (fidelis-dashboard.vercel.app vs fidelispulse.com vs fidelisstrategy.net). Lock these in the Master Profile so inconsistencies don't propagate.
+- **Canonical fact sheet (data hygiene) — do before the engine generates anything:** historical resumes disagreed on canonical facts. **Locked (2026-06-04):** tenure = **5 years** (lead with it); AI systems = **6** (Fidelis Platform/Pulse, Buyer Engine, Lead Gen–M&A, Lead Gen–Real Estate Tech, Valuation System, Glow Routine); URLs — **fidelispulse.com = SaaS product**, **fidelisstrategy.net = consulting business** (drop fidelis-dashboard.vercel.app). These become the Master Profile source of truth.
