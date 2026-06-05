@@ -148,8 +148,16 @@ export function TailorPackagePanel({
             label="↓ Resume.docx"
           />
           <DownloadLink
+            href={`/api/engine/package/${packageId}/download?kind=resume&format=pdf`}
+            label="↓ Resume.pdf"
+          />
+          <DownloadLink
             href={`/api/engine/package/${packageId}/download?kind=cover`}
             label="↓ Cover.docx"
+          />
+          <DownloadLink
+            href={`/api/engine/package/${packageId}/download?kind=cover&format=pdf`}
+            label="↓ Cover.pdf"
           />
         </div>
       )}

@@ -3,6 +3,8 @@ import { sql } from '@/lib/engine/db'
 import { professionalContext } from '@/lib/professionalContext'
 import { buildResumeDocx } from '@/lib/engine/docx/resume'
 import { buildCoverLetterDocx } from '@/lib/engine/docx/coverLetter'
+import { buildResumePdf } from '@/lib/engine/pdf/resume'
+import { buildCoverLetterPdf } from '@/lib/engine/pdf/coverLetter'
 import type { TailoredPackage } from '@/lib/engine/tailorTypes'
 
 // docx → Packer uses Node Buffer; needs Node runtime, not Edge.
@@ -39,6 +41,7 @@ export async function GET(
       { status: 400 },
     )
   }
+  const format = url.searchParams.get('format') === 'pdf' ? 'pdf' : 'docx'
 
   const rows = await sql`
     select p.id, p.package_json, r.company, r.title
@@ -53,34 +56,45 @@ export async function GET(
   }
 
   const role = { company: row.company, title: row.title }
-  let buf: Buffer
+  let bytes: Uint8Array | Buffer
+  let contentType: string
+  let ext: string
+
   try {
-    buf =
-      kind === 'resume'
-        ? await buildResumeDocx(row.package_json, professionalContext, role)
-        : await buildCoverLetterDocx(row.package_json, professionalContext, role)
+    if (format === 'pdf') {
+      bytes =
+        kind === 'resume'
+          ? await buildResumePdf(row.package_json, role)
+          : await buildCoverLetterPdf(row.package_json, role)
+      contentType = 'application/pdf'
+      ext = 'pdf'
+    } else {
+      bytes =
+        kind === 'resume'
+          ? await buildResumeDocx(row.package_json, professionalContext, role)
+          : await buildCoverLetterDocx(row.package_json, professionalContext, role)
+      contentType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      ext = 'docx'
+    }
   } catch (err) {
-    console.error('DOCX build error:', err)
-    return NextResponse.json({ error: 'Failed to build DOCX' }, { status: 500 })
+    console.error(`${format.toUpperCase()} build error:`, err)
+    return NextResponse.json({ error: `Failed to build ${format.toUpperCase()}` }, { status: 500 })
   }
 
-  // Sanitize company for filename (alnum + dash/underscore only).
   const companySafe = row.company.replace(/[^A-Za-z0-9_-]+/g, '_').replace(/^_+|_+$/g, '') || 'role'
-  const filename = `Matthew_Afanasiev_${kind}_${companySafe}.docx`
+  const filename = `Matthew_Afanasiev_${kind}_${companySafe}.${ext}`
 
-  // Copy into a freshly-allocated ArrayBuffer so the body type matches BodyInit.
-  // (Node Buffer's underlying buffer may be a SharedArrayBuffer, which Web
-  // Response types reject in current @types/node + lib.dom combos.)
-  const ab = new ArrayBuffer(buf.byteLength)
-  new Uint8Array(ab).set(buf)
+  // Copy into a fresh ArrayBuffer — Node Buffer's underlying buffer may be a
+  // SharedArrayBuffer which Web Response types reject.
+  const ab = new ArrayBuffer(bytes.byteLength)
+  new Uint8Array(ab).set(bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes))
 
   return new NextResponse(ab, {
     status: 200,
     headers: {
-      'Content-Type':
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'Content-Type': contentType,
       'Content-Disposition': `attachment; filename="${filename}"`,
-      'Content-Length': String(buf.byteLength),
+      'Content-Length': String(bytes.byteLength),
       'Cache-Control': 'private, no-store',
     },
   })
