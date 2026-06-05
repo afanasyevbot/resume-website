@@ -7,6 +7,26 @@ const NAVY = '#3C3B6E'
 const BRIGHT_RED = '#C8102E'
 const BRIGHT_BLUE = '#0A3161'
 
+// Scattered flag field for the login background. Fixed positions so it
+// renders the same every load (no Math.random — keeps SSR/client in sync).
+const FLAGS: { top: string; left: string; size: number; rot: number; op: number; e: string }[] = [
+  { top: '8%', left: '6%', size: 44, rot: -15, op: 0.1, e: '🇺🇸' },
+  { top: '18%', left: '82%', size: 60, rot: 12, op: 0.12, e: '🇺🇸' },
+  { top: '70%', left: '10%', size: 56, rot: 8, op: 0.11, e: '🇺🇸' },
+  { top: '82%', left: '78%', size: 48, rot: -10, op: 0.1, e: '🇺🇸' },
+  { top: '40%', left: '3%', size: 36, rot: 18, op: 0.08, e: '🇺🇸' },
+  { top: '52%', left: '92%', size: 40, rot: -8, op: 0.09, e: '🇺🇸' },
+  { top: '30%', left: '24%', size: 28, rot: -20, op: 0.07, e: '⭐' },
+  { top: '88%', left: '44%', size: 30, rot: 6, op: 0.07, e: '⭐' },
+  { top: '12%', left: '50%', size: 26, rot: 0, op: 0.07, e: '⭐' },
+  { top: '64%', left: '60%', size: 24, rot: 14, op: 0.06, e: '⭐' },
+  { top: '6%', left: '34%', size: 34, rot: 10, op: 0.08, e: '🇺🇸' },
+  { top: '90%', left: '20%', size: 30, rot: -14, op: 0.08, e: '⭐' },
+  { top: '46%', left: '70%', size: 32, rot: -6, op: 0.07, e: '🇺🇸' },
+  { top: '24%', left: '64%', size: 22, rot: 20, op: 0.06, e: '⭐' },
+  { top: '76%', left: '90%', size: 28, rot: 4, op: 0.07, e: '⭐' },
+]
+
 export default function EngineLogin() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -35,11 +55,36 @@ export default function EngineLogin() {
         alignItems: 'center',
         justifyContent: 'center',
         padding: '1rem',
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
+      {/* Scattered flag field behind the card */}
+      <div aria-hidden style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
+        {FLAGS.map((f, i) => (
+          <span
+            key={i}
+            style={{
+              position: 'absolute',
+              top: f.top,
+              left: f.left,
+              fontSize: f.size,
+              opacity: f.op,
+              transform: `rotate(${f.rot}deg)`,
+              filter: 'saturate(1.1)',
+              userSelect: 'none',
+            }}
+          >
+            {f.e}
+          </span>
+        ))}
+      </div>
+
       <div
         className="vellum"
         style={{
+          position: 'relative',
+          zIndex: 1,
           width: '100%',
           maxWidth: 400,
           borderRadius: 14,
