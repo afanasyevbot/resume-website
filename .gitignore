@@ -40,3 +40,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+services/browser-agent/node_modules
+services/browser-agent/.env
