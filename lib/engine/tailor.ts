@@ -4,6 +4,7 @@ import { buildSystemPrompt } from '@/lib/buildSystemPrompt'
 import type { TailoredPackage, TailorInput, Archetype } from './tailorTypes'
 import { lintPackage } from './tailorLint'
 import { extractJsonObject } from './jsonExtract'
+import { hasBudget, logUsage } from './costGuard'
 
 const TAILOR_SYSTEM_PROMPT = `${buildSystemPrompt(professionalContext)}
 
@@ -90,6 +91,7 @@ async function callTailor(
   input: TailorInput,
   lintFeedback?: string[],
 ): Promise<TailoredPackage> {
+  if (!(await hasBudget())) throw new Error('Monthly spend cap reached — tailoring paused.')
   const response = await client.messages.create({
     model: 'claude-sonnet-4-6',
     max_tokens: 2200,
@@ -103,6 +105,15 @@ async function callTailor(
     ],
     messages: [{ role: 'user', content: buildUserMessage(input, lintFeedback) }],
   })
+  const usage = response.usage
+  await logUsage({
+    kind: lintFeedback ? 'tailor_retry' : 'tailor',
+    model: 'claude-sonnet-4-6',
+    inputTokens: usage?.input_tokens ?? 0,
+    outputTokens: usage?.output_tokens ?? 0,
+    cachedTokens: (usage as { cache_read_input_tokens?: number })?.cache_read_input_tokens ?? 0,
+  })
+
   const raw = response.content[0]?.type === 'text' ? response.content[0].text : ''
   const parsed: unknown = JSON.parse(extractJsonObject(raw, 'tailor'))
   if (!isPlainPackage(parsed)) throw new Error('tailor: invalid package shape')

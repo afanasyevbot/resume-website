@@ -23,11 +23,12 @@ export async function POST(req: Request) {
   }
 }
 
-// Cron-triggered sourcing with auto-tailor. At ~8s scoring + ~25s tailoring per
-// role, 2 roles keeps us under Vercel's 60s Hobby-plan function limit (~66s
-// worst case). Dedup means consecutive daily runs work through the backlog.
-// Upgrade to Pro → bump to 5 and maxDuration 300 for higher throughput.
-const CRON_MAX_SCORES = 2
+// Cron-triggered sourcing with auto-tailor. On Pro plan: 300s function limit,
+// 5 roles × ~33s each = ~165s, well within budget. Runs 2×/day (8am + 4pm CDT).
+// Dedup means each run works through the 34-company backlog incrementally.
+// Cost guard checks budget before each Claude call; if the $25/mo cap is hit,
+// the cron gracefully stops scoring/tailoring.
+const CRON_MAX_SCORES = 5
 
 export async function GET(req: Request) {
   const cronSecret = process.env.CRON_SECRET

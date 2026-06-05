@@ -3,6 +3,7 @@ import { professionalContext } from '@/lib/professionalContext'
 import { buildSystemPrompt } from '@/lib/buildSystemPrompt'
 import { decideRoute } from './decideRoute'
 import { extractJsonObject } from './jsonExtract'
+import { hasBudget, logUsage } from './costGuard'
 import type { MatchAssessment, MatchResult, RoleInput, Segment } from './types'
 
 export const MATCH_SYSTEM_PROMPT = `${buildSystemPrompt(professionalContext)}
@@ -43,8 +44,10 @@ export function isMatchAssessment(value: unknown): value is MatchAssessment {
   )
 }
 
-/** Calls Claude to assess a role. Throws on unparseable or invalid output. */
-export async function assessRole(client: Anthropic, role: RoleInput): Promise<MatchAssessment> {
+/** Calls Claude to assess a role. Throws on unparseable or invalid output.
+ *  Checks the monthly spend cap before calling; throws if over budget. */
+export async function assessRole(client: Anthropic, role: RoleInput, roleId?: number | null): Promise<MatchAssessment> {
+  if (!(await hasBudget())) throw new Error('Monthly spend cap reached — scoring paused.')
   const response = await client.messages.create({
     model: 'claude-sonnet-4-6',
     max_tokens: 800,
@@ -66,6 +69,17 @@ export async function assessRole(client: Anthropic, role: RoleInput): Promise<Ma
       },
     ],
   })
+  // Log token usage for cost tracking.
+  const usage = response.usage
+  await logUsage({
+    kind: 'score',
+    model: 'claude-sonnet-4-6',
+    inputTokens: usage?.input_tokens ?? 0,
+    outputTokens: usage?.output_tokens ?? 0,
+    cachedTokens: (usage as { cache_read_input_tokens?: number })?.cache_read_input_tokens ?? 0,
+    roleId: roleId ?? null,
+  })
+
   const raw = response.content[0]?.type === 'text' ? response.content[0].text : ''
   const parsed: unknown = JSON.parse(extractJsonObject(raw, 'matcher'))
   if (!isMatchAssessment(parsed)) throw new Error('matcher: invalid assessment shape')
