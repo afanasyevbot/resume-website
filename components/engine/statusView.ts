@@ -3,8 +3,9 @@ import type { RoleRow } from '@/lib/engine/dashboard'
 /** Which slice of the pipeline the queue is showing. */
 export type StatusView = 'active' | 'applied' | 'all'
 
-// Pre-apply, still needs action.
-const ACTIVE = new Set(['scored', 'tailored', 'queued'])
+// Pre-apply, still needs action. 'needs_review' = auto-apply clicked submit but
+// couldn't confirm it went through — Matthew must verify manually.
+const ACTIVE = new Set(['scored', 'tailored', 'queued', 'needs_review'])
 // Submitted or past submission.
 const APPLIED = new Set(['applied', 'responded', 'interviewing', 'offer', 'rejected'])
 

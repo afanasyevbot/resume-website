@@ -10,6 +10,7 @@ const STATUS_MAP: Record<string, BadgeConfig> = {
   scored:       { text: '#566173', bg: 'rgba(86,97,115,0.12)',  dot: '#566173' },
   tailored:     { text: '#8a6310', bg: 'rgba(138,99,16,0.13)',  dot: '#b8862a' },
   queued:       { text: '#8a6310', bg: 'rgba(138,99,16,0.13)',  dot: '#b8862a' },
+  needs_review: { text: '#9a6a08', bg: 'rgba(200,148,24,0.16)', dot: '#c8901a' },
   applied:      { text: '#3f6a2c', bg: 'rgba(63,106,44,0.13)',  dot: '#4f8038' },
   responded:    { text: '#6b5530', bg: 'rgba(107,85,48,0.12)',  dot: '#8a6d3b' },
   interviewing: { text: '#6b5530', bg: 'rgba(107,85,48,0.12)',  dot: '#8a6d3b' },
@@ -30,7 +31,8 @@ interface StatusBadgeProps {
 
 export default function StatusBadge({ status }: StatusBadgeProps) {
   const cfg = STATUS_MAP[status.toLowerCase()] ?? FALLBACK
-  const label = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()
+  const normalized = status.replace(/_/g, ' ').toLowerCase()
+  const label = normalized.charAt(0).toUpperCase() + normalized.slice(1)
 
   return (
     <span

@@ -4,9 +4,11 @@ import { professionalContext } from '@/lib/professionalContext'
 import { buildResumePdf } from '@/lib/engine/pdf/resume'
 import type { TailoredPackage } from '@/lib/engine/tailorTypes'
 import { hasBudget } from '@/lib/engine/costGuard'
+import { decideApplyOutcome } from '@/lib/engine/applyDecision'
 
 export const runtime = 'nodejs'
-export const maxDuration = 120
+// Browser submits run sequentially and can be slow; Vercel Pro allows up to 300s.
+export const maxDuration = 300
 
 const BROWSER_URL = process.env.BROWSER_SERVICE_URL ?? 'http://localhost:4100'
 const BROWSER_SECRET = process.env.BROWSER_SERVICE_SECRET ?? ''
@@ -15,7 +17,10 @@ interface AutoApplyResult {
   roleId: number
   company: string
   title: string
+  /** True only when the application was explicitly confirmed submitted. */
   success: boolean
+  /** Submitted but unconfirmed — Matthew should verify manually. */
+  needsReview: boolean
   skipped: boolean
   reason: string | null
   atsType: string | null
@@ -142,6 +147,7 @@ export async function POST(req: Request) {
           company: role.company,
           title: role.title,
           success: false,
+          needsReview: false,
           skipped: true,
           reason: `browser service error: ${response.status} ${err.slice(0, 200)}`,
           atsType: null,
@@ -150,7 +156,7 @@ export async function POST(req: Request) {
       }
 
       const result = (await response.json()) as {
-        success: boolean
+        success?: boolean
         skipped?: boolean
         submitted?: boolean
         confirmed?: boolean
@@ -160,13 +166,16 @@ export async function POST(req: Request) {
         screenshots?: { preSubmit?: string; postSubmit?: string; initial?: string }
       }
 
-      if (result.success || (result.submitted && !dryRun)) {
-        // Persist: mark applied + event + reminders (atomic)
+      const outcome = decideApplyOutcome(result, dryRun)
+      const hasScreenshots = !!(result.screenshots?.preSubmit || result.screenshots?.postSubmit)
+
+      if (outcome === 'applied') {
+        // Confirmed submitted → mark applied + event + LinkedIn reminders (atomic)
         const detail = JSON.stringify({
           method: 'auto',
           atsType: result.atsType,
-          confirmed: result.confirmed,
-          hasScreenshots: !!(result.screenshots?.preSubmit || result.screenshots?.postSubmit),
+          confirmed: true,
+          hasScreenshots,
         })
         await tx((txn) => [
           txn`update roles set status = 'applied', updated_at = now() where id = ${role.id}`,
@@ -180,19 +189,49 @@ export async function POST(req: Request) {
           company: role.company,
           title: role.title,
           success: true,
+          needsReview: false,
           skipped: false,
           reason: null,
           atsType: result.atsType ?? null,
         })
-      } else {
-        // Skipped or failed — don't change role status
+      } else if (outcome === 'needs_review') {
+        // Submit was clicked but NOT confirmed. Do NOT mark applied (would be a
+        // false positive). Move to 'needs_review' so it (a) leaves the auto-apply
+        // candidate pool — preventing a double-submit — and (b) surfaces in the
+        // active queue for Matthew to verify by hand. No reminders: we don't know
+        // it actually went through.
+        const detail = JSON.stringify({
+          method: 'auto',
+          atsType: result.atsType,
+          confirmed: false,
+          hasScreenshots,
+          note: 'Submit clicked but submission could not be confirmed — verify manually.',
+        })
+        await tx((txn) => [
+          txn`update roles set status = 'needs_review', updated_at = now() where id = ${role.id}`,
+          txn`insert into events (role_id, kind, detail) values (${role.id}, 'submit_unconfirmed', ${detail}::jsonb)`,
+        ])
+
         results.push({
           roleId: role.id,
           company: role.company,
           title: role.title,
           success: false,
-          skipped: result.skipped ?? true,
-          reason: result.reason ?? 'unknown',
+          needsReview: true,
+          skipped: false,
+          reason: 'submitted but unconfirmed — verify manually',
+          atsType: result.atsType ?? null,
+        })
+      } else {
+        // Skipped (blocker/gate) or failed — leave role status unchanged.
+        results.push({
+          roleId: role.id,
+          company: role.company,
+          title: role.title,
+          success: false,
+          needsReview: false,
+          skipped: outcome === 'skipped',
+          reason: result.reason ?? (outcome === 'failed' ? 'failed' : 'unknown'),
           atsType: result.atsType ?? null,
         })
       }
@@ -202,6 +241,7 @@ export async function POST(req: Request) {
         company: role.company,
         title: role.title,
         success: false,
+        needsReview: false,
         skipped: true,
         reason: err instanceof Error ? err.message : String(err),
         atsType: null,
@@ -210,10 +250,12 @@ export async function POST(req: Request) {
   }
 
   const applied = results.filter((r) => r.success).length
+  const needsReview = results.filter((r) => r.needsReview).length
   const skipped = results.filter((r) => r.skipped).length
 
   return NextResponse.json({
     applied,
+    needsReview,
     skipped,
     total: results.length,
     dryRun,

@@ -269,6 +269,7 @@ app.post('/apply', auth, async (req, res) => {
     }
 
     // Click submit
+    const urlBeforeSubmit = page.url()
     let submitClicked = false
     const submitSelectors = [
       'button[type="submit"]',
@@ -301,15 +302,44 @@ app.post('/apply', auth, async (req, res) => {
     await page.waitForTimeout(3000)
     const postSubmitScreenshot = await screenshotBase64(page)
 
-    // Check if we landed on a confirmation page
-    const pageText = await page.textContent('body')
-    const isConfirmed = /thank|submitted|received|application.*sent|confirmation/i.test(pageText || '')
+    // ── Confirmation detection ──────────────────────────────────────
+    // A clicked submit button is NOT proof of submission. We confirm only when
+    // there is a positive signal AND no visible validation error. We bias toward
+    // NOT confirming: a false "confirmed" silently loses a real application, while
+    // a false "unconfirmed" just routes the role to manual review.
+    const pageText = (await page.textContent('body')) || ''
+
+    // Positive signal 1: an explicit success phrase (not just the word "submit",
+    // which also appears on the unsubmitted form's button).
+    const confirmPhrase =
+      /thank you|application (?:was )?(?:submitted|received|sent)|successfully (?:applied|submitted)|we(?:'| ha)ve received your application|your application has been|confirmation/i
+    const hasConfirmPhrase = confirmPhrase.test(pageText)
+
+    // Positive signal 2: navigated away from the form and the form is gone.
+    const urlAfterSubmit = page.url()
+    const navigatedAway = urlAfterSubmit !== urlBeforeSubmit
+    const formStillPresent = await page
+      .$('#first_name, #email, input[name="name"], input[type="file"]')
+      .then(Boolean)
+      .catch(() => false)
+
+    // Negative signal: a VISIBLE validation error left on the page → not submitted.
+    const visibleErrorCount = await page
+      .$$eval(
+        '[aria-invalid="true"], .error, .field_error, .field-error, [class*="error-message"], [class*="errorMessage"]',
+        (els) => els.filter((el) => el.offsetParent !== null && (el.textContent || '').trim().length > 0).length,
+      )
+      .catch(() => 0)
+
+    const isConfirmed =
+      (hasConfirmPhrase || (navigatedAway && !formStillPresent)) && visibleErrorCount === 0
 
     return res.json({
       success: isConfirmed,
       submitted: submitClicked,
       confirmed: isConfirmed,
       atsType,
+      confirmSignals: { hasConfirmPhrase, navigatedAway, formStillPresent, visibleErrorCount },
       screenshots: {
         preSubmit: preSubmitScreenshot,
         postSubmit: postSubmitScreenshot,

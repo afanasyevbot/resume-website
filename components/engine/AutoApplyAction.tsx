@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 
 interface AutoApplyReport {
   applied: number
+  needsReview: number
   skipped: number
   total: number
   dryRun: boolean
@@ -71,6 +72,9 @@ export default function AutoApplyAction() {
         <span style={{ color: report.applied > 0 ? '#3f6a2c' : 'var(--color-text-dim)' }}>
           {report.applied} applied
         </span>
+        {report.needsReview > 0 && (
+          <span style={{ color: '#9a6a08' }}> · {report.needsReview} to verify</span>
+        )}
         {report.skipped > 0 && (
           <span style={{ color: 'var(--color-text-dim)' }}> · {report.skipped} skipped</span>
         )}
