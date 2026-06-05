@@ -7,69 +7,64 @@ import AddRoleForm from './AddRoleForm'
 import SourceAction from './SourceAction'
 import RoleCard from './RoleCard'
 import FilterPills, { type FilterKey, computeCounts, rowMatches } from './FilterPills'
+import { type StatusView, statusMatches } from './statusView'
 
 function IdleIcon() {
   return (
     <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle
-        cx="24"
-        cy="24"
-        r="20"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeDasharray="4 3"
-        strokeLinecap="round"
-      />
+      <circle cx="24" cy="24" r="20" stroke="currentColor" strokeWidth="1.5" strokeDasharray="4 3" strokeLinecap="round" />
       <circle cx="24" cy="24" r="3" fill="currentColor" opacity="0.4" />
     </svg>
   )
 }
 
+const STATUS_TABS: { key: StatusView; label: string }[] = [
+  { key: 'active', label: 'Active' },
+  { key: 'applied', label: 'Applied' },
+  { key: 'all', label: 'All' },
+]
+
 interface RoleQueueTableProps {
   rows: RoleRow[]
+  statusView: StatusView
+  onStatusView: (v: StatusView) => void
+  viewCounts: Record<StatusView, number>
 }
 
-export default function RoleQueueTable({ rows }: RoleQueueTableProps) {
+export default function RoleQueueTable({
+  rows,
+  statusView,
+  onStatusView,
+  viewCounts,
+}: RoleQueueTableProps) {
   const [addOpen, setAddOpen] = useState(false)
   const [filter, setFilter] = useState<FilterKey>('all')
   const [expandedId, setExpandedId] = useState<number | null>(null)
 
-  const counts = useMemo(() => computeCounts(rows), [rows])
-  const visible = useMemo(() => rows.filter((r) => rowMatches(r, filter)), [rows, filter])
+  const statusFiltered = useMemo(
+    () => rows.filter((r) => statusMatches(r, statusView)),
+    [rows, statusView],
+  )
+  const catCounts = useMemo(() => computeCounts(statusFiltered), [statusFiltered])
+  const visible = useMemo(
+    () => statusFiltered.filter((r) => rowMatches(r, filter)),
+    [statusFiltered, filter],
+  )
 
   return (
-    <div
-      className="vellum rounded-lg overflow-hidden"
-      style={{ border: '1px solid var(--color-border)' }}
-    >
-      {/* Header: section label + action buttons */}
+    <div className="vellum rounded-lg overflow-hidden" style={{ border: '1px solid var(--color-border)' }}>
+      {/* Header: title + actions */}
       <div
         className="px-5 py-3 flex items-center justify-between"
-        style={{ borderBottom: '1px dashed rgba(212,178,120,0.10)' }}
+        style={{ borderBottom: '1px dashed rgba(138,109,59,0.18)' }}
       >
         <p
           className="text-[11px] font-medium uppercase tracking-widest"
-          style={{
-            color: 'var(--color-text-faint)',
-            fontFamily: 'var(--font-sans)',
-            letterSpacing: '0.14em',
-          }}
+          style={{ color: 'var(--color-text-faint)', fontFamily: 'var(--font-sans)', letterSpacing: '0.14em' }}
         >
           Role Queue
         </p>
         <div className="flex items-center gap-3">
-          {rows.length > 0 && (
-            <p
-              className="text-[11px] tabular-nums"
-              style={{ color: 'var(--color-text-ghost)', fontFamily: 'var(--font-sans)' }}
-            >
-              {visible.length}
-              {visible.length !== rows.length && (
-                <span style={{ color: 'var(--color-text-whisper)' }}> / {rows.length}</span>
-              )}{' '}
-              role{visible.length === 1 ? '' : 's'}
-            </p>
-          )}
           <SourceAction />
           <button
             onClick={() => setAddOpen((o) => !o)}
@@ -85,7 +80,6 @@ export default function RoleQueueTable({ rows }: RoleQueueTableProps) {
               cursor: 'pointer',
               letterSpacing: '0.10em',
               textTransform: 'uppercase',
-              transition: 'color 0.15s, border-color 0.15s',
             }}
             aria-expanded={addOpen}
           >
@@ -96,35 +90,62 @@ export default function RoleQueueTable({ rows }: RoleQueueTableProps) {
 
       {addOpen && <AddRoleForm onClose={() => setAddOpen(false)} />}
 
-      {/* Filter pills (only when there's content to filter) */}
-      {rows.length > 0 && (
-        <div
-          style={{
-            borderBottom: '1px dashed rgba(212,178,120,0.08)',
-          }}
-        >
-          <FilterPills active={filter} onChange={setFilter} counts={counts} />
+      {/* Status segmented control */}
+      <div
+        className="px-5 py-2.5 flex items-center gap-1.5"
+        style={{ borderBottom: '1px dashed rgba(138,109,59,0.12)' }}
+      >
+        {STATUS_TABS.map((tab) => {
+          const isActive = statusView === tab.key
+          return (
+            <button
+              key={tab.key}
+              onClick={() => onStatusView(tab.key)}
+              className="text-[12px] font-medium transition-colors"
+              style={{
+                fontFamily: 'var(--font-sans)',
+                color: isActive ? '#1c1810' : 'var(--color-text-dim)',
+                backgroundColor: isActive ? 'rgba(200,148,24,0.16)' : 'transparent',
+                border: `1px solid ${isActive ? 'rgba(200,148,24,0.4)' : 'transparent'}`,
+                padding: '4px 12px',
+                borderRadius: 6,
+                cursor: 'pointer',
+              }}
+              aria-pressed={isActive}
+            >
+              {tab.label}
+              <span className="ml-1.5 tabular-nums" style={{ color: isActive ? '#8a6310' : 'var(--color-text-ghost)', fontSize: 11 }}>
+                {viewCounts[tab.key]}
+              </span>
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Category filter pills (within the current status view) */}
+      {statusFiltered.length > 0 && (
+        <div style={{ borderBottom: '1px dashed rgba(138,109,59,0.10)' }}>
+          <FilterPills active={filter} onChange={setFilter} counts={catCounts} />
         </div>
       )}
 
-      {/* Cards / empty state */}
+      {/* Cards / empty states */}
       {rows.length === 0 ? (
         <EmptyState
           icon={<IdleIcon />}
           title="The engine is idle."
-          subtitle="Drop in a JD with “+ Add role” above, or click “Source” to poll your target companies."
+          subtitle="Drop in a JD with “+ Add role”, or click “Source” to poll your target companies."
         />
+      ) : statusFiltered.length === 0 ? (
+        <EmptyMessage>
+          {statusView === 'active'
+            ? 'No active roles — you’re all caught up. 🎉'
+            : statusView === 'applied'
+            ? 'No applications yet. Mark a role applied and it shows here.'
+            : 'No roles yet.'}
+        </EmptyMessage>
       ) : visible.length === 0 ? (
-        <div
-          className="flex items-center justify-center py-12"
-          style={{
-            color: 'var(--color-text-ghost)',
-            fontFamily: 'var(--font-sans)',
-            fontSize: 12,
-          }}
-        >
-          — no roles match this filter —
-        </div>
+        <EmptyMessage>— no roles match this filter —</EmptyMessage>
       ) : (
         <div className="p-4 grid grid-cols-1 gap-3">
           {visible.map((row) => (
@@ -132,13 +153,22 @@ export default function RoleQueueTable({ rows }: RoleQueueTableProps) {
               key={row.id}
               row={row}
               expanded={expandedId === row.id}
-              onToggleExpanded={() =>
-                setExpandedId(expandedId === row.id ? null : row.id)
-              }
+              onToggleExpanded={() => setExpandedId(expandedId === row.id ? null : row.id)}
             />
           ))}
         </div>
       )}
+    </div>
+  )
+}
+
+function EmptyMessage({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      className="flex items-center justify-center py-12 text-center px-6"
+      style={{ color: 'var(--color-text-dim)', fontFamily: 'var(--font-sans)', fontSize: 13 }}
+    >
+      {children}
     </div>
   )
 }

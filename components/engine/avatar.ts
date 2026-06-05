@@ -16,12 +16,13 @@ export function avatarTint(company: string): { bg: string; fg: string } {
   // Simple hash → choose from a small warm palette
   let h = 0
   for (let i = 0; i < company.length; i++) h = (h * 31 + company.charCodeAt(i)) >>> 0
+  // Tints for cream paper: soft light bg, darker saturated letters.
   const palettes = [
-    { bg: 'rgba(212,178,120,0.18)', fg: '#d4b278' }, // gold
-    { bg: 'rgba(184,138,120,0.20)', fg: '#c89e88' }, // copper
-    { bg: 'rgba(154,180,138,0.16)', fg: '#a8c094' }, // sage
-    { bg: 'rgba(180,160,200,0.16)', fg: '#b8a4c8' }, // muted lilac
-    { bg: 'rgba(190,170,140,0.18)', fg: '#c8b89a' }, // sand
+    { bg: 'rgba(184,134,42,0.16)',  fg: '#8a6310' }, // gold
+    { bg: 'rgba(168,86,60,0.15)',   fg: '#9a5238' }, // copper
+    { bg: 'rgba(79,128,56,0.15)',   fg: '#3f6a2c' }, // sage
+    { bg: 'rgba(110,90,150,0.15)',  fg: '#5e4a82' }, // muted indigo
+    { bg: 'rgba(150,120,70,0.16)',  fg: '#705430' }, // sand
   ]
   return palettes[h % palettes.length]
 }

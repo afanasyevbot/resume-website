@@ -2,20 +2,21 @@ import type { ActivityEvent } from '@/lib/engine/dashboard'
 import { timeAgo } from '@/lib/engine/dashboard'
 
 // Per-kind dot colors (matches the status badge palette)
+// Darker, saturated dots so they read on the cream activity panel.
 const KIND_DOT: Record<string, string> = {
-  sourced:      '#9aa3b4',
-  scored:       '#e2d5c0',
-  tailored:     '#d4b278',
-  queued:       '#d4b278',
-  applied:      '#9ab48a',
-  responded:    '#e9c98c',
-  interviewing: '#e2d5c0',
-  offer:        '#e9c98c',
-  rejected:     '#b88078',
-  discarded:    '#5e5040',
+  sourced:      '#566173',
+  scored:       '#7a6a4a',
+  tailored:     '#b8862a',
+  queued:       '#b8862a',
+  applied:      '#4f8038',
+  responded:    '#c8901a',
+  interviewing: '#8a6d3b',
+  offer:        '#c8901a',
+  rejected:     '#c05545',
+  discarded:    '#a99c7e',
 }
 
-const DEFAULT_DOT = '#7e6e58'
+const DEFAULT_DOT = '#a99c7e'
 
 function kindLabel(kind: string, company: string | null): string {
   const k = kind.charAt(0).toUpperCase() + kind.slice(1).toLowerCase()

@@ -4,9 +4,21 @@ interface KpiTileProps {
   delta?: number
   subtext?: string
   actionable?: boolean
+  /** When provided, the tile becomes a button that filters the queue. */
+  onClick?: () => void
+  /** Highlight when this tile's view is the active queue filter. */
+  active?: boolean
 }
 
-export default function KpiTile({ label, value, delta, subtext, actionable = false }: KpiTileProps) {
+export default function KpiTile({
+  label,
+  value,
+  delta,
+  subtext,
+  actionable = false,
+  onClick,
+  active = false,
+}: KpiTileProps) {
   const hasData = value > 0
 
   function renderDeltaLine() {
@@ -56,12 +68,20 @@ export default function KpiTile({ label, value, delta, subtext, actionable = fal
     return null
   }
 
+  const Tag = onClick ? 'button' : 'div'
+
   return (
-    <div
-      className="vellum relative flex flex-col p-5 rounded-lg overflow-hidden"
+    <Tag
+      onClick={onClick}
+      className="vellum relative flex flex-col p-5 rounded-lg overflow-hidden text-left transition-shadow"
       style={{
-        border: '1px solid var(--color-border)',
+        border: active
+          ? '1px solid var(--color-gold)'
+          : '1px solid var(--color-border)',
+        cursor: onClick ? 'pointer' : 'default',
+        boxShadow: active ? '0 0 0 1px var(--color-gold), 0 1px 2px rgba(0,0,0,0.22)' : undefined,
       }}
+      aria-pressed={onClick ? active : undefined}
     >
       {/* Label */}
       <p
@@ -96,6 +116,6 @@ export default function KpiTile({ label, value, delta, subtext, actionable = fal
           backgroundColor: actionable ? 'var(--color-gold)' : 'var(--color-border-inner)',
         }}
       />
-    </div>
+    </Tag>
   )
 }

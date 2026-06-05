@@ -19,18 +19,18 @@ interface RoleCardProps {
 }
 
 const ROUTE_ACCENT: Record<string, string> = {
-  tailor: '#d4b278', // gold
-  flag: '#b88940', // amber
-  discard: '#5a5040', // ghost
+  tailor: '#c89418', // gold
+  flag: '#b8862a', // amber
+  discard: '#cabd9f', // faint
 }
 
-const DEFAULT_ACCENT = '#352c1e'
+const DEFAULT_ACCENT = '#e4dac6'
 
-/** Score color matches the route the model chose. */
+/** Score color matches the route the model chose. Tuned for cream paper. */
 function scoreColor(route: string | null, score: number): string {
   if (!route || score < 55) return 'var(--color-text-faint)'
-  if (score >= 70) return '#d4b278' // gold
-  return '#b88940' // amber
+  if (score >= 70) return '#8a6310' // dark gold
+  return '#a86f10' // amber-brown
 }
 
 interface TagProps {
@@ -40,10 +40,10 @@ interface TagProps {
 
 function Tag({ children, variant = 'muted' }: TagProps) {
   const palette: Record<NonNullable<TagProps['variant']>, { bg: string; fg: string }> = {
-    gold: { bg: 'rgba(212,178,120,0.12)', fg: '#d4b278' },
-    sage: { bg: 'rgba(154,180,138,0.10)', fg: '#9ab48a' },
-    cream: { bg: 'rgba(226,213,192,0.08)', fg: '#e2d5c0' },
-    muted: { bg: 'rgba(154,163,180,0.08)', fg: '#9aa3b4' },
+    gold: { bg: 'rgba(184,134,42,0.14)', fg: '#8a6310' },
+    sage: { bg: 'rgba(79,128,56,0.13)', fg: '#3f6a2c' },
+    cream: { bg: 'rgba(107,85,48,0.10)', fg: '#6b5530' },
+    muted: { bg: 'rgba(86,97,115,0.10)', fg: '#566173' },
   }
   const c = palette[variant]
   return (
@@ -106,8 +106,10 @@ export default function RoleCard({ row, expanded, onToggleExpanded }: RoleCardPr
       className={`vellum rounded-lg overflow-hidden ${expanded ? 'lg:col-span-2' : ''}`}
       style={{
         border: `1px solid var(--color-border)`,
-        // route accent shows on the top edge of the card
-        boxShadow: `inset 0 2px 0 ${accent}`,
+        // Brighter than the cream panel it sits in, with a soft drop shadow
+        // so nested cards separate. Route accent on the top edge.
+        backgroundColor: '#fffefa',
+        boxShadow: `inset 0 2px 0 ${accent}, 0 1px 4px rgba(0,0,0,0.07)`,
       }}
     >
       <div className="p-5">

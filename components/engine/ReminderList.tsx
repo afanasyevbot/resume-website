@@ -8,6 +8,7 @@ interface ReminderListProps {
 export default function ReminderList({ reminders }: ReminderListProps) {
   return (
     <div
+      id="reminders-panel"
       className="vellum rounded-lg overflow-hidden"
       style={{ border: '1px solid var(--color-border)' }}
     >
