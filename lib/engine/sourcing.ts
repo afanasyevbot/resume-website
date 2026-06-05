@@ -2,6 +2,8 @@ import type Anthropic from '@anthropic-ai/sdk'
 import { sql } from './db'
 import { scoreRole } from './matcher'
 import { persistScoredRole, type PersistableRole } from './persistRole'
+import { tailorRole } from './tailor'
+import type { TailorInput } from './tailorTypes'
 import type { AtsListing, TargetCompany } from './ats/types'
 import * as greenhouse from './ats/greenhouse'
 import * as ashby from './ats/ashby'
@@ -23,9 +25,11 @@ export interface SourcingReport {
     new: number
     relevant: number
     scored: number
+    tailored: number
     errors: string[]
   }>
   totalScored: number
+  totalTailored: number
   totalSkippedDuplicate: number
   totalSkippedIrrelevant: number
   totalErrors: number
@@ -38,6 +42,8 @@ interface RunOptions {
   maxScores?: number
   /** Skip listings older than this many days. */
   maxAgeDays?: number
+  /** Auto-tailor roles that score ≥70 (route=tailor). Default: true. */
+  autoTailor?: boolean
 }
 
 const DEFAULTS = { maxScores: 20, maxAgeDays: 30 }
@@ -85,18 +91,20 @@ export async function runSourcing(
 ): Promise<SourcingReport> {
   const maxScores = opts.maxScores ?? DEFAULTS.maxScores
   const maxAgeDays = opts.maxAgeDays ?? DEFAULTS.maxAgeDays
+  const autoTailor = opts.autoTailor ?? true
   const t0 = Date.now()
 
   const [companies, knownUrls] = await Promise.all([listTargetCompanies(), getKnownUrls()])
   const perCompany: SourcingReport['perCompany'] = []
   let totalScored = 0
+  let totalTailored = 0
   let totalSkippedDuplicate = 0
   let totalSkippedIrrelevant = 0
   let totalErrors = 0
   let capHit = false
 
   for (const company of companies) {
-    const stat = { company: company.name, ats: company.ats, listed: 0, new: 0, relevant: 0, scored: 0, errors: [] as string[] }
+    const stat = { company: company.name, ats: company.ats, listed: 0, new: 0, relevant: 0, scored: 0, tailored: 0, errors: [] as string[] }
     try {
       const listings = await fetchListings(company)
       stat.listed = listings.length
@@ -143,11 +151,46 @@ export async function runSourcing(
             url: role.url ?? undefined,
             location: role.location ?? undefined,
           })
-          await persistScoredRole(role, result)
+          const persisted = await persistScoredRole(role, result)
           stat.scored += 1
           totalScored += 1
-          // Re-record the url so we don't double-score within a run if it appears twice.
           knownUrls.add(l.url)
+
+          // Auto-tailor roles that score well enough (route=tailor).
+          // This means the daily cron produces FINISHED packages, not just scores.
+          if (autoTailor && result.route === 'tailor') {
+            try {
+              const input: TailorInput = {
+                role: {
+                  company: role.company,
+                  title: role.title,
+                  location: role.location ?? null,
+                  url: role.url ?? null,
+                  jdText: role.jobDescription,
+                  fitScore: result.score,
+                  fitReasons: result.reasons,
+                  segment: result.segment,
+                  aiNative: result.aiNative,
+                },
+              }
+              const pkg = await tailorRole(client, input)
+              const payload = JSON.stringify(pkg)
+              await sql`
+                insert into application_packages (role_id, cover_letter, outreach_draft, package_json, status)
+                values (${persisted.id}, ${pkg.coverLetter}, ${pkg.outreachDraft}, ${payload}::jsonb, 'draft')
+              `
+              await sql`update roles set status = 'tailored', updated_at = now() where id = ${persisted.id}`
+              await sql`
+                insert into events (role_id, kind, detail)
+                values (${persisted.id}, 'tailored', ${payload}::jsonb)
+              `
+              stat.tailored += 1
+              totalTailored += 1
+            } catch (tailorErr) {
+              // Tailoring failure is non-fatal — the scored role still exists.
+              stat.errors.push(`${l.title}: tailor failed: ${tailorErr instanceof Error ? tailorErr.message : String(tailorErr)}`)
+            }
+          }
         } catch (err) {
           stat.errors.push(`${l.title}: ${err instanceof Error ? err.message : String(err)}`)
           totalErrors += 1
@@ -164,6 +207,7 @@ export async function runSourcing(
   return {
     perCompany,
     totalScored,
+    totalTailored,
     totalSkippedDuplicate,
     totalSkippedIrrelevant,
     totalErrors,

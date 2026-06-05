@@ -23,13 +23,11 @@ export async function POST(req: Request) {
   }
 }
 
-// Cron-triggered sourcing. Vercel Cron sends a GET with
-// `Authorization: Bearer <CRON_SECRET>`. We re-verify the token here (the
-// middleware also checks it) and run a smaller batch so the function finishes
-// within the serverless time budget. At ~8s per scored role, 5 keeps us
-// comfortably under Vercel's 60s Hobby-plan function limit. Each run dedupes
-// against existing roles, so consecutive days work through the backlog.
-const CRON_MAX_SCORES = 5
+// Cron-triggered sourcing with auto-tailor. At ~8s scoring + ~25s tailoring per
+// role, 2 roles keeps us under Vercel's 60s Hobby-plan function limit (~66s
+// worst case). Dedup means consecutive daily runs work through the backlog.
+// Upgrade to Pro → bump to 5 and maxDuration 300 for higher throughput.
+const CRON_MAX_SCORES = 2
 
 export async function GET(req: Request) {
   const cronSecret = process.env.CRON_SECRET
@@ -40,8 +38,8 @@ export async function GET(req: Request) {
 
   const client = new Anthropic({ apiKey: anthropicKey() })
   try {
-    const report = await runSourcing(client, { maxScores: CRON_MAX_SCORES })
-    console.log('cron sourcing:', JSON.stringify({ scored: report.totalScored, errors: report.totalErrors }))
+    const report = await runSourcing(client, { maxScores: CRON_MAX_SCORES, autoTailor: true })
+    console.log('cron sourcing:', JSON.stringify({ scored: report.totalScored, tailored: report.totalTailored, errors: report.totalErrors }))
     return NextResponse.json({ ok: true, ...report })
   } catch (err) {
     console.error('GET /api/engine/source (cron) error:', err)
