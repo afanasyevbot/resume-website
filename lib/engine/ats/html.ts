@@ -25,12 +25,14 @@ function decodeEntities(text: string): string {
   for (const [encoded, decoded] of Object.entries(ENTITY_MAP)) {
     out = out.split(encoded).join(decoded)
   }
-  // Numeric refs like &#1234;
-  out = out.replace(/&#(\d+);/g, (_, n: string) => String.fromCodePoint(parseInt(n, 10)))
+  // Numeric refs like &#1234; — guarded against out-of-range code points
+  out = out.replace(/&#(\d+);/g, (match, n: string) => {
+    try { return String.fromCodePoint(parseInt(n, 10)) } catch { return match }
+  })
   // Hex numeric refs
-  out = out.replace(/&#x([0-9a-fA-F]+);/g, (_, n: string) =>
-    String.fromCodePoint(parseInt(n, 16)),
-  )
+  out = out.replace(/&#x([0-9a-fA-F]+);/g, (match, n: string) => {
+    try { return String.fromCodePoint(parseInt(n, 16)) } catch { return match }
+  })
   return out
 }
 

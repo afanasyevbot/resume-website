@@ -1,5 +1,5 @@
 import type Anthropic from '@anthropic-ai/sdk'
-import { sql } from './db'
+import { sql, tx } from './db'
 import { scoreRole } from './matcher'
 import { persistScoredRole, type PersistableRole } from './persistRole'
 import { tailorRole } from './tailor'
@@ -171,15 +171,13 @@ export async function processWebResults(
           }
           const pkg = await tailorRole(client, input)
           const payload = JSON.stringify(pkg)
-          await sql`
-            insert into application_packages (role_id, cover_letter, outreach_draft, package_json, status)
-            values (${persisted.id}, ${pkg.coverLetter}, ${pkg.outreachDraft}, ${payload}::jsonb, 'draft')
-          `
-          await sql`update roles set status = 'tailored', updated_at = now() where id = ${persisted.id}`
-          await sql`
-            insert into events (role_id, kind, detail)
-            values (${persisted.id}, 'tailored', ${payload}::jsonb)
-          `
+          await tx((txn) => [
+            txn`insert into application_packages (role_id, cover_letter, outreach_draft, package_json, status)
+                values (${persisted.id}, ${pkg.coverLetter}, ${pkg.outreachDraft}, ${payload}::jsonb, 'draft')`,
+            txn`update roles set status = 'tailored', updated_at = now() where id = ${persisted.id}`,
+            txn`insert into events (role_id, kind, detail)
+                values (${persisted.id}, 'tailored', ${payload}::jsonb)`,
+          ])
           tailored++
         } catch (tailorErr) {
           errors.push(`${company}: tailor failed: ${tailorErr instanceof Error ? tailorErr.message : String(tailorErr)}`)
