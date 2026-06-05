@@ -5,6 +5,7 @@ import type { RoleRow } from '@/lib/engine/dashboard'
 import EmptyState from './EmptyState'
 import AddRoleForm from './AddRoleForm'
 import SourceAction from './SourceAction'
+import ResearchAction from './ResearchAction'
 import RoleCard from './RoleCard'
 import FilterPills, { type FilterKey, computeCounts, rowMatches } from './FilterPills'
 import { type StatusView, statusMatches } from './statusView'
@@ -66,6 +67,7 @@ export default function RoleQueueTable({
         </p>
         <div className="flex items-center gap-3">
           <SourceAction />
+          <ResearchAction />
           <button
             onClick={() => setAddOpen((o) => !o)}
             className="text-[11px] font-medium"
