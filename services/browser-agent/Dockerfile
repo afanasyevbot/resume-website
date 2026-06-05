@@ -9,8 +9,8 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
-# App source (index.js only — node_modules and .env are excluded via .dockerignore).
-COPY index.js ./
+# App source (node_modules and .env are excluded via .dockerignore).
+COPY index.js answer.js ./
 
 ENV NODE_ENV=production
 # Railway injects PORT at runtime; index.js reads process.env.PORT.

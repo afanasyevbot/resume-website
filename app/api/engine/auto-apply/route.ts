@@ -5,6 +5,7 @@ import { buildResumePdf } from '@/lib/engine/pdf/resume'
 import type { TailoredPackage } from '@/lib/engine/tailorTypes'
 import { hasBudget } from '@/lib/engine/costGuard'
 import { decideApplyOutcome } from '@/lib/engine/applyDecision'
+import { loadScreeningFacts } from '@/lib/engine/screeningFacts'
 
 export const runtime = 'nodejs'
 // Browser submits run sequentially and can be slow; Vercel Pro allows up to 300s.
@@ -110,6 +111,9 @@ export async function POST(req: Request) {
 
   const results: AutoApplyResult[] = []
   const ctx = professionalContext
+  // Load the screening answer sheet once (null if not yet seeded → forms with
+  // required custom questions will skip to needs_review, which is safe).
+  const screeningFacts = await loadScreeningFacts()
 
   for (const role of roles) {
     try {
@@ -136,6 +140,7 @@ export async function POST(req: Request) {
           linkedin: `https://${ctx.identity.linkedin}`,
           resumeBase64,
           coverLetter: role.package_json.coverLetter,
+          screeningFacts: screeningFacts ?? {},
           dryRun,
         }),
       })

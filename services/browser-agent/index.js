@@ -2,6 +2,7 @@ const express = require('express')
 const { chromium } = require('playwright')
 const { writeFileSync, mkdirSync } = require('fs')
 const { join } = require('path')
+const { matchAnswer } = require('./answer')
 
 const app = express()
 app.use(express.json({ limit: '5mb' }))
@@ -126,32 +127,104 @@ async function fillAshby(page, data) {
   }
 }
 
-/** Detect custom screening questions beyond standard fields.
- *  Greenhouse uses question_NNNNN IDs for custom questions. LinkedIn is one
- *  we can handle, so we allow 1 custom question (LinkedIn). More than that
- *  signals real screening we should skip for. */
-async function hasScreeningQuestions(page, atsType) {
-  if (atsType === 'greenhouse') {
-    // Count question_NNNN inputs/textareas (excluding known-safe ones like LinkedIn)
-    const customQuestions = await page.$$eval(
-      'input[id^="question_"], textarea[id^="question_"]',
-      (els) => els.filter((el) => {
-        // Allow LinkedIn by checking the label
-        const label = el.closest('.field')?.querySelector('label')?.textContent ?? ''
-        if (/linkedin/i.test(label)) return false
-        return true
-      }).length,
-    )
-    // reCAPTCHA is handled separately in detectBlockers (v3 invisible is not a blocker).
-    // Allow up to 1 custom question (e.g., "Where did you hear about us?")
-    return customQuestions > 1
+/** Extract every custom screening question on the form: label, type, options,
+ *  whether it's required, and a selector to fill it. Core fields (name/email/
+ *  phone/resume/cover) are excluded — those are handled separately. */
+async function extractQuestions(page) {
+  return await page.evaluate(() => {
+    const CORE = new Set(['first_name', 'last_name', 'email', 'phone', 'resume', 'cover_letter', 'full_name', 'name'])
+    const clean = (s) => (s || '').replace(/\s+/g, ' ').replace(/\*/g, '').trim()
+    const sel = (el) => {
+      if (el.id) return '#' + CSS.escape(el.id)
+      if (el.name) return el.tagName.toLowerCase() + '[name="' + CSS.escape(el.name) + '"]'
+      return null
+    }
+    const out = []
+    const seenRadioGroups = new Set()
+    const controls = Array.from(document.querySelectorAll('input, select, textarea'))
+
+    for (const el of controls) {
+      const tag = el.tagName.toLowerCase()
+      const itype = (el.getAttribute('type') || '').toLowerCase()
+      if (['hidden', 'file', 'submit', 'button', 'search'].includes(itype)) continue
+      const id = el.id || ''
+      const name = el.name || ''
+      if (CORE.has(id) || CORE.has(name)) continue
+
+      // Label: prefer label[for=id], else nearest container label/legend.
+      let label = ''
+      if (id) {
+        const l = document.querySelector('label[for="' + CSS.escape(id) + '"]')
+        if (l) label = l.textContent
+      }
+      if (!label) {
+        const wrap = el.closest('.field, [class*="field"], [class*="question"], fieldset, [class*="form-group"]')
+        const l = wrap && wrap.querySelector('label, legend')
+        if (l) label = l.textContent
+      }
+      label = clean(label)
+      if (!label) continue
+
+      const required = el.hasAttribute('required') || el.getAttribute('aria-required') === 'true'
+
+      if (itype === 'radio') {
+        if (!name || seenRadioGroups.has(name)) continue
+        seenRadioGroups.add(name)
+        const radios = Array.from(document.querySelectorAll('input[type="radio"][name="' + CSS.escape(name) + '"]'))
+        const optionRefs = radios
+          .map((r) => {
+            let t = ''
+            if (r.id) { const rl = document.querySelector('label[for="' + CSS.escape(r.id) + '"]'); if (rl) t = rl.textContent }
+            if (!t) t = r.value
+            return { label: clean(t), selector: sel(r) }
+          })
+          .filter((o) => o.label && o.selector)
+        // group label = fieldset legend if present
+        const fs = el.closest('fieldset')
+        const lg = fs && fs.querySelector('legend')
+        if (lg) label = clean(lg.textContent)
+        out.push({ label, type: 'radio', required, options: optionRefs.map((o) => o.label), optionRefs })
+      } else if (tag === 'select') {
+        const options = Array.from(el.options).map((o) => clean(o.textContent)).filter(Boolean)
+        out.push({ label, type: 'select', required, options, selector: sel(el) })
+      } else if (itype === 'checkbox') {
+        out.push({ label, type: 'boolean', required, options: [], selector: sel(el) })
+      } else if (tag === 'textarea') {
+        out.push({ label, type: 'textarea', required, options: [], selector: sel(el) })
+      } else {
+        out.push({ label, type: 'text', required, options: [], selector: sel(el) })
+      }
+    }
+
+    // Dedupe: React forms often render the same question more than once. Collapse
+    // by (label + type), keeping the first (which carries a usable selector) and
+    // treating the question as required if ANY copy is required.
+    const byKey = new Map()
+    for (const q of out) {
+      const key = q.type + '::' + q.label.toLowerCase()
+      if (byKey.has(key)) {
+        if (q.required) byKey.get(key).required = true
+      } else {
+        byKey.set(key, q)
+      }
+    }
+    return Array.from(byKey.values())
+  })
+}
+
+/** Fill one answered question. Throws if it can't (caller decides to skip). */
+async function applyAnswer(page, q, value) {
+  if (q.type === 'select') {
+    await page.selectOption(q.selector, { label: value }).catch(() => page.selectOption(q.selector, value))
+  } else if (q.type === 'radio') {
+    const ref = (q.optionRefs || []).find((o) => o.label === value)
+    if (!ref) throw new Error('no radio option matched: ' + value)
+    await page.check(ref.selector)
+  } else if (q.type === 'boolean') {
+    if (/^yes$/i.test(value)) await page.check(q.selector)
+  } else {
+    await page.fill(q.selector, String(value))
   }
-  if (atsType === 'ashby') {
-    // Ashby custom fields typically have data-testid patterns
-    const customFields = await page.$$('div[data-testid*="custom"], div[class*="custom-question"]')
-    return customFields.length > 1
-  }
-  return true // unknown ATS → assume has screening
 }
 
 /** Take a screenshot and return it as a base64 string. */
@@ -172,6 +245,7 @@ app.post('/apply', auth, async (req, res) => {
     linkedin,
     resumeBase64,
     coverLetter,
+    screeningFacts = {},
     dryRun = false,
   } = req.body
 
@@ -226,23 +300,57 @@ app.post('/apply', auth, async (req, res) => {
       })
     }
 
-    // Check for custom screening questions
-    if (await hasScreeningQuestions(page, atsType)) {
-      const screenshot = await screenshotBase64(page)
-      return res.json({
-        success: false,
-        skipped: true,
-        reason: 'screening_questions',
-        atsType,
-        screenshots: { initial: screenshot },
-      })
-    }
-
-    // Fill the form
+    // Fill the core fields first
     const fillData = { firstName, lastName, email, phone, linkedin, resumePath: tmpResumePath, coverLetter }
     let filled = false
     if (atsType === 'greenhouse') filled = await fillGreenhouse(page, fillData)
     else if (atsType === 'ashby') filled = await fillAshby(page, fillData)
+
+    // Screening questions: answer truthfully from the facts sheet, or skip.
+    // We extract every custom question, ask the pure matcher for an answer, and
+    // SKIP the whole form if any REQUIRED question has no sheet answer — we never
+    // submit a real application with a guessed or blank required field.
+    const questions = await extractQuestions(page)
+    const answerPlan = questions.map((q) => ({
+      label: q.label,
+      type: q.type,
+      required: q.required,
+      value: matchAnswer(q, screeningFacts),
+    }))
+    const unanswered = answerPlan.filter((a) => a.value == null && a.required).map((a) => a.label)
+
+    if (unanswered.length > 0) {
+      const screenshot = await screenshotBase64(page)
+      return res.json({
+        success: false,
+        skipped: true,
+        reason: 'unanswerable_required: ' + unanswered.slice(0, 5).join(' | '),
+        atsType,
+        questions: answerPlan,
+        screenshots: { initial: screenshot },
+      })
+    }
+
+    // Fill every question we have a confident answer for.
+    for (const q of questions) {
+      const value = matchAnswer(q, screeningFacts)
+      if (value == null) continue
+      try {
+        await applyAnswer(page, q, value)
+      } catch (e) {
+        if (q.required) {
+          const screenshot = await screenshotBase64(page)
+          return res.json({
+            success: false,
+            skipped: true,
+            reason: 'answer_fill_failed: ' + q.label,
+            atsType,
+            questions: answerPlan,
+            screenshots: { initial: screenshot },
+          })
+        }
+      }
+    }
 
     if (!filled) {
       const screenshot = await screenshotBase64(page)
@@ -264,6 +372,7 @@ app.post('/apply', auth, async (req, res) => {
         dryRun: true,
         reason: 'dry_run_complete',
         atsType,
+        questions: answerPlan,
         screenshots: { preSubmit: preSubmitScreenshot },
       })
     }
@@ -339,6 +448,7 @@ app.post('/apply', auth, async (req, res) => {
       submitted: submitClicked,
       confirmed: isConfirmed,
       atsType,
+      questions: answerPlan,
       confirmSignals: { hasConfirmPhrase, navigatedAway, formStillPresent, visibleErrorCount },
       screenshots: {
         preSubmit: preSubmitScreenshot,
