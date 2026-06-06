@@ -6,6 +6,7 @@ import type { TailoredPackage } from '@/lib/engine/tailorTypes'
 import { hasBudget } from '@/lib/engine/costGuard'
 import { decideApplyOutcome } from '@/lib/engine/applyDecision'
 import { loadScreeningFacts } from '@/lib/engine/screeningFacts'
+import { notifySlack, buildAutoApplyRecap } from '@/lib/engine/notify'
 
 export const runtime = 'nodejs'
 // Browser submits run sequentially and can be slow; Vercel Pro allows up to 300s.
@@ -20,10 +21,12 @@ interface AutoApplyResult {
   title: string
   /** True only when the application was explicitly confirmed submitted. */
   success: boolean
-  /** Submitted but unconfirmed — Matthew should verify manually. */
+  /** Submitted but unconfirmed, or couldn't be completed — Matthew handles it. */
   needsReview: boolean
   skipped: boolean
   reason: string | null
+  /** Required questions the engine had no truthful answer for (drives the alert). */
+  unanswered?: string[]
   atsType: string | null
 }
 
@@ -167,6 +170,7 @@ async function runAutoApply(opts: RunOpts) {
         dryRun?: boolean
         reason?: string
         atsType?: string
+        questions?: Array<{ label: string; required: boolean; value: unknown }>
         screenshots?: { preSubmit?: string; postSubmit?: string; initial?: string }
       }
 
@@ -227,15 +231,31 @@ async function runAutoApply(opts: RunOpts) {
           atsType: result.atsType ?? null,
         })
       } else {
-        // Skipped (blocker/gate) or failed — leave role status unchanged.
+        // The engine got a real response but couldn't complete the form (captcha,
+        // login wall, unanswerable required questions, …). Route to needs_review so
+        // it surfaces for Matthew (and isn't retried forever). Capture the questions
+        // it had no truthful answer for, so the alert can name them.
+        const unanswered = (result.questions ?? [])
+          .filter((q) => q.value == null && q.required)
+          .map((q) => q.label)
+
+        if (!dryRun) {
+          const detail = JSON.stringify({ method: 'auto', reason: result.reason ?? outcome, unanswered })
+          await tx((txn) => [
+            txn`update roles set status = 'needs_review', updated_at = now() where id = ${role.id}`,
+            txn`insert into events (role_id, kind, detail) values (${role.id}, 'needs_review', ${detail}::jsonb)`,
+          ])
+        }
+
         results.push({
           roleId: role.id,
           company: role.company,
           title: role.title,
           success: false,
-          needsReview: false,
-          skipped: outcome === 'skipped',
-          reason: result.reason ?? (outcome === 'failed' ? 'failed' : 'unknown'),
+          needsReview: !dryRun,
+          skipped: dryRun,
+          reason: result.reason ?? (outcome === 'failed' ? 'failed' : 'needs review'),
+          unanswered,
           atsType: result.atsType ?? null,
         })
       }
@@ -324,5 +344,12 @@ export async function GET(req: Request) {
 
   const report = await runAutoApply({ maxApply: remaining, dryRun, minFit: CRON_MIN_FIT })
   console.log('cron auto-apply:', JSON.stringify({ applied: report.applied, needsReview: report.needsReview, skipped: report.skipped, appliedToday: alreadyToday }))
+
+  // Slack recap (no-op if SLACK_WEBHOOK_URL unset). Real runs only.
+  if (!dryRun) {
+    const recap = buildAutoApplyRecap(report.results, alreadyToday + report.applied, DAILY_CAP)
+    if (recap) await notifySlack(recap)
+  }
+
   return NextResponse.json({ ok: true, appliedToday: alreadyToday, cap: DAILY_CAP, ...report })
 }
