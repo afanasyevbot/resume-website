@@ -32,7 +32,7 @@ export async function POST(req: Request) {
   let body: {
     type?: string
     challenge?: string
-    event?: { type?: string; text?: string; channel?: string; bot_id?: string; subtype?: string; user?: string }
+    event?: { type?: string; text?: string; channel?: string; bot_id?: string; subtype?: string; user?: string; thread_ts?: string }
   }
   try {
     body = JSON.parse(rawBody)
@@ -51,11 +51,13 @@ export async function POST(req: Request) {
 
   if (isHumanReply) {
     const userText = e!.text!.trim()
+    const threadTs = e!.thread_ts
 
     // Check if there's a pending question first — if so, this is an answer.
     const openQ = await sql`
       select id, role_id, question from slack_pending
       where kind = 'question' and status = 'pending'
+        and (${threadTs ?? null}::text is null or message_ts = ${threadTs ?? null})
       order by created_at desc limit 1
     `
     const pending = (openQ as Array<{ id: number; role_id: number; question: string }>)[0]

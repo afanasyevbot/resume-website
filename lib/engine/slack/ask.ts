@@ -12,6 +12,7 @@
 
 import Anthropic from '@anthropic-ai/sdk'
 import { anthropicKey } from '@/lib/env'
+import { capCents } from '@/lib/engine/costGuard'
 import { sql } from '@/lib/engine/db'
 import { postSlackMessage } from './client'
 
@@ -38,7 +39,7 @@ async function fetchSnapshot(): Promise<string> {
     // Spend
     sql`select
           coalesce(sum(cost_cents),0)::int as month_cents,
-          2500 as cap_cents
+          ${capCents()} as cap_cents
         from api_usage
         where created_at >= date_trunc('month', now())`,
 

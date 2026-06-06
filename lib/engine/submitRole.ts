@@ -8,7 +8,12 @@ import { questionText } from './slack/blocks'
 import type { TailoredPackage } from './tailorTypes'
 
 const BROWSER_URL = process.env.BROWSER_SERVICE_URL ?? 'http://localhost:4100'
-const BROWSER_SECRET = process.env.BROWSER_SERVICE_SECRET ?? ''
+
+function getBrowserSecret(): string {
+  const s = process.env.BROWSER_SERVICE_SECRET
+  if (!s) throw new Error('BROWSER_SERVICE_SECRET is not set')
+  return s
+}
 
 export interface EligibleRole {
   id: number
@@ -86,7 +91,7 @@ export async function submitAndPersist(
     const pdfBytes = await buildResumePdf(role.package_json, { company: role.company, title: role.title })
     const response = await fetch(`${BROWSER_URL}/apply`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${BROWSER_SECRET}` },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getBrowserSecret()}` },
       body: JSON.stringify({
         url: role.url,
         firstName: 'Matthew',

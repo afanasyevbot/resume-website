@@ -8,7 +8,7 @@ import { sql } from './db'
  */
 const DEFAULT_CAP_CENTS = 2500
 
-function capCents(): number {
+export function capCents(): number {
   const env = process.env.MONTHLY_CAP_CENTS
   if (env) {
     const n = Number(env)
