@@ -58,7 +58,7 @@ export async function getCounts(): Promise<KpiCounts> {
   const r = await sql`
     select
       count(*) filter (where status not in ('discarded', 'archived')) as sourced,
-      count(*) filter (where route = 'tailor' and status in ('scored','tailored','queued')) as in_queue,
+      count(*) filter (where route = 'tailor' and status in ('scored','tailored','queued','needs_review','awaiting_approval')) as in_queue,
       count(*) filter (where status = 'applied') as applied,
       count(*) filter (where status in ('responded','interviewing','offer','rejected')) as responded
     from roles
@@ -85,12 +85,10 @@ export async function getCounts(): Promise<KpiCounts> {
 export async function getDeltas(): Promise<KpiDeltas> {
   const r = await sql`
     select
-      count(*) filter (where e.kind = 'sourced' and e.created_at > now() - interval '7 days') as sourced_7d,
-      count(*) filter (where e.kind = 'applied' and e.created_at > now() - interval '7 days') as applied_7d,
-      count(*) filter (where e.kind = 'responded' and e.created_at > now() - interval '7 days') as responded_7d
-    from events e
-    join roles r on r.id = e.role_id
-    where r.status not in ('discarded', 'archived')
+      count(*) filter (where kind = 'sourced' and created_at > now() - interval '7 days') as sourced_7d,
+      count(*) filter (where kind = 'applied' and created_at > now() - interval '7 days') as applied_7d,
+      count(*) filter (where kind = 'responded' and created_at > now() - interval '7 days') as responded_7d
+    from events
   `
   const row = r[0] as Record<string, string | number>
   return {
