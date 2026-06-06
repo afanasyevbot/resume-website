@@ -16,5 +16,6 @@
       "path": "/api/engine/auto-apply",
       "schedule": "0 14 * * *"
     }
-  ]
+  ],
+  "//": "github integration verified 2026-06-06"
 }
