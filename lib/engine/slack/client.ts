@@ -4,7 +4,7 @@
  * Best-effort + env-gated like notify.ts — a Slack failure never breaks a run.
  */
 const BOT_TOKEN = process.env.SLACK_BOT_TOKEN
-export const SLACK_CHANNEL = process.env.SLACK_CHANNEL_ID || '#job-engine'
+const SLACK_CHANNEL_ID = process.env.SLACK_CHANNEL_ID
 
 interface PostResult {
   ok: boolean
@@ -14,8 +14,8 @@ interface PostResult {
 
 /** Post a message (optionally with Block Kit blocks). Returns the message ts so
  *  it can be edited later. */
-export async function postSlackMessage(text: string, blocks?: unknown[], channel = SLACK_CHANNEL): Promise<PostResult> {
-  if (!BOT_TOKEN) return { ok: false }
+export async function postSlackMessage(text: string, blocks?: unknown[], channel = SLACK_CHANNEL_ID): Promise<PostResult> {
+  if (!BOT_TOKEN || !channel) return { ok: false }
   try {
     const res = await fetch('https://slack.com/api/chat.postMessage', {
       method: 'POST',
