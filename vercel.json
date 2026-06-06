@@ -11,6 +11,10 @@
     {
       "path": "/api/engine/research",
       "schedule": "30 13 * * *"
+    },
+    {
+      "path": "/api/engine/auto-apply",
+      "schedule": "0 14 * * *"
     }
   ]
 }

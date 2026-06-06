@@ -35,20 +35,18 @@ interface AutoApplyResult {
  * browser agent service. Each role: generate resume PDF → call browser
  * service → persist result + events + reminders.
  */
-export async function POST(req: Request) {
-  const body = (await req.json().catch(() => ({}))) as {
-    roleIds?: number[]
-    maxApply?: number
-    dryRun?: boolean
-  }
-  const maxApply = Math.min(body.maxApply ?? 5, 10)
-  const dryRun = body.dryRun ?? false
+interface RunOpts {
+  roleIds?: number[]
+  maxApply: number
+  dryRun: boolean
+  /** Minimum fit score for auto-picked roles (cron uses 80; the manual button 0). */
+  minFit?: number
+}
 
-  // Budget check (auto-apply doesn't call Claude, but the PDF generation is cheap
-  // and we want the overall system to respect the cap).
-  if (!(await hasBudget())) {
-    return NextResponse.json({ error: 'Monthly spend cap reached.' }, { status: 429 })
-  }
+/** Shared engine for both the manual button (POST) and the daily cron (GET). */
+async function runAutoApply(opts: RunOpts) {
+  const { roleIds, maxApply, dryRun } = opts
+  const minFit = opts.minFit ?? 0
 
   // Find eligible roles: tailored, route=tailor, url present (Greenhouse/Ashby)
   let roles: Array<{
@@ -60,7 +58,7 @@ export async function POST(req: Request) {
     package_id: number
   }>
 
-  if (body.roleIds && body.roleIds.length > 0) {
+  if (roleIds && roleIds.length > 0) {
     // Specific roles requested
     const rows = await sql`
       select r.id, r.company, r.title, r.url, p.package_json, p.id as package_id
@@ -69,7 +67,7 @@ export async function POST(req: Request) {
         select id, package_json from application_packages
         where role_id = r.id order by created_at desc limit 1
       ) p on true
-      where r.id = any(${body.roleIds})
+      where r.id = any(${roleIds})
         and r.status = 'tailored'
         and r.route = 'tailor'
         and r.url is not null
@@ -94,6 +92,7 @@ export async function POST(req: Request) {
         and r.route = 'tailor'
         and r.url is not null
         and (r.url like '%greenhouse.io%' or r.url like '%ashbyhq.com%')
+        and coalesce(r.fit_score, 0) >= ${minFit}
         and p.package_json is not null
       order by r.fit_score desc nulls last
       limit ${maxApply}
@@ -106,7 +105,7 @@ export async function POST(req: Request) {
   }
 
   if (roles.length === 0) {
-    return NextResponse.json({ message: 'No eligible roles for auto-apply.', results: [] })
+    return { applied: 0, needsReview: 0, skipped: 0, total: 0, dryRun, results: [], message: 'No eligible roles for auto-apply.' }
   }
 
   const results: AutoApplyResult[] = []
@@ -258,12 +257,72 @@ export async function POST(req: Request) {
   const needsReview = results.filter((r) => r.needsReview).length
   const skipped = results.filter((r) => r.skipped).length
 
-  return NextResponse.json({
-    applied,
-    needsReview,
-    skipped,
-    total: results.length,
-    dryRun,
-    results,
+  return { applied, needsReview, skipped, total: results.length, dryRun, results }
+}
+
+/** Daily safety cap on automatic submissions (a bug can't spray more than this). */
+const DAILY_CAP = 5
+/** Minimum fit score the cron will auto-submit. The manual button has no floor. */
+const CRON_MIN_FIT = 80
+
+/** How many roles were auto-applied (method=auto) since midnight UTC today. */
+async function autoAppliedToday(): Promise<number> {
+  const rows = await sql`
+    select count(*)::int as n from events
+    where kind = 'applied'
+      and detail->>'method' = 'auto'
+      and created_at >= date_trunc('day', now())
+  `
+  return Number((rows as Array<{ n: number }>)[0]?.n ?? 0)
+}
+
+/**
+ * POST /api/engine/auto-apply — manual trigger (dashboard button).
+ * Body: { roleIds?: number[], maxApply?: number, dryRun?: boolean }
+ */
+export async function POST(req: Request) {
+  const body = (await req.json().catch(() => ({}))) as {
+    roleIds?: number[]
+    maxApply?: number
+    dryRun?: boolean
+  }
+  if (!(await hasBudget())) {
+    return NextResponse.json({ error: 'Monthly spend cap reached.' }, { status: 429 })
+  }
+  const report = await runAutoApply({
+    roleIds: body.roleIds,
+    maxApply: Math.min(body.maxApply ?? 5, 10),
+    dryRun: body.dryRun ?? false,
+    minFit: 0,
   })
+  return NextResponse.json(report)
+}
+
+/**
+ * GET /api/engine/auto-apply — daily cron. Auto-submits high-fit tailored roles
+ * within the daily cap. Guardrails: CRON_SECRET auth, fit ≥ CRON_MIN_FIT, at
+ * most DAILY_CAP submissions/day, confirmed-submission-only (handled downstream).
+ */
+export async function GET(req: Request) {
+  const cronSecret = process.env.CRON_SECRET
+  const auth = req.headers.get('authorization')
+  if (!cronSecret || auth !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  }
+  if (!(await hasBudget())) {
+    return NextResponse.json({ error: 'Monthly spend cap reached.' }, { status: 429 })
+  }
+
+  // Allow a safe dry-run via ?dryRun=1 for testing the cron path without submitting.
+  const dryRun = new URL(req.url).searchParams.get('dryRun') === '1'
+
+  const alreadyToday = await autoAppliedToday()
+  const remaining = Math.max(0, DAILY_CAP - alreadyToday)
+  if (remaining === 0) {
+    return NextResponse.json({ ok: true, capReached: true, appliedToday: alreadyToday, cap: DAILY_CAP })
+  }
+
+  const report = await runAutoApply({ maxApply: remaining, dryRun, minFit: CRON_MIN_FIT })
+  console.log('cron auto-apply:', JSON.stringify({ applied: report.applied, needsReview: report.needsReview, skipped: report.skipped, appliedToday: alreadyToday }))
+  return NextResponse.json({ ok: true, appliedToday: alreadyToday, cap: DAILY_CAP, ...report })
 }
