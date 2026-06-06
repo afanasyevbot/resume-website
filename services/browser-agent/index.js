@@ -246,6 +246,7 @@ app.post('/apply', auth, async (req, res) => {
     resumeBase64,
     coverLetter,
     screeningFacts = {},
+    manualAnswers = {},
     dryRun = false,
   } = req.body
 
@@ -311,11 +312,21 @@ app.post('/apply', auth, async (req, res) => {
     // SKIP the whole form if any REQUIRED question has no sheet answer — we never
     // submit a real application with a guessed or blank required field.
     const questions = await extractQuestions(page)
+    // Resolve an answer: the truthful matcher first, then a human-provided answer
+    // (from a Slack reply) keyed by the exact question label. Never invents.
+    const resolveAnswer = (q) => {
+      const fromFacts = matchAnswer(q, screeningFacts)
+      if (fromFacts != null) return fromFacts
+      if (manualAnswers && typeof manualAnswers[q.label] === 'string' && manualAnswers[q.label].trim()) {
+        return manualAnswers[q.label]
+      }
+      return null
+    }
     const answerPlan = questions.map((q) => ({
       label: q.label,
       type: q.type,
       required: q.required,
-      value: matchAnswer(q, screeningFacts),
+      value: resolveAnswer(q),
     }))
     const unanswered = answerPlan.filter((a) => a.value == null && a.required).map((a) => a.label)
 
@@ -333,7 +344,7 @@ app.post('/apply', auth, async (req, res) => {
 
     // Fill every question we have a confident answer for.
     for (const q of questions) {
-      const value = matchAnswer(q, screeningFacts)
+      const value = resolveAnswer(q)
       if (value == null) continue
       try {
         await applyAnswer(page, q, value)

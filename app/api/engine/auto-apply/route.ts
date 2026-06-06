@@ -1,19 +1,18 @@
 import { NextResponse } from 'next/server'
-import { sql, tx } from '@/lib/engine/db'
-import { professionalContext } from '@/lib/professionalContext'
-import { buildResumePdf } from '@/lib/engine/pdf/resume'
+import { sql } from '@/lib/engine/db'
 import type { TailoredPackage } from '@/lib/engine/tailorTypes'
 import { hasBudget } from '@/lib/engine/costGuard'
-import { decideApplyOutcome } from '@/lib/engine/applyDecision'
-import { loadScreeningFacts } from '@/lib/engine/screeningFacts'
 import { notifySlack, buildAutoApplyRecap } from '@/lib/engine/notify'
+import { submitAndPersist } from '@/lib/engine/submitRole'
+import { postSlackMessage } from '@/lib/engine/slack/client'
+import { approvalBlocks } from '@/lib/engine/slack/blocks'
 
 export const runtime = 'nodejs'
 // Browser submits run sequentially and can be slow; Vercel Pro allows up to 300s.
 export const maxDuration = 300
 
-const BROWSER_URL = process.env.BROWSER_SERVICE_URL ?? 'http://localhost:4100'
-const BROWSER_SECRET = process.env.BROWSER_SERVICE_SECRET ?? ''
+/** Fit at/above this auto-submits on the cron; 80..AUTO_FIT-1 asks for approval. */
+const AUTO_FIT = 86
 
 interface AutoApplyResult {
   roleId: number
@@ -60,17 +59,16 @@ async function runAutoApply(opts: RunOpts) {
     company: string
     title: string
     url: string
+    fit_score: number | null
     package_json: TailoredPackage
-    package_id: number
   }>
 
   if (roleIds && roleIds.length > 0) {
-    // Specific roles requested
     const rows = await sql`
-      select r.id, r.company, r.title, r.url, p.package_json, p.id as package_id
+      select r.id, r.company, r.title, r.url, r.fit_score, p.package_json
       from roles r
       join lateral (
-        select id, package_json from application_packages
+        select package_json from application_packages
         where role_id = r.id order by created_at desc limit 1
       ) p on true
       where r.id = any(${roleIds})
@@ -80,18 +78,13 @@ async function runAutoApply(opts: RunOpts) {
         and p.package_json is not null
       limit ${maxApply}
     `
-    roles = (rows as typeof roles).map((r) => ({
-      ...r,
-      id: Number(r.id),
-      package_id: Number(r.package_id),
-    }))
+    roles = (rows as typeof roles).map((r) => ({ ...r, id: Number(r.id), fit_score: r.fit_score == null ? null : Number(r.fit_score) }))
   } else {
-    // Auto-pick: tailored roles on safe ATS whitelist
     const rows = await sql`
-      select r.id, r.company, r.title, r.url, p.package_json, p.id as package_id
+      select r.id, r.company, r.title, r.url, r.fit_score, p.package_json
       from roles r
       join lateral (
-        select id, package_json from application_packages
+        select package_json from application_packages
         where role_id = r.id order by created_at desc limit 1
       ) p on true
       where r.status = 'tailored'
@@ -103,11 +96,7 @@ async function runAutoApply(opts: RunOpts) {
       order by r.fit_score desc nulls last
       limit ${maxApply}
     `
-    roles = (rows as typeof roles).map((r) => ({
-      ...r,
-      id: Number(r.id),
-      package_id: Number(r.package_id),
-    }))
+    roles = (rows as typeof roles).map((r) => ({ ...r, id: Number(r.id), fit_score: r.fit_score == null ? null : Number(r.fit_score) }))
   }
 
   if (roles.length === 0) {
@@ -115,165 +104,44 @@ async function runAutoApply(opts: RunOpts) {
   }
 
   const results: AutoApplyResult[] = []
-  const ctx = professionalContext
-  // Load the screening answer sheet once (null if not yet seeded → forms with
-  // required custom questions will skip to needs_review, which is safe).
-  const screeningFacts = await loadScreeningFacts()
 
   for (const role of roles) {
-    try {
-      // Generate resume PDF
-      const pdfBytes = await buildResumePdf(role.package_json, {
-        company: role.company,
-        title: role.title,
-      })
-      const resumeBase64 = Buffer.from(pdfBytes).toString('base64')
-
-      // Call browser service
-      const response = await fetch(`${BROWSER_URL}/apply`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${BROWSER_SECRET}`,
-        },
-        body: JSON.stringify({
-          url: role.url,
-          firstName: 'Matthew',
-          lastName: 'Afanasiev',
-          email: ctx.identity.email,
-          phone: ctx.identity.phone,
-          linkedin: `https://${ctx.identity.linkedin}`,
-          resumeBase64,
-          coverLetter: role.package_json.coverLetter,
-          screeningFacts: screeningFacts ?? {},
-          dryRun,
-        }),
-      })
-
-      if (!response.ok) {
-        const err = await response.text()
-        results.push({
-          roleId: role.id,
-          company: role.company,
-          title: role.title,
-          success: false,
-          needsReview: false,
-          skipped: true,
-          reason: `browser service error: ${response.status} ${err.slice(0, 200)}`,
-          atsType: null,
-        })
-        continue
-      }
-
-      const result = (await response.json()) as {
-        success?: boolean
-        skipped?: boolean
-        submitted?: boolean
-        confirmed?: boolean
-        dryRun?: boolean
-        reason?: string
-        atsType?: string
-        questions?: Array<{ label: string; required: boolean; value: unknown }>
-        screenshots?: { preSubmit?: string; postSubmit?: string; initial?: string }
-      }
-
-      const outcome = decideApplyOutcome(result, dryRun)
-      const hasScreenshots = !!(result.screenshots?.preSubmit || result.screenshots?.postSubmit)
-
-      if (outcome === 'applied') {
-        // Confirmed submitted → mark applied + event + LinkedIn reminders (atomic)
-        const detail = JSON.stringify({
-          method,
-          atsType: result.atsType,
-          confirmed: true,
-          hasScreenshots,
-        })
-        await tx((txn) => [
-          txn`update roles set status = 'applied', updated_at = now() where id = ${role.id}`,
-          txn`insert into events (role_id, kind, detail) values (${role.id}, 'applied', ${detail}::jsonb)`,
-          txn`insert into reminders (role_id, kind, due_at) values (${role.id}, 'linkedin_follow_up', now() + interval '3 days')`,
-          txn`insert into reminders (role_id, kind, due_at) values (${role.id}, 'linkedin_check_in', now() + interval '7 days')`,
-        ])
-
-        results.push({
-          roleId: role.id,
-          company: role.company,
-          title: role.title,
-          success: true,
-          needsReview: false,
-          skipped: false,
-          reason: null,
-          atsType: result.atsType ?? null,
-        })
-      } else if (outcome === 'needs_review') {
-        // Submit was clicked but NOT confirmed. Do NOT mark applied (would be a
-        // false positive). Move to 'needs_review' so it (a) leaves the auto-apply
-        // candidate pool — preventing a double-submit — and (b) surfaces in the
-        // active queue for Matthew to verify by hand. No reminders: we don't know
-        // it actually went through.
-        const detail = JSON.stringify({
-          method,
-          atsType: result.atsType,
-          confirmed: false,
-          hasScreenshots,
-          note: 'Submit clicked but submission could not be confirmed — verify manually.',
-        })
-        await tx((txn) => [
-          txn`update roles set status = 'needs_review', updated_at = now() where id = ${role.id}`,
-          txn`insert into events (role_id, kind, detail) values (${role.id}, 'submit_unconfirmed', ${detail}::jsonb)`,
-        ])
-
-        results.push({
-          roleId: role.id,
-          company: role.company,
-          title: role.title,
-          success: false,
-          needsReview: true,
-          skipped: false,
-          reason: 'submitted but unconfirmed — verify manually',
-          atsType: result.atsType ?? null,
-        })
-      } else {
-        // The engine got a real response but couldn't complete the form (captcha,
-        // login wall, unanswerable required questions, …). Route to needs_review so
-        // it surfaces for Matthew (and isn't retried forever). Capture the questions
-        // it had no truthful answer for, so the alert can name them.
-        const unanswered = (result.questions ?? [])
-          .filter((q) => q.value == null && q.required)
-          .map((q) => q.label)
-
-        if (!dryRun) {
-          const detail = JSON.stringify({ method, reason: result.reason ?? outcome, unanswered })
-          await tx((txn) => [
-            txn`update roles set status = 'needs_review', updated_at = now() where id = ${role.id}`,
-            txn`insert into events (role_id, kind, detail) values (${role.id}, 'needs_review', ${detail}::jsonb)`,
-          ])
+    // Borderline fit on the AUTONOMOUS path → ask for approval instead of submitting.
+    // The manual button (method='manual') is an explicit human action → no gating.
+    if (method === 'auto' && !dryRun && role.fit_score != null && role.fit_score < AUTO_FIT) {
+      const existing = await sql`select 1 from slack_pending where role_id = ${role.id} and kind = 'approval' and status = 'pending' limit 1`
+      if ((existing as unknown[]).length === 0) {
+        const pend = await sql`insert into slack_pending (role_id, kind, status) values (${role.id}, 'approval', 'pending') returning id`
+        const pendingId = Number((pend as Array<{ id: number }>)[0].id)
+        const posted = await postSlackMessage(
+          `Ready to apply: ${role.company} — ${role.title}`,
+          approvalBlocks({ company: role.company, title: role.title, fit: role.fit_score, pendingId }),
+        )
+        if (posted.ok) {
+          await sql`update slack_pending set channel = ${posted.channel ?? null}, message_ts = ${posted.ts ?? null} where id = ${pendingId}`
         }
-
-        results.push({
-          roleId: role.id,
-          company: role.company,
-          title: role.title,
-          success: false,
-          needsReview: !dryRun,
-          skipped: dryRun,
-          reason: result.reason ?? (outcome === 'failed' ? 'failed' : 'needs review'),
-          unanswered,
-          atsType: result.atsType ?? null,
-        })
+        // Park it so it isn't re-picked next run while awaiting the decision.
+        await sql`update roles set status = 'awaiting_approval', updated_at = now() where id = ${role.id}`
       }
-    } catch (err) {
-      results.push({
-        roleId: role.id,
-        company: role.company,
-        title: role.title,
-        success: false,
-        needsReview: false,
-        skipped: true,
-        reason: err instanceof Error ? err.message : String(err),
-        atsType: null,
-      })
+      results.push({ roleId: role.id, company: role.company, title: role.title, success: false, needsReview: false, skipped: true, reason: 'awaiting approval', atsType: null })
+      continue
     }
+
+    const r = await submitAndPersist(
+      { id: role.id, company: role.company, title: role.title, url: role.url, fit_score: role.fit_score, package_json: role.package_json },
+      { dryRun, method, askOnSlack: method !== 'manual' },
+    )
+    results.push({
+      roleId: role.id,
+      company: role.company,
+      title: role.title,
+      success: r.outcome === 'applied',
+      needsReview: r.outcome === 'needs_review' && !dryRun,
+      skipped: r.outcome === 'skipped' || dryRun,
+      reason: r.reason,
+      unanswered: r.unanswered,
+      atsType: null,
+    })
   }
 
   const applied = results.filter((r) => r.success).length
