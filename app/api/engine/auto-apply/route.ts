@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
 import { sql } from '@/lib/engine/db'
 import type { TailoredPackage } from '@/lib/engine/tailorTypes'
 import { hasBudget } from '@/lib/engine/costGuard'
@@ -6,6 +7,7 @@ import { notifySlack, buildAutoApplyRecap } from '@/lib/engine/notify'
 import { submitAndPersist } from '@/lib/engine/submitRole'
 import { postSlackMessage } from '@/lib/engine/slack/client'
 import { approvalBlocks } from '@/lib/engine/slack/blocks'
+import { verifySessionToken, SESSION_COOKIE } from '@/lib/engine/auth'
 
 export const runtime = 'nodejs'
 // Browser submits run sequentially and can be slow; Vercel Pro allows up to 300s.
@@ -190,6 +192,12 @@ async function releaseCronLock(name: string): Promise<void> {
  * Body: { roleIds?: number[], maxApply?: number, dryRun?: boolean }
  */
 export async function POST(req: Request) {
+  const cookieStore = await cookies()
+  const token = cookieStore.get(SESSION_COOKIE)?.value
+  if (!(await verifySessionToken(token))) {
+    return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  }
+
   const body = (await req.json().catch(() => ({}))) as {
     roleIds?: number[]
     maxApply?: number
