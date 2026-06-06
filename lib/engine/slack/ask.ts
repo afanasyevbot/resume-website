@@ -42,10 +42,11 @@ async function fetchSnapshot(): Promise<string> {
         from api_usage
         where created_at >= date_trunc('month', now())`,
 
-    // Reminders due today or overdue
+    // Reminders due today or overdue (pending = not completed; respect snooze)
     sql`select r.company, r.title, rem.kind, rem.due_at
         from reminders rem join roles r on r.id = rem.role_id
-        where rem.status = 'pending' and rem.due_at <= now() + interval '24 hours'
+        where rem.completed_at is null
+          and coalesce(rem.snoozed_until, rem.due_at) <= now() + interval '24 hours'
         order by rem.due_at asc limit 10`,
   ])
 
