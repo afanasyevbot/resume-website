@@ -85,10 +85,12 @@ export async function getCounts(): Promise<KpiCounts> {
 export async function getDeltas(): Promise<KpiDeltas> {
   const r = await sql`
     select
-      count(*) filter (where kind = 'sourced' and created_at > now() - interval '7 days') as sourced_7d,
-      count(*) filter (where kind = 'applied' and created_at > now() - interval '7 days') as applied_7d,
-      count(*) filter (where kind = 'responded' and created_at > now() - interval '7 days') as responded_7d
-    from events
+      count(*) filter (where e.kind = 'sourced' and e.created_at > now() - interval '7 days') as sourced_7d,
+      count(*) filter (where e.kind = 'applied' and e.created_at > now() - interval '7 days') as applied_7d,
+      count(*) filter (where e.kind = 'responded' and e.created_at > now() - interval '7 days') as responded_7d
+    from events e
+    join roles r on r.id = e.role_id
+    where r.status not in ('discarded', 'archived')
   `
   const row = r[0] as Record<string, string | number>
   return {
@@ -98,7 +100,7 @@ export async function getDeltas(): Promise<KpiDeltas> {
   }
 }
 
-export async function listQueue(limit = 30): Promise<RoleRow[]> {
+export async function listQueue(limit = 200): Promise<RoleRow[]> {
   // LEFT JOIN LATERAL grabs the most-recent application_package and the
   // most-recent 'rated' event per role (both optional, so left-join).
   const rows = await sql`

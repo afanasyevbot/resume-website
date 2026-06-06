@@ -243,7 +243,6 @@ export async function GET(req: Request) {
     const report = await runAutoApply({ maxApply: remaining, dryRun, minFit: CRON_MIN_FIT, method: 'auto' })
     console.log('cron auto-apply:', JSON.stringify({ applied: report.applied, needsReview: report.needsReview, skipped: report.skipped, appliedToday: alreadyToday }))
 
-    // Slack recap (no-op if SLACK_WEBHOOK_URL unset). Real runs only.
     if (!dryRun) {
       const recap = buildAutoApplyRecap(report.results, alreadyToday + report.applied, DAILY_CAP)
       if (recap) await notifySlack(recap)
