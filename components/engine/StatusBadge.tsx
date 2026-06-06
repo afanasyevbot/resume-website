@@ -17,6 +17,7 @@ const STATUS_MAP: Record<string, BadgeConfig> = {
   offer:        { text: '#9a6a08', bg: 'rgba(154,106,8,0.16)',  dot: '#c8901a' },
   rejected:     { text: '#a8463a', bg: 'rgba(168,70,58,0.12)',  dot: '#c05545' },
   discarded:    { text: '#8a7d62', bg: 'rgba(138,125,98,0.12)', dot: '#a99c7e' },
+  archived:     { text: '#8a7d62', bg: 'rgba(138,125,98,0.12)', dot: '#a99c7e' },
 }
 
 const FALLBACK: BadgeConfig = {

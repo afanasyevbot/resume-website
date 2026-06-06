@@ -57,7 +57,7 @@ export interface DashboardData {
 export async function getCounts(): Promise<KpiCounts> {
   const r = await sql`
     select
-      count(*) filter (where status != 'discarded') as sourced,
+      count(*) filter (where status not in ('discarded', 'archived')) as sourced,
       count(*) filter (where route = 'tailor' and status in ('scored','tailored','queued')) as in_queue,
       count(*) filter (where status = 'applied') as applied,
       count(*) filter (where status in ('responded','interviewing','offer','rejected')) as responded
@@ -117,7 +117,7 @@ export async function listQueue(limit = 30): Promise<RoleRow[]> {
       order by created_at desc
       limit 1
     ) fb on true
-    where r.status != 'discarded'
+    where r.status not in ('discarded', 'archived')
     order by
       case r.route when 'tailor' then 1 when 'flag' then 2 else 3 end,
       r.fit_score desc nulls last,
