@@ -37,16 +37,21 @@ function statesFor(props: AgentTrailProps): StepState[] {
   const reachedApplied = ['applied', 'responded', 'interviewing', 'offer', 'rejected'].includes(s)
   const reachedResponse = ['responded', 'interviewing', 'offer', 'rejected'].includes(s)
 
-  // Author: greenhouse/ashby/email/research = agent; manual = Matthew himself.
-  const sourcedAuthor: 'agent' | 'human' =
-    source && source !== 'manual' ? 'agent' : 'human'
+  // Historical = a past application Matthew did manually before the engine; every
+  // step was human, so don't paint agent fingerprints on work the engine never did.
+  const isHistorical = source === 'historical'
 
-  // Tailoring is always agent-driven (Claude does it).
-  // Applying is always Matthew today (Phase 1); flips to "agent" in Phase 2.
+  // Author: greenhouse/ashby/email/research = agent; manual/historical = Matthew.
+  const sourcedAuthor: 'agent' | 'human' =
+    !isHistorical && source && source !== 'manual' ? 'agent' : 'human'
+  const pipelineAuthor: 'agent' | 'human' = isHistorical ? 'human' : 'agent'
+
+  // Tailoring is agent-driven for engine roles (Claude does it), human for historical.
+  // Applying is Matthew today (Phase 1); flips to "agent" for engine auto-applies.
   return [
     { key: 'sourced', label: 'Sourced', done: true, author: sourcedAuthor },
-    { key: 'scored', label: 'Scored', done: reachedScored, author: reachedScored ? 'agent' : null },
-    { key: 'tailored', label: 'Tailored', done: reachedTailored, author: reachedTailored ? 'agent' : null },
+    { key: 'scored', label: 'Scored', done: reachedScored, author: reachedScored ? pipelineAuthor : null },
+    { key: 'tailored', label: 'Tailored', done: reachedTailored, author: reachedTailored ? pipelineAuthor : null },
     { key: 'applied', label: 'Applied', done: reachedApplied, author: reachedApplied ? 'human' : null },
     { key: 'response', label: 'Response', done: reachedResponse, author: reachedResponse ? null : null },
   ]
