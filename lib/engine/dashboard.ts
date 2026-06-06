@@ -64,7 +64,12 @@ export async function getCounts(): Promise<KpiCounts> {
     from roles
   `
   const d = await sql`
-    select count(*) as n from application_packages where outreach_draft is not null and status = 'draft'
+    select count(*) as n
+    from application_packages p
+    join roles r on r.id = p.role_id
+    where p.outreach_draft is not null
+      and p.status = 'draft'
+      and r.status not in ('archived', 'discarded')
   `
   const row = r[0] as Record<string, string | number>
   const dr = d[0] as Record<string, string | number>
