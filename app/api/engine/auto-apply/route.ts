@@ -44,12 +44,15 @@ interface RunOpts {
   dryRun: boolean
   /** Minimum fit score for auto-picked roles (cron uses 80; the manual button 0). */
   minFit?: number
+  /** Who triggered this — 'auto' (cron) counts against the daily cap; 'manual' doesn't. */
+  method?: 'auto' | 'manual'
 }
 
 /** Shared engine for both the manual button (POST) and the daily cron (GET). */
 async function runAutoApply(opts: RunOpts) {
   const { roleIds, maxApply, dryRun } = opts
   const minFit = opts.minFit ?? 0
+  const method = opts.method ?? 'auto'
 
   // Find eligible roles: tailored, route=tailor, url present (Greenhouse/Ashby)
   let roles: Array<{
@@ -180,7 +183,7 @@ async function runAutoApply(opts: RunOpts) {
       if (outcome === 'applied') {
         // Confirmed submitted → mark applied + event + LinkedIn reminders (atomic)
         const detail = JSON.stringify({
-          method: 'auto',
+          method,
           atsType: result.atsType,
           confirmed: true,
           hasScreenshots,
@@ -209,7 +212,7 @@ async function runAutoApply(opts: RunOpts) {
         // active queue for Matthew to verify by hand. No reminders: we don't know
         // it actually went through.
         const detail = JSON.stringify({
-          method: 'auto',
+          method,
           atsType: result.atsType,
           confirmed: false,
           hasScreenshots,
@@ -240,7 +243,7 @@ async function runAutoApply(opts: RunOpts) {
           .map((q) => q.label)
 
         if (!dryRun) {
-          const detail = JSON.stringify({ method: 'auto', reason: result.reason ?? outcome, unanswered })
+          const detail = JSON.stringify({ method, reason: result.reason ?? outcome, unanswered })
           await tx((txn) => [
             txn`update roles set status = 'needs_review', updated_at = now() where id = ${role.id}`,
             txn`insert into events (role_id, kind, detail) values (${role.id}, 'needs_review', ${detail}::jsonb)`,
@@ -285,7 +288,8 @@ const DAILY_CAP = 5
 /** Minimum fit score the cron will auto-submit. The manual button has no floor. */
 const CRON_MIN_FIT = 80
 
-/** How many roles were auto-applied (method=auto) since midnight UTC today. */
+/** How many roles were auto-applied (method=auto, i.e. by the cron — NOT the
+ *  manual button) since midnight UTC today. */
 async function autoAppliedToday(): Promise<number> {
   const rows = await sql`
     select count(*)::int as n from events
@@ -294,6 +298,23 @@ async function autoAppliedToday(): Promise<number> {
       and created_at >= date_trunc('day', now())
   `
   return Number((rows as Array<{ n: number }>)[0]?.n ?? 0)
+}
+
+/** Try to claim the cron lease lock atomically. Returns false if another run
+ *  already holds it (prevents two overlapping cron runs from both submitting). */
+async function claimCronLock(name: string, minutes = 10): Promise<boolean> {
+  const rows = await sql`
+    insert into cron_locks (name, locked_until)
+    values (${name}, now() + (${minutes} || ' minutes')::interval)
+    on conflict (name) do update set locked_until = excluded.locked_until
+    where cron_locks.locked_until < now()
+    returning name
+  `
+  return (rows as unknown[]).length > 0
+}
+
+async function releaseCronLock(name: string): Promise<void> {
+  await sql`update cron_locks set locked_until = now() where name = ${name}`
 }
 
 /**
@@ -314,6 +335,7 @@ export async function POST(req: Request) {
     maxApply: Math.min(body.maxApply ?? 5, 10),
     dryRun: body.dryRun ?? false,
     minFit: 0,
+    method: 'manual',
   })
   return NextResponse.json(report)
 }
@@ -336,20 +358,31 @@ export async function GET(req: Request) {
   // Allow a safe dry-run via ?dryRun=1 for testing the cron path without submitting.
   const dryRun = new URL(req.url).searchParams.get('dryRun') === '1'
 
-  const alreadyToday = await autoAppliedToday()
-  const remaining = Math.max(0, DAILY_CAP - alreadyToday)
-  if (remaining === 0) {
-    return NextResponse.json({ ok: true, capReached: true, appliedToday: alreadyToday, cap: DAILY_CAP })
+  // Atomic lease lock: refuse to run if another cron run is already in flight, so
+  // two overlapping runs can't both submit past the daily cap. (Dry runs skip the
+  // lock — they don't submit.)
+  if (!dryRun && !(await claimCronLock('auto_apply'))) {
+    return NextResponse.json({ ok: true, skipped: 'another run in progress' })
   }
 
-  const report = await runAutoApply({ maxApply: remaining, dryRun, minFit: CRON_MIN_FIT })
-  console.log('cron auto-apply:', JSON.stringify({ applied: report.applied, needsReview: report.needsReview, skipped: report.skipped, appliedToday: alreadyToday }))
+  try {
+    const alreadyToday = await autoAppliedToday()
+    const remaining = Math.max(0, DAILY_CAP - alreadyToday)
+    if (remaining === 0) {
+      return NextResponse.json({ ok: true, capReached: true, appliedToday: alreadyToday, cap: DAILY_CAP })
+    }
 
-  // Slack recap (no-op if SLACK_WEBHOOK_URL unset). Real runs only.
-  if (!dryRun) {
-    const recap = buildAutoApplyRecap(report.results, alreadyToday + report.applied, DAILY_CAP)
-    if (recap) await notifySlack(recap)
+    const report = await runAutoApply({ maxApply: remaining, dryRun, minFit: CRON_MIN_FIT, method: 'auto' })
+    console.log('cron auto-apply:', JSON.stringify({ applied: report.applied, needsReview: report.needsReview, skipped: report.skipped, appliedToday: alreadyToday }))
+
+    // Slack recap (no-op if SLACK_WEBHOOK_URL unset). Real runs only.
+    if (!dryRun) {
+      const recap = buildAutoApplyRecap(report.results, alreadyToday + report.applied, DAILY_CAP)
+      if (recap) await notifySlack(recap)
+    }
+
+    return NextResponse.json({ ok: true, appliedToday: alreadyToday, cap: DAILY_CAP, ...report })
+  } finally {
+    if (!dryRun) await releaseCronLock('auto_apply')
   }
-
-  return NextResponse.json({ ok: true, appliedToday: alreadyToday, cap: DAILY_CAP, ...report })
 }
