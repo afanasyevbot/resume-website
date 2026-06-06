@@ -3,6 +3,7 @@ import { verifySlackSignature } from '@/lib/engine/slack/verify'
 import { sql } from '@/lib/engine/db'
 import { loadRoleForApply, submitAndPersist } from '@/lib/engine/submitRole'
 import { postSlackMessage } from '@/lib/engine/slack/client'
+import { answerQuestion } from '@/lib/engine/slack/ask'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300
@@ -49,32 +50,48 @@ export async function POST(req: Request) {
     e?.type === 'message' && !e.bot_id && !e.subtype && !!e.text?.trim() && (!CHANNEL_ID || e.channel === CHANNEL_ID)
 
   if (isHumanReply) {
-    const answer = e!.text!.trim()
-    // Claim the most recent open question atomically (retries find it gone).
-    const claimed = await sql`
-      update slack_pending set status = 'done', resolved_at = now()
-      where id = (select id from slack_pending where kind = 'question' and status = 'pending' order by created_at desc limit 1)
-      returning role_id, question
+    const userText = e!.text!.trim()
+
+    // Check if there's a pending question first — if so, this is an answer.
+    const openQ = await sql`
+      select id, role_id, question from slack_pending
+      where kind = 'question' and status = 'pending'
+      order by created_at desc limit 1
     `
-    const row = (claimed as Array<{ role_id: number; question: string }>)[0]
-    if (row) {
-      const roleId = Number(row.role_id)
-      const question = row.question
-      after(async () => {
-        const role = await loadRoleForApply(roleId)
-        if (!role) return
-        const r = await submitAndPersist(role, {
-          method: 'auto-answered',
-          manualAnswers: { [question]: answer },
-          askOnSlack: true,
+    const pending = (openQ as Array<{ id: number; role_id: number; question: string }>)[0]
+
+    if (pending) {
+      // It's an answer to a screening question — claim atomically and resubmit.
+      const claimed = await sql`
+        update slack_pending set status = 'done', resolved_at = now()
+        where id = ${pending.id} and status = 'pending'
+        returning role_id, question
+      `
+      const row = (claimed as Array<{ role_id: number; question: string }>)[0]
+      if (row) {
+        const roleId = Number(row.role_id)
+        const question = row.question
+        after(async () => {
+          const role = await loadRoleForApply(roleId)
+          if (!role) return
+          const r = await submitAndPersist(role, {
+            method: 'auto-answered',
+            manualAnswers: { [question]: userText },
+            askOnSlack: true,
+          })
+          const text =
+            r.outcome === 'applied'
+              ? `✅ Got it — applied to ${r.company} — ${r.title}.`
+              : r.outcome === 'needs_review'
+                ? `Thanks. ${r.company}: ${r.reason ?? 'still needs review'} (see dashboard).`
+                : `Thanks. ${r.company}: ${r.reason ?? 'could not submit'}.`
+          await postSlackMessage(text)
         })
-        const text =
-          r.outcome === 'applied'
-            ? `✅ Got it — applied to ${r.company} — ${r.title}.`
-            : r.outcome === 'needs_review'
-              ? `Thanks. ${r.company}: ${r.reason ?? 'still needs review'} (see dashboard).`
-              : `Thanks. ${r.company}: ${r.reason ?? 'could not submit'}.`
-        await postSlackMessage(text)
+      }
+    } else {
+      // No pending question — treat as a conversational query to the engine.
+      after(async () => {
+        await answerQuestion(userText)
       })
     }
   }
