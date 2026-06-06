@@ -23,7 +23,10 @@ export async function proxy(req: NextRequest) {
   if (
     pathname === '/engine/login' ||
     pathname.startsWith('/api/engine/login') ||
-    pathname.startsWith('/api/engine/logout')
+    pathname.startsWith('/api/engine/logout') ||
+    // Slack callbacks authenticate via request-signature verification inside the
+    // route (not the session cookie), so they must bypass the cookie gate.
+    pathname.startsWith('/api/engine/slack/')
   ) {
     return NextResponse.next()
   }
