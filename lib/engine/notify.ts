@@ -1,23 +1,15 @@
 /**
  * Slack notifications (one-way: engine → Matthew).
  *
- * Best-effort and env-gated: if SLACK_WEBHOOK_URL is unset (local/tests) this
- * is a no-op, and a Slack failure NEVER breaks the engine — notifications are
- * not allowed to take down an application run.
+ * Posts via the bot token (chat.postMessage) so it shares the same, verified
+ * channel as the two-way flows — no dependency on the incoming webhook, which a
+ * reinstall can rotate. Best-effort + env-gated: no-op without a bot token, and
+ * a Slack failure NEVER breaks an application run.
  */
-const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL
+import { postSlackMessage } from './slack/client'
 
 export async function notifySlack(text: string): Promise<void> {
-  if (!SLACK_WEBHOOK_URL) return
-  try {
-    await fetch(SLACK_WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, mrkdwn: true }),
-    })
-  } catch {
-    // swallow — notifications are best-effort
-  }
+  await postSlackMessage(text)
 }
 
 interface RecapRole {
