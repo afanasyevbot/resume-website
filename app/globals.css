@@ -141,3 +141,59 @@ input:focus-visible {
     padding: 0 !important;
   }
 }
+
+/* ── Engine: role-queue row hover (CSS-only so the table stays a Server Component) ── */
+.role-queue-row {
+  background-color: transparent;
+}
+.role-queue-row:hover {
+  background-color: rgba(34, 29, 20, 0.40);
+}
+
+/* ── Engine: cream-paper cards on dark backdrop ─────────────────────────
+   The page wrapper (.engine-cream) keeps LIGHT text — the header/title sit
+   on the dark backdrop. Each .vellum CARD flips to cream paper with DARK
+   ink by overriding the text/surface/border custom properties locally; they
+   cascade to every child, so components that use var(--color-text-*) become
+   dark automatically inside cards.
+*/
+.engine-cream {
+  /* page-level: light text on the dark backdrop (header, title) */
+}
+
+/* Cream-paper card: light background, dark ink, soft drop shadow. */
+.engine-cream .vellum {
+  background: #faf7f1;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.22), 0 10px 30px rgba(0, 0, 0, 0.18);
+
+  /* dark ink scale (overrides the light root values, cascades to children) */
+  --color-text-bright: #1c1810;
+  --color-text-primary: #2c2518;
+  --color-text-secondary: #4a4234;
+  --color-text-muted: #5e5440;
+  --color-text-dim: #70654c;
+  --color-text-faint: #8a7d62;
+  --color-text-ghost: #a99c7e;
+  --color-text-whisper: #cabd9f;
+
+  /* cream-appropriate surfaces + borders + accent */
+  --color-surface: #faf7f1;
+  --color-surface-deep: #f1eadc;
+  --color-border: #e4dac6;
+  --color-border-inner: #ece3d2;
+  --color-gold: #8a6d3b;
+  --color-gold-dim: rgba(138, 109, 59, 0.30);
+}
+
+/* Inputs inside cream cards need a visible field on the light paper. */
+.engine-cream .vellum input,
+.engine-cream .vellum textarea,
+.engine-cream .vellum select {
+  background-color: #fffdf8 !important;
+  border-color: #ddd0b8 !important;
+  color: #1c1810 !important;
+}
+.engine-cream .vellum input::placeholder,
+.engine-cream .vellum textarea::placeholder {
+  color: #a99c7e !important;
+}
