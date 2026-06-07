@@ -114,6 +114,12 @@ export async function processWebResults(
   for (const result of searchResults) {
     if (scored >= maxScores) break
 
+    // Aggregator gate: job boards (Mediabistro, The Muse, LinkedIn…) return
+    // truncated, mis-attributed listings — skip before spending a Claude call.
+    // Note: greenhouse/lever/ashby are NOT aggregators here — they host real
+    // direct-apply pages, so they're deliberately excluded from this list.
+    if (isAggregatorHost(result.url)) continue
+
     // Dedupe
     if (knownUrls.has(result.url)) continue
     newUrls++
@@ -215,6 +221,30 @@ const JUNK_PREFIXES = /^(permanent contract|remote|full[- ]time|part[- ]time|con
 
 function isAggregator(name: string): boolean {
   return AGGREGATORS.has(name.toLowerCase().trim())
+}
+
+/**
+ * Host substrings for job boards/aggregators whose pages should never be
+ * scored — they list other companies' jobs with truncated, mis-attributed
+ * titles. Deliberately excludes greenhouse/lever/ashby: those host real
+ * company application pages, which ARE worth scoring.
+ */
+const AGGREGATOR_HOSTS = [
+  'linkedin', 'indeed', 'glassdoor', 'ziprecruiter', 'simplyhired', 'monster',
+  'mediabistro', 'themuse', 'builtin', 'wellfound', 'angel.co', 'ycombinator',
+  'remotive', 'remote.co', 'jobgether', 'workingnomads', 'teal', 'tealhq',
+  'jobleads', 'hired.com', 'triplebyte', 'dice.com', 'lensa', 'jobright',
+  'jooble', 'jobspresso',
+]
+
+/** True if the URL's host belongs to a known job-board aggregator. */
+export function isAggregatorHost(url: string): boolean {
+  try {
+    const host = new URL(url).hostname.replace(/^www\./, '').toLowerCase()
+    return AGGREGATOR_HOSTS.some((a) => host.includes(a))
+  } catch {
+    return false
+  }
 }
 
 /** Best-effort company extraction from a search result title + URL. */

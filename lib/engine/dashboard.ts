@@ -58,7 +58,7 @@ export async function getCounts(): Promise<KpiCounts> {
   const r = await sql`
     select
       count(*) filter (where status not in ('discarded', 'archived')) as sourced,
-      count(*) filter (where route = 'tailor' and status in ('scored','tailored','queued','needs_review','awaiting_approval')) as in_queue,
+      count(*) filter (where route in ('tailor','flag') and status in ('scored','tailored','queued','needs_review','awaiting_approval')) as in_queue,
       count(*) filter (where status = 'applied') as applied,
       count(*) filter (where status in ('responded','interviewing','offer','rejected')) as responded
     from roles
