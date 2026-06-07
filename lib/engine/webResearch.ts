@@ -18,17 +18,51 @@ import type { TailorInput } from './tailorTypes'
 
 // ── Search query generation ─────────────────────────────────────────
 
+// Broad query pool spanning Matthew's whole lane — not just AI startups.
+// AI-native is the strong preference, but he also fits data infra, fintech,
+// vertical SaaS, and his proven supply-chain/logistics vertical. Role and geo
+// variants widen the net further. queriesForToday() rotates through these so
+// the open web gets searched from many angles over a few days.
 const QUERY_POOL = [
-  '"founding account executive" AI startup remote 2026',
-  '"mid-market account executive" "AI platform" OR "machine learning" hiring 2026',
-  '"account executive" "Series A" OR "Series B" AI remote 2026',
-  '"strategic account executive" "AI" OR "LLM" OR "generative" remote',
-  '"sales" "founding AE" AI SaaS startup hiring',
-  '"account executive" AI "legal tech" OR "insurance" OR "fintech" remote',
+  // ── AI-native (strong preference) ──
+  '"account executive" AI-native B2B SaaS startup remote hiring',
+  '"mid-market account executive" "AI platform" OR "LLM" remote 2026',
+  '"strategic account executive" generative AI startup remote',
+  '"founding account executive" AI startup remote',
+  '"account executive" "Series A" OR "Series B" AI remote hiring',
+  '"account executive" "applied AI" OR "AI agents" remote hiring 2026',
+  // ── Data / analytics infrastructure ──
+  '"account executive" "data platform" OR "data infrastructure" remote hiring',
+  '"mid-market account executive" analytics SaaS remote 2026',
+  '"account executive" "data warehouse" OR "observability" SaaS remote',
+  // ── Fintech ──
+  '"account executive" fintech SaaS remote hiring 2026',
+  '"mid-market account executive" "financial software" OR fintech remote',
+  '"account executive" "payments" OR "accounting software" SaaS remote',
+  // ── Vertical SaaS ──
+  '"account executive" vertical SaaS B2B remote hiring 2026',
+  '"account executive" "legal tech" OR "healthtech" OR "insurtech" SaaS remote',
+  '"account executive" "construction software" OR "field service" SaaS remote',
+  // ── Supply chain / logistics (proven vertical) ──
+  '"account executive" "supply chain" software SaaS remote hiring',
+  '"account executive" "logistics" OR "procurement" SaaS remote 2026',
+  '"mid-market account executive" "manufacturing" OR "ERP" software remote',
+  // ── Role / seniority variants ──
+  '"senior account executive" B2B SaaS AI remote hiring 2026',
+  '"named account executive" SaaS remote hiring',
+  '"account executive" "net new" OR "new business" SaaS remote 2026',
+  '"strategic account executive" mid-market SaaS remote',
+  // ── Geographies (his locations) ──
+  '"account executive" AI SaaS "Chicago" OR remote hiring',
+  '"account executive" SaaS "North Carolina" OR "South Carolina" OR remote',
+  '"account executive" B2B SaaS "Florida" OR remote hiring 2026',
+  // ── Stage / GTM ──
+  '"founding sales" OR "first sales hire" AI B2B startup remote',
   '"GTM" "account executive" AI-native startup remote 2026',
-  '"mid-market AE" AI data automation remote hiring',
+  '"account executive" "Series B" OR "Series C" SaaS remote hiring',
+  // ── AI adjacency ──
   '"account executive" "voice AI" OR "conversation intelligence" remote',
-  '"founding sales" AI B2B SaaS startup 2026',
+  '"account executive" "developer tools" OR "API platform" SaaS remote',
 ]
 
 /** Pick N non-repeating queries. Rotates by day-of-month so daily crons vary. */
@@ -77,6 +111,9 @@ export interface WebResearchReport {
   newUrls: number
   scored: number
   tailored: number
+  /** New companies auto-added to the deep-crawl target list (learning loop). */
+  companiesAdded: number
+  addedCompanies: string[]
   errors: string[]
   durationMs: number
 }
@@ -86,9 +123,11 @@ export interface WebResearchReport {
 interface WebResearchOptions {
   maxScores?: number
   autoTailor?: boolean
+  /** Max companies to auto-add to the target list per run (learning-loop cap). */
+  maxCompanyAdds?: number
 }
 
-const DEFAULTS = { maxScores: 5, autoTailor: true }
+const DEFAULTS = { maxScores: 5, autoTailor: true, maxCompanyAdds: 3 }
 
 /**
  * Process web search results: dedupe, title-gate, score, auto-tailor.
@@ -102,10 +141,12 @@ export async function processWebResults(
 ): Promise<WebResearchReport> {
   const maxScores = opts.maxScores ?? DEFAULTS.maxScores
   const autoTailor = opts.autoTailor ?? DEFAULTS.autoTailor
+  const maxCompanyAdds = opts.maxCompanyAdds ?? DEFAULTS.maxCompanyAdds
   const t0 = Date.now()
 
   const knownUrls = await getKnownUrls()
   const errors: string[] = []
+  const addedCompanies: string[] = []
   let relevant = 0
   let newUrls = 0
   let scored = 0
@@ -159,6 +200,19 @@ export async function processWebResults(
       scored++
       knownUrls.add(result.url)
 
+      // Learning loop: a strong-fit role (route=tailor, i.e. ≥70 and not
+      // enterprise-capped) at a Greenhouse/Ashby company we don't already track
+      // → add that company to the deep-crawl list so the ATS engine covers it
+      // from now on. This is how the open-web discovery grows the target roster.
+      if (matchResult.route === 'tailor' && addedCompanies.length < maxCompanyAdds) {
+        try {
+          const added = await addDiscoveredCompany(role.company, result.url)
+          if (added) addedCompanies.push(added)
+        } catch (addErr) {
+          errors.push(`${company}: company auto-add failed: ${addErr instanceof Error ? addErr.message : String(addErr)}`)
+        }
+      }
+
       // Auto-tailor high-fit roles
       if (autoTailor && matchResult.route === 'tailor') {
         try {
@@ -201,6 +255,8 @@ export async function processWebResults(
     newUrls,
     scored,
     tailored,
+    companiesAdded: addedCompanies.length,
+    addedCompanies,
     errors,
     durationMs: Date.now() - t0,
   }
@@ -245,6 +301,71 @@ export function isAggregatorHost(url: string): boolean {
   } catch {
     return false
   }
+}
+
+/** Greenhouse/Ashby slugs are lowercase, alphanumeric, hyphen-separated. */
+function isValidSlug(s: string): boolean {
+  return /^[a-z0-9][a-z0-9-]{1,40}$/.test(s)
+}
+
+/**
+ * Detect a Greenhouse/Ashby board slug from a job URL so the learning loop can
+ * register the company for deep ATS crawling. Returns null for anything we
+ * can't confidently attribute (custom domains, aggregators, career pages).
+ * Pure + exported for testing.
+ */
+export function detectAtsFromUrl(
+  url: string,
+): { ats: 'greenhouse' | 'ashby'; slug: string } | null {
+  try {
+    const u = new URL(url)
+    const host = u.hostname.replace(/^www\./, '').toLowerCase()
+    const parts = u.pathname.split('/').filter(Boolean)
+
+    if (host.endsWith('greenhouse.io')) {
+      // {slug}.greenhouse.io  (rare embed form)
+      const sub = host.slice(0, host.length - '.greenhouse.io'.length)
+      if (sub && !['boards', 'job-boards', 'api', 'boards-api'].includes(sub) && isValidSlug(sub)) {
+        return { ats: 'greenhouse', slug: sub }
+      }
+      // boards.greenhouse.io/{slug}/...  or  job-boards.greenhouse.io/{slug}/...
+      if (parts[0] && isValidSlug(parts[0])) return { ats: 'greenhouse', slug: parts[0] }
+      return null
+    }
+
+    if (host.endsWith('ashbyhq.com')) {
+      // jobs.ashbyhq.com/{slug}/...
+      if (parts[0] && isValidSlug(parts[0])) return { ats: 'ashby', slug: parts[0] }
+      return null
+    }
+
+    return null
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Learning loop: register a discovered company for deep ATS crawling.
+ * Inserts into target_companies, deduped by (ats, slug) so existing targets and
+ * prior auto-adds are no-ops. Returns the company name if a NEW row was added,
+ * else null. Only call for strong-fit roles (route=tailor).
+ */
+async function addDiscoveredCompany(companyName: string, url: string): Promise<string | null> {
+  const detected = detectAtsFromUrl(url)
+  if (!detected) return null
+  // Fall back to a capitalized slug when inference produced a junk/unknown name.
+  const name =
+    companyName && companyName !== 'Unknown Company'
+      ? companyName
+      : detected.slug.charAt(0).toUpperCase() + detected.slug.slice(1)
+  const rows = await sql`
+    insert into target_companies (name, ats, slug, active, notes)
+    values (${name}, ${detected.ats}, ${detected.slug}, true, 'auto-added by web research')
+    on conflict (ats, slug) do nothing
+    returning id
+  `
+  return rows.length > 0 ? name : null
 }
 
 /** Best-effort company extraction from a search result title + URL. */

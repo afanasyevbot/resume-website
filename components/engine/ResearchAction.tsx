@@ -8,6 +8,7 @@ interface ResearchReport {
   resultsFound: number
   scored: number
   tailored: number
+  companiesAdded: number
   errors: string[]
 }
 
@@ -67,6 +68,9 @@ export default function ResearchAction() {
         <span style={{ color: 'var(--color-gold)' }}>+{report.scored}</span> found
         {report.tailored > 0 && (
           <span style={{ color: 'var(--color-text-dim)' }}> · {report.tailored} tailored</span>
+        )}
+        {report.companiesAdded > 0 && (
+          <span style={{ color: 'var(--color-text-dim)' }}> · {report.companiesAdded} new co.</span>
         )}
       </div>
     )

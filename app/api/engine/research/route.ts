@@ -61,13 +61,14 @@ async function tavilyExtract(urls: string[]): Promise<Map<string, string>> {
 /** Manual trigger from the dashboard. */
 export async function POST(req: Request) {
   const body = (await req.json().catch(() => ({}))) as { maxScores?: number }
-  const maxScores = typeof body.maxScores === 'number' ? Math.min(10, Math.max(1, body.maxScores)) : 5
+  const maxScores = typeof body.maxScores === 'number' ? Math.min(15, Math.max(1, body.maxScores)) : 10
 
   if (!TAVILY_API_KEY) {
     return NextResponse.json({ error: 'TAVILY_API_KEY not configured' }, { status: 500 })
   }
 
-  const queries = queriesForToday(3)
+  // Search the open web broadly — 6 rotating queries across the full lane.
+  const queries = queriesForToday(6)
   const allResults: WebSearchResult[] = []
 
   for (const q of queries) {
@@ -77,7 +78,7 @@ export async function POST(req: Request) {
 
   // Dedupe by URL before extracting
   const uniqueUrls = [...new Set(allResults.map((r) => r.url))]
-  const extracted = await tavilyExtract(uniqueUrls.slice(0, 15)) // cap extraction calls
+  const extracted = await tavilyExtract(uniqueUrls.slice(0, 25)) // cap extraction calls
 
   const client = new Anthropic({ apiKey: anthropicKey() })
   const report = await processWebResults(client, allResults, extracted, { maxScores, autoTailor: true })
@@ -98,7 +99,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: 'TAVILY_API_KEY not configured' }, { status: 500 })
   }
 
-  const queries = queriesForToday(2) // fewer queries for cron to stay in time budget
+  const queries = queriesForToday(5) // broad daily sweep, sized to stay in the 300s budget
   const allResults: WebSearchResult[] = []
 
   for (const q of queries) {
@@ -107,12 +108,12 @@ export async function GET(req: Request) {
   }
 
   const uniqueUrls = [...new Set(allResults.map((r) => r.url))]
-  const extracted = await tavilyExtract(uniqueUrls.slice(0, 10))
+  const extracted = await tavilyExtract(uniqueUrls.slice(0, 20))
 
   const client = new Anthropic({ apiKey: anthropicKey() })
-  const report = await processWebResults(client, allResults, extracted, { maxScores: 3, autoTailor: true })
+  const report = await processWebResults(client, allResults, extracted, { maxScores: 8, autoTailor: true })
   report.queriesRun = queries.length
 
-  console.log('cron research:', JSON.stringify({ scored: report.scored, tailored: report.tailored, errors: report.errors.length }))
+  console.log('cron research:', JSON.stringify({ scored: report.scored, tailored: report.tailored, companiesAdded: report.companiesAdded, errors: report.errors.length }))
   return NextResponse.json({ ok: true, ...report })
 }

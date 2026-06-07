@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { isAggregatorHost, queriesForToday } from '../webResearch'
+import { isAggregatorHost, queriesForToday, detectAtsFromUrl } from '../webResearch'
 
 describe('isAggregatorHost', () => {
   it('flags job-board aggregators that return mis-attributed listings', () => {
@@ -28,8 +28,45 @@ describe('isAggregatorHost', () => {
 
 describe('queriesForToday', () => {
   it('returns the requested number of non-empty queries', () => {
-    const qs = queriesForToday(3)
-    expect(qs).toHaveLength(3)
+    const qs = queriesForToday(6)
+    expect(qs).toHaveLength(6)
     expect(qs.every((q) => q.length > 0)).toBe(true)
+  })
+})
+
+describe('detectAtsFromUrl', () => {
+  it('detects a Greenhouse board slug from boards.greenhouse.io', () => {
+    expect(detectAtsFromUrl('https://boards.greenhouse.io/ramp/jobs/123')).toEqual({
+      ats: 'greenhouse',
+      slug: 'ramp',
+    })
+  })
+
+  it('detects a Greenhouse slug from job-boards.greenhouse.io', () => {
+    expect(detectAtsFromUrl('https://job-boards.greenhouse.io/notion/jobs/9')).toEqual({
+      ats: 'greenhouse',
+      slug: 'notion',
+    })
+  })
+
+  it('detects an Ashby slug from jobs.ashbyhq.com', () => {
+    expect(detectAtsFromUrl('https://jobs.ashbyhq.com/openai/abc-def')).toEqual({
+      ats: 'ashby',
+      slug: 'openai',
+    })
+  })
+
+  it('returns null for a non-ATS company career page', () => {
+    expect(detectAtsFromUrl('https://www.cursor.com/careers/ae')).toBeNull()
+  })
+
+  it('returns null for an aggregator or unparseable URL', () => {
+    expect(detectAtsFromUrl('https://www.linkedin.com/jobs/view/1')).toBeNull()
+    expect(detectAtsFromUrl('garbage')).toBeNull()
+  })
+
+  it('does not mistake the bare board host for a slug', () => {
+    // No slug segment after the host → nothing to register.
+    expect(detectAtsFromUrl('https://boards.greenhouse.io/')).toBeNull()
   })
 })
