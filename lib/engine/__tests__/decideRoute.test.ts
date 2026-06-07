@@ -15,8 +15,14 @@ describe('decideRoute', () => {
     expect(decideRoute(assessment({ score: 60 }))).toBe('flag')
   })
 
+  it('routes a low-but-reviewable score (45-54) to flag, not discard', () => {
+    expect(decideRoute(assessment({ score: 50 }))).toBe('flag')
+    expect(decideRoute(assessment({ score: 45 }))).toBe('flag')
+  })
+
   it('routes a weak score to discard', () => {
     expect(decideRoute(assessment({ score: 40 }))).toBe('discard')
+    expect(decideRoute(assessment({ score: 44 }))).toBe('discard')
   })
 
   it('caps an enterprise role at flag even with a high score', () => {

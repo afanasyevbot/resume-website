@@ -4,6 +4,8 @@ import { scoreRole } from './matcher'
 import { persistScoredRole, type PersistableRole } from './persistRole'
 import { tailorRole } from './tailor'
 import type { TailorInput } from './tailorTypes'
+import { extractJsonObject } from './jsonExtract'
+import { hasBudget, logUsage } from './costGuard'
 
 /**
  * Web Research Sourcing Agent
@@ -18,17 +20,52 @@ import type { TailorInput } from './tailorTypes'
 
 // ── Search query generation ─────────────────────────────────────────
 
+// Broad query pool spanning Matthew's whole lane — not just AI startups.
+// AI-native is the strong preference, but he also fits data infra, fintech,
+// vertical SaaS, and his proven supply-chain/logistics vertical. Role and geo
+// variants widen the net further. queriesForToday() rotates through these so
+// the open web gets searched from many angles over a few days.
 const QUERY_POOL = [
-  '"founding account executive" AI startup remote 2026',
-  '"mid-market account executive" "AI platform" OR "machine learning" hiring 2026',
-  '"account executive" "Series A" OR "Series B" AI remote 2026',
-  '"strategic account executive" "AI" OR "LLM" OR "generative" remote',
-  '"sales" "founding AE" AI SaaS startup hiring',
-  '"account executive" AI "legal tech" OR "insurance" OR "fintech" remote',
+  // ── AI-native (strong preference) ──
+  '"account executive" AI-native B2B SaaS startup remote hiring',
+  '"mid-market account executive" "AI platform" OR "LLM" remote 2026',
+  '"strategic account executive" generative AI startup remote',
+  '"founding account executive" AI startup remote',
+  '"account executive" "Series A" OR "Series B" AI remote hiring',
+  '"account executive" "applied AI" OR "AI agents" remote hiring 2026',
+  // ── Data / analytics infrastructure ──
+  '"account executive" "data platform" OR "data infrastructure" remote hiring',
+  '"mid-market account executive" analytics SaaS remote 2026',
+  '"account executive" "data warehouse" OR "observability" SaaS remote',
+  // ── Fintech ──
+  '"account executive" fintech SaaS remote hiring 2026',
+  '"mid-market account executive" "financial software" OR fintech remote',
+  '"account executive" "payments" OR "accounting software" SaaS remote',
+  // ── Vertical SaaS ──
+  '"account executive" vertical SaaS B2B remote hiring 2026',
+  '"account executive" "legal tech" OR "healthtech" OR "insurtech" SaaS remote',
+  '"account executive" "construction software" OR "field service" SaaS remote',
+  // ── Supply chain / logistics (proven vertical) ──
+  '"account executive" "supply chain" software SaaS remote hiring',
+  '"account executive" "logistics" OR "procurement" SaaS remote 2026',
+  '"mid-market account executive" "manufacturing" OR "ERP" software remote',
+  // ── Role / seniority variants ──
+  '"senior account executive" B2B SaaS AI remote hiring 2026',
+  '"named account executive" SaaS remote hiring',
+  '"account executive" "net new" OR "new business" SaaS remote 2026',
+  '"strategic account executive" mid-market SaaS remote',
+  // ── Geographies (his locations) ──
+  '"account executive" B2B SaaS "Minnesota" OR "Minneapolis" OR remote hiring',
+  '"account executive" AI SaaS "Chicago" OR remote hiring',
+  '"account executive" SaaS "North Carolina" OR "South Carolina" OR remote',
+  '"account executive" B2B SaaS "Florida" OR remote hiring 2026',
+  // ── Stage / GTM ──
+  '"founding sales" OR "first sales hire" AI B2B startup remote',
   '"GTM" "account executive" AI-native startup remote 2026',
-  '"mid-market AE" AI data automation remote hiring',
+  '"account executive" "Series B" OR "Series C" SaaS remote hiring',
+  // ── AI adjacency ──
   '"account executive" "voice AI" OR "conversation intelligence" remote',
-  '"founding sales" AI B2B SaaS startup 2026',
+  '"account executive" "developer tools" OR "API platform" SaaS remote',
 ]
 
 /** Pick N non-repeating queries. Rotates by day-of-month so daily crons vary. */
@@ -77,6 +114,8 @@ export interface WebResearchReport {
   newUrls: number
   scored: number
   tailored: number
+  /** Number of dynamic "find-lookalikes" queries derived from your good fits. */
+  lookalikeCount: number
   errors: string[]
   durationMs: number
 }
@@ -86,6 +125,7 @@ export interface WebResearchReport {
 interface WebResearchOptions {
   maxScores?: number
   autoTailor?: boolean
+  lookalikeCount?: number
 }
 
 const DEFAULTS = { maxScores: 5, autoTailor: true }
@@ -113,6 +153,12 @@ export async function processWebResults(
 
   for (const result of searchResults) {
     if (scored >= maxScores) break
+
+    // Aggregator gate: job boards (Mediabistro, The Muse, LinkedIn…) return
+    // truncated, mis-attributed listings — skip before spending a Claude call.
+    // Note: greenhouse/lever/ashby are NOT aggregators here — they host real
+    // direct-apply pages, so they're deliberately excluded from this list.
+    if (isAggregatorHost(result.url)) continue
 
     // Dedupe
     if (knownUrls.has(result.url)) continue
@@ -195,6 +241,7 @@ export async function processWebResults(
     newUrls,
     scored,
     tailored,
+    lookalikeCount: opts.lookalikeCount ?? 0,
     errors,
     durationMs: Date.now() - t0,
   }
@@ -202,11 +249,17 @@ export async function processWebResults(
 
 // ── Helpers ──────────────────────────────────────────────────────────
 
-/** Aggregator/job-board domains and suffixes to strip from company inference. */
+/**
+ * Names/suffixes to strip when inferring company from a title or URL.
+ * This is for title/name cleanup only — NOT for URL gating.
+ * Deliberately excludes 'lever', 'greenhouse', 'ashbyhq': those host real
+ * company application pages and we want to infer the company from the URL
+ * domain (e.g. jobs.lever.co/writer → "Writer"), not strip the platform name.
+ */
 const AGGREGATORS = new Set([
   'teal', 'tealhq', 'jobgether', 'working nomads', 'workingnomads', 'wellfound',
   'linkedin', 'indeed', 'glassdoor', 'ziprecruiter', 'workable', 'jobs by workable',
-  'lever', 'greenhouse', 'ashbyhq', 'jobleads', 'remote.co', 'remotive', 'builtin',
+  'jobleads', 'remote.co', 'remotive', 'builtin',
   'ycombinator', 'angel.co', 'simplyhired', 'monster', 'hired', 'triplebyte',
 ])
 
@@ -215,6 +268,134 @@ const JUNK_PREFIXES = /^(permanent contract|remote|full[- ]time|part[- ]time|con
 
 function isAggregator(name: string): boolean {
   return AGGREGATORS.has(name.toLowerCase().trim())
+}
+
+/**
+ * Host substrings for job boards/aggregators whose pages should never be
+ * scored — they list other companies' jobs with truncated, mis-attributed
+ * titles. Deliberately excludes greenhouse/lever/ashby: those host real
+ * company application pages, which ARE worth scoring.
+ */
+const AGGREGATOR_HOSTS = [
+  'linkedin', 'indeed', 'glassdoor', 'ziprecruiter', 'simplyhired', 'monster',
+  'mediabistro', 'themuse', 'builtin', 'wellfound', 'angel.co', 'ycombinator',
+  'remotive', 'remote.co', 'jobgether', 'workingnomads', 'teal', 'tealhq',
+  'jobleads', 'hired.com', 'triplebyte', 'dice.com', 'lensa', 'jobright',
+  'jooble', 'jobspresso',
+]
+
+/** True if the URL's host belongs to a known job-board aggregator. */
+export function isAggregatorHost(url: string): boolean {
+  try {
+    const host = new URL(url).hostname.replace(/^www\./, '').toLowerCase()
+    return AGGREGATOR_HOSTS.some((a) => {
+      if (a.includes('.')) {
+        // Entry includes TLD (e.g. 'angel.co', 'dice.com') — exact or subdomain match.
+        return host === a || host.endsWith('.' + a)
+      }
+      // Bare name (e.g. 'linkedin', 'teal') — match as a domain label, not as an
+      // arbitrary substring. 'teal' must not block 'stealth.ai' or similar.
+      return host === a || host.startsWith(a + '.') || host.includes('.' + a + '.')
+    })
+  } catch {
+    return false
+  }
+}
+
+// ── Find-lookalikes learning loop ────────────────────────────────────
+//
+// Instead of re-crawling companies you've already engaged, learn the PROFILE
+// of companies that fit you well (high score / 👍 / applied) and search for
+// NEW companies like them. Expands the funnel toward your actual taste.
+
+export interface FitSignal {
+  company: string
+  title: string
+  segment: string | null
+  aiNative: boolean | null
+  fitReasons: string[] | null
+}
+
+/**
+ * Pull the companies that have proven to be good fits: roles that scored
+ * strongly, that you applied to, or that you thumbs-up'd. One row per company
+ * (best signal wins), capped — this is the raw material for the profile.
+ */
+export async function gatherFitSignals(limit = 12): Promise<FitSignal[]> {
+  const rows = await sql`
+    select distinct on (r.company)
+      r.company, r.title, r.segment, r.ai_native as "aiNative", r.fit_reasons as "fitReasons"
+    from roles r
+    left join lateral (
+      select (detail->>'rating')::int as rating
+      from events where role_id = r.id and kind = 'rated'
+      order by created_at desc limit 1
+    ) fb on true
+    where r.fit_score >= 70 or r.status = 'applied' or fb.rating = 1
+    order by r.company, (fb.rating = 1) desc nulls last, r.fit_score desc nulls last
+    limit ${limit}
+  `
+  return rows as FitSignal[]
+}
+
+const LOOKALIKE_SYSTEM_PROMPT = `You help expand a job search for a mid-market / strategic Account Executive who also builds AI systems. Given companies that already fit the candidate well, infer their shared profile — product category, company stage, buyer type, company size — and propose NEW web-search queries that would surface DIFFERENT companies with that same profile currently hiring Account Executives.
+
+Rules:
+- Do NOT name any of the listed companies; the goal is to find new ones.
+- Match this query style: boolean operators, role + trait + "remote". Example: '"account executive" "data platform" Series B remote hiring'.
+- Favor mid-market (not enterprise), AI-native or adjacent B2B SaaS.
+
+Return ONLY valid JSON, no prose: {"queries": ["...", "..."]}`
+
+/** Pure: build the user prompt listing the good-fit companies. Testable. */
+export function buildLookalikePrompt(signals: FitSignal[], n: number): string {
+  const lines = signals.map((s) => {
+    const traits = [s.aiNative ? 'AI-native' : null, s.segment].filter(Boolean).join(', ')
+    const reasons = (s.fitReasons ?? []).slice(0, 2).join('; ')
+    return `- ${s.company} — ${s.title}${traits ? ` (${traits})` : ''}${reasons ? ` — ${reasons}` : ''}`
+  })
+  return `These companies fit the candidate well:\n${lines.join('\n')}\n\nReturn {"queries": [...]} with ${n} search queries that would find OTHER companies (not the ones listed) with the same profile hiring Account Executives.`
+}
+
+/**
+ * Generate dynamic "find more like these" search queries from your good fits.
+ * Non-essential enhancement: returns [] on too-little-signal, over-budget, or
+ * any failure so the broad static sweep always still runs.
+ */
+export async function lookalikeQueries(
+  client: Anthropic,
+  signals: FitSignal[],
+  n = 3,
+): Promise<string[]> {
+  if (signals.length < 3) return [] // not enough signal to learn a profile yet
+  if (!(await hasBudget())) return []
+  try {
+    const response = await client.messages.create({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 400,
+      temperature: 0.4,
+      system: LOOKALIKE_SYSTEM_PROMPT,
+      messages: [{ role: 'user', content: buildLookalikePrompt(signals, n) }],
+    })
+    const usage = response.usage
+    // Fire-and-forget: a DB error in cost tracking must not discard the valid queries.
+    logUsage({
+      kind: 'lookalike',
+      model: 'claude-sonnet-4-6',
+      inputTokens: usage?.input_tokens ?? 0,
+      outputTokens: usage?.output_tokens ?? 0,
+      cachedTokens: (usage as { cache_read_input_tokens?: number })?.cache_read_input_tokens ?? 0,
+      roleId: null,
+    }).catch(() => {})
+    const raw = response.content[0]?.type === 'text' ? response.content[0].text : ''
+    const parsed = JSON.parse(extractJsonObject(raw, 'lookalike')) as { queries?: unknown }
+    if (!Array.isArray(parsed.queries)) return []
+    return parsed.queries
+      .filter((q): q is string => typeof q === 'string' && q.trim().length > 0)
+      .slice(0, n)
+  } catch {
+    return []
+  }
 }
 
 /** Best-effort company extraction from a search result title + URL. */

@@ -5,7 +5,10 @@ export interface RouteThresholds {
   flag: number // score >= this (and < tailor) → flag; below → discard
 }
 
-export const DEFAULT_THRESHOLDS: RouteThresholds = { tailor: 70, flag: 55 }
+// flag floor is intentionally low (45): anything 45-69 surfaces in the queue
+// as a bare "worth a human look" role — never auto-tailored, just reviewable.
+// Only 70+ auto-tailors. Below 45 is discarded as clear noise.
+export const DEFAULT_THRESHOLDS: RouteThresholds = { tailor: 70, flag: 45 }
 
 /**
  * Deterministic routing. The LLM produces the judgment (score/segment);

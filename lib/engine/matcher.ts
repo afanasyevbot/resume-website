@@ -10,7 +10,7 @@ export const MATCH_SYSTEM_PROMPT = `${buildSystemPrompt(professionalContext)}
 
 ---
 
-You are screening a job posting for Matthew. Judge fit against his real background ONLY — never invent experience. He is a mid-market / strategic AE who also builds AI systems. He targets AI-native B2B tech (strongly preferred), plus strong adjacent data / fintech / SaaS. Remote-first (open to Chicago, the Carolinas, Florida). ~$170k+ OTE. Mid-market, NOT enterprise.
+You are screening a job posting for Matthew. Judge fit against his real background ONLY — never invent experience. He is a mid-market / strategic AE who also builds AI systems. He targets AI-native B2B tech (strongly preferred), plus strong adjacent data / fintech / SaaS. Remote-first (open to Minneapolis/Minnesota, Chicago, the Carolinas, Florida). ~$170k+ OTE. Mid-market, NOT enterprise.
 
 Return ONLY valid JSON, no markdown and no prose, in this exact shape:
 {

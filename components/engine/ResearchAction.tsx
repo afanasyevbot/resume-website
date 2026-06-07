@@ -6,9 +6,13 @@ import { useRouter } from 'next/navigation'
 interface ResearchReport {
   queriesRun: number
   resultsFound: number
+  newUrls: number
+  relevant: number
   scored: number
   tailored: number
+  lookalikeCount: number
   errors: string[]
+  durationMs: number
 }
 
 export default function ResearchAction() {
