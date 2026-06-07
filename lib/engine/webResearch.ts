@@ -53,6 +53,7 @@ const QUERY_POOL = [
   '"account executive" "net new" OR "new business" SaaS remote 2026',
   '"strategic account executive" mid-market SaaS remote',
   // ── Geographies (his locations) ──
+  '"account executive" B2B SaaS "Minnesota" OR "Minneapolis" OR remote hiring',
   '"account executive" AI SaaS "Chicago" OR remote hiring',
   '"account executive" SaaS "North Carolina" OR "South Carolina" OR remote',
   '"account executive" B2B SaaS "Florida" OR remote hiring 2026',
