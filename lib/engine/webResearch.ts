@@ -125,6 +125,7 @@ export interface WebResearchReport {
 interface WebResearchOptions {
   maxScores?: number
   autoTailor?: boolean
+  lookalikeCount?: number
 }
 
 const DEFAULTS = { maxScores: 5, autoTailor: true }
@@ -240,7 +241,7 @@ export async function processWebResults(
     newUrls,
     scored,
     tailored,
-    lookalikeCount: 0, // set by the caller, which generates the dynamic queries
+    lookalikeCount: opts.lookalikeCount ?? 0,
     errors,
     durationMs: Date.now() - t0,
   }
@@ -248,11 +249,17 @@ export async function processWebResults(
 
 // ── Helpers ──────────────────────────────────────────────────────────
 
-/** Aggregator/job-board domains and suffixes to strip from company inference. */
+/**
+ * Names/suffixes to strip when inferring company from a title or URL.
+ * This is for title/name cleanup only — NOT for URL gating.
+ * Deliberately excludes 'lever', 'greenhouse', 'ashbyhq': those host real
+ * company application pages and we want to infer the company from the URL
+ * domain (e.g. jobs.lever.co/writer → "Writer"), not strip the platform name.
+ */
 const AGGREGATORS = new Set([
   'teal', 'tealhq', 'jobgether', 'working nomads', 'workingnomads', 'wellfound',
   'linkedin', 'indeed', 'glassdoor', 'ziprecruiter', 'workable', 'jobs by workable',
-  'lever', 'greenhouse', 'ashbyhq', 'jobleads', 'remote.co', 'remotive', 'builtin',
+  'jobleads', 'remote.co', 'remotive', 'builtin',
   'ycombinator', 'angel.co', 'simplyhired', 'monster', 'hired', 'triplebyte',
 ])
 
@@ -281,7 +288,15 @@ const AGGREGATOR_HOSTS = [
 export function isAggregatorHost(url: string): boolean {
   try {
     const host = new URL(url).hostname.replace(/^www\./, '').toLowerCase()
-    return AGGREGATOR_HOSTS.some((a) => host.includes(a))
+    return AGGREGATOR_HOSTS.some((a) => {
+      if (a.includes('.')) {
+        // Entry includes TLD (e.g. 'angel.co', 'dice.com') — exact or subdomain match.
+        return host === a || host.endsWith('.' + a)
+      }
+      // Bare name (e.g. 'linkedin', 'teal') — match as a domain label, not as an
+      // arbitrary substring. 'teal' must not block 'stealth.ai' or similar.
+      return host === a || host.startsWith(a + '.') || host.includes('.' + a + '.')
+    })
   } catch {
     return false
   }
@@ -317,7 +332,7 @@ export async function gatherFitSignals(limit = 12): Promise<FitSignal[]> {
       order by created_at desc limit 1
     ) fb on true
     where r.fit_score >= 70 or r.status = 'applied' or fb.rating = 1
-    order by r.company, r.fit_score desc nulls last
+    order by r.company, (fb.rating = 1) desc nulls last, r.fit_score desc nulls last
     limit ${limit}
   `
   return rows as FitSignal[]
@@ -363,14 +378,15 @@ export async function lookalikeQueries(
       messages: [{ role: 'user', content: buildLookalikePrompt(signals, n) }],
     })
     const usage = response.usage
-    await logUsage({
+    // Fire-and-forget: a DB error in cost tracking must not discard the valid queries.
+    logUsage({
       kind: 'lookalike',
       model: 'claude-sonnet-4-6',
       inputTokens: usage?.input_tokens ?? 0,
       outputTokens: usage?.output_tokens ?? 0,
       cachedTokens: (usage as { cache_read_input_tokens?: number })?.cache_read_input_tokens ?? 0,
       roleId: null,
-    })
+    }).catch(() => {})
     const raw = response.content[0]?.type === 'text' ? response.content[0].text : ''
     const parsed = JSON.parse(extractJsonObject(raw, 'lookalike')) as { queries?: unknown }
     if (!Array.isArray(parsed.queries)) return []

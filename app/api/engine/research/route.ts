@@ -87,9 +87,8 @@ export async function POST(req: Request) {
   const uniqueUrls = [...new Set(allResults.map((r) => r.url))]
   const extracted = await tavilyExtract(uniqueUrls.slice(0, 25)) // cap extraction calls
 
-  const report = await processWebResults(client, allResults, extracted, { maxScores, autoTailor: true })
+  const report = await processWebResults(client, allResults, extracted, { maxScores, autoTailor: true, lookalikeCount: dynamic.length })
   report.queriesRun = queries.length
-  report.lookalikeCount = dynamic.length
 
   return NextResponse.json(report)
 }
@@ -122,9 +121,8 @@ export async function GET(req: Request) {
   const uniqueUrls = [...new Set(allResults.map((r) => r.url))]
   const extracted = await tavilyExtract(uniqueUrls.slice(0, 20))
 
-  const report = await processWebResults(client, allResults, extracted, { maxScores: 8, autoTailor: true })
+  const report = await processWebResults(client, allResults, extracted, { maxScores: 8, autoTailor: true, lookalikeCount: dynamic.length })
   report.queriesRun = queries.length
-  report.lookalikeCount = dynamic.length
 
   console.log('cron research:', JSON.stringify({ scored: report.scored, tailored: report.tailored, lookalikes: report.lookalikeCount, errors: report.errors.length }))
   return NextResponse.json({ ok: true, ...report })

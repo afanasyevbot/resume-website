@@ -217,6 +217,7 @@ export async function runSourcing(
       capHit = true
       break
     }
+    // safe: plan.work is built from fetched which is a subset of companies, all pre-seeded above
     const stat = statByName.get(company.name)!
     try {
       const jd = await hydrateJd(company, l)
@@ -285,7 +286,7 @@ export async function runSourcing(
     }
   }
 
-  const perCompany = companies.map((c) => statByName.get(c.name)!)
+  const perCompany = [...statByName.values()]
   const totalSkippedDuplicate = plan.skippedDuplicate
   const totalSkippedIrrelevant = plan.skippedIrrelevant
 

@@ -12,6 +12,7 @@ describe('isAggregatorHost', () => {
     expect(isAggregatorHost('https://www.themuse.com/jobs/atlassian-ae')).toBe(true)
     expect(isAggregatorHost('https://www.linkedin.com/jobs/view/456')).toBe(true)
     expect(isAggregatorHost('https://builtin.com/job/789')).toBe(true)
+    expect(isAggregatorHost('https://teal.io/jobs/123')).toBe(true)
   })
 
   it('does NOT flag direct ATS application pages', () => {
@@ -24,6 +25,12 @@ describe('isAggregatorHost', () => {
   it('does NOT flag a company career page', () => {
     expect(isAggregatorHost('https://openai.com/careers/mid-market-ae')).toBe(false)
     expect(isAggregatorHost('https://www.cursor.com/careers')).toBe(false)
+  })
+
+  it('does NOT cause false positives from bare-name substring matches', () => {
+    // 'teal' must not block stealth.ai — substring match was the old bug
+    expect(isAggregatorHost('https://stealth.ai/jobs/ae')).toBe(false)
+    expect(isAggregatorHost('https://stealthmode.io/careers')).toBe(false)
   })
 
   it('returns false for an unparseable URL', () => {
