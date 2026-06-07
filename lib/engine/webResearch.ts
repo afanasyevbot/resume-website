@@ -4,6 +4,8 @@ import { scoreRole } from './matcher'
 import { persistScoredRole, type PersistableRole } from './persistRole'
 import { tailorRole } from './tailor'
 import type { TailorInput } from './tailorTypes'
+import { extractJsonObject } from './jsonExtract'
+import { hasBudget, logUsage } from './costGuard'
 
 /**
  * Web Research Sourcing Agent
@@ -112,9 +114,8 @@ export interface WebResearchReport {
   newUrls: number
   scored: number
   tailored: number
-  /** New companies auto-added to the deep-crawl target list (learning loop). */
-  companiesAdded: number
-  addedCompanies: string[]
+  /** Number of dynamic "find-lookalikes" queries derived from your good fits. */
+  lookalikeCount: number
   errors: string[]
   durationMs: number
 }
@@ -124,11 +125,9 @@ export interface WebResearchReport {
 interface WebResearchOptions {
   maxScores?: number
   autoTailor?: boolean
-  /** Max companies to auto-add to the target list per run (learning-loop cap). */
-  maxCompanyAdds?: number
 }
 
-const DEFAULTS = { maxScores: 5, autoTailor: true, maxCompanyAdds: 3 }
+const DEFAULTS = { maxScores: 5, autoTailor: true }
 
 /**
  * Process web search results: dedupe, title-gate, score, auto-tailor.
@@ -142,12 +141,10 @@ export async function processWebResults(
 ): Promise<WebResearchReport> {
   const maxScores = opts.maxScores ?? DEFAULTS.maxScores
   const autoTailor = opts.autoTailor ?? DEFAULTS.autoTailor
-  const maxCompanyAdds = opts.maxCompanyAdds ?? DEFAULTS.maxCompanyAdds
   const t0 = Date.now()
 
   const knownUrls = await getKnownUrls()
   const errors: string[] = []
-  const addedCompanies: string[] = []
   let relevant = 0
   let newUrls = 0
   let scored = 0
@@ -201,19 +198,6 @@ export async function processWebResults(
       scored++
       knownUrls.add(result.url)
 
-      // Learning loop: a strong-fit role (route=tailor, i.e. ≥70 and not
-      // enterprise-capped) at a Greenhouse/Ashby company we don't already track
-      // → add that company to the deep-crawl list so the ATS engine covers it
-      // from now on. This is how the open-web discovery grows the target roster.
-      if (matchResult.route === 'tailor' && addedCompanies.length < maxCompanyAdds) {
-        try {
-          const added = await addDiscoveredCompany(role.company, result.url)
-          if (added) addedCompanies.push(added)
-        } catch (addErr) {
-          errors.push(`${company}: company auto-add failed: ${addErr instanceof Error ? addErr.message : String(addErr)}`)
-        }
-      }
-
       // Auto-tailor high-fit roles
       if (autoTailor && matchResult.route === 'tailor') {
         try {
@@ -256,8 +240,7 @@ export async function processWebResults(
     newUrls,
     scored,
     tailored,
-    companiesAdded: addedCompanies.length,
-    addedCompanies,
+    lookalikeCount: 0, // set by the caller, which generates the dynamic queries
     errors,
     durationMs: Date.now() - t0,
   }
@@ -304,69 +287,99 @@ export function isAggregatorHost(url: string): boolean {
   }
 }
 
-/** Greenhouse/Ashby slugs are lowercase, alphanumeric, hyphen-separated. */
-function isValidSlug(s: string): boolean {
-  return /^[a-z0-9][a-z0-9-]{1,40}$/.test(s)
+// ── Find-lookalikes learning loop ────────────────────────────────────
+//
+// Instead of re-crawling companies you've already engaged, learn the PROFILE
+// of companies that fit you well (high score / 👍 / applied) and search for
+// NEW companies like them. Expands the funnel toward your actual taste.
+
+export interface FitSignal {
+  company: string
+  title: string
+  segment: string | null
+  aiNative: boolean | null
+  fitReasons: string[] | null
 }
 
 /**
- * Detect a Greenhouse/Ashby board slug from a job URL so the learning loop can
- * register the company for deep ATS crawling. Returns null for anything we
- * can't confidently attribute (custom domains, aggregators, career pages).
- * Pure + exported for testing.
+ * Pull the companies that have proven to be good fits: roles that scored
+ * strongly, that you applied to, or that you thumbs-up'd. One row per company
+ * (best signal wins), capped — this is the raw material for the profile.
  */
-export function detectAtsFromUrl(
-  url: string,
-): { ats: 'greenhouse' | 'ashby'; slug: string } | null {
-  try {
-    const u = new URL(url)
-    const host = u.hostname.replace(/^www\./, '').toLowerCase()
-    const parts = u.pathname.split('/').filter(Boolean)
-
-    if (host.endsWith('greenhouse.io')) {
-      // {slug}.greenhouse.io  (rare embed form)
-      const sub = host.slice(0, host.length - '.greenhouse.io'.length)
-      if (sub && !['boards', 'job-boards', 'api', 'boards-api'].includes(sub) && isValidSlug(sub)) {
-        return { ats: 'greenhouse', slug: sub }
-      }
-      // boards.greenhouse.io/{slug}/...  or  job-boards.greenhouse.io/{slug}/...
-      if (parts[0] && isValidSlug(parts[0])) return { ats: 'greenhouse', slug: parts[0] }
-      return null
-    }
-
-    if (host.endsWith('ashbyhq.com')) {
-      // jobs.ashbyhq.com/{slug}/...
-      if (parts[0] && isValidSlug(parts[0])) return { ats: 'ashby', slug: parts[0] }
-      return null
-    }
-
-    return null
-  } catch {
-    return null
-  }
-}
-
-/**
- * Learning loop: register a discovered company for deep ATS crawling.
- * Inserts into target_companies, deduped by (ats, slug) so existing targets and
- * prior auto-adds are no-ops. Returns the company name if a NEW row was added,
- * else null. Only call for strong-fit roles (route=tailor).
- */
-async function addDiscoveredCompany(companyName: string, url: string): Promise<string | null> {
-  const detected = detectAtsFromUrl(url)
-  if (!detected) return null
-  // Fall back to a capitalized slug when inference produced a junk/unknown name.
-  const name =
-    companyName && companyName !== 'Unknown Company'
-      ? companyName
-      : detected.slug.charAt(0).toUpperCase() + detected.slug.slice(1)
+export async function gatherFitSignals(limit = 12): Promise<FitSignal[]> {
   const rows = await sql`
-    insert into target_companies (name, ats, slug, active, notes)
-    values (${name}, ${detected.ats}, ${detected.slug}, true, 'auto-added by web research')
-    on conflict (ats, slug) do nothing
-    returning id
+    select distinct on (r.company)
+      r.company, r.title, r.segment, r.ai_native as "aiNative", r.fit_reasons as "fitReasons"
+    from roles r
+    left join lateral (
+      select (detail->>'rating')::int as rating
+      from events where role_id = r.id and kind = 'rated'
+      order by created_at desc limit 1
+    ) fb on true
+    where r.fit_score >= 70 or r.status = 'applied' or fb.rating = 1
+    order by r.company, r.fit_score desc nulls last
+    limit ${limit}
   `
-  return rows.length > 0 ? name : null
+  return rows as FitSignal[]
+}
+
+const LOOKALIKE_SYSTEM_PROMPT = `You help expand a job search for a mid-market / strategic Account Executive who also builds AI systems. Given companies that already fit the candidate well, infer their shared profile — product category, company stage, buyer type, company size — and propose NEW web-search queries that would surface DIFFERENT companies with that same profile currently hiring Account Executives.
+
+Rules:
+- Do NOT name any of the listed companies; the goal is to find new ones.
+- Match this query style: boolean operators, role + trait + "remote". Example: '"account executive" "data platform" Series B remote hiring'.
+- Favor mid-market (not enterprise), AI-native or adjacent B2B SaaS.
+
+Return ONLY valid JSON, no prose: {"queries": ["...", "..."]}`
+
+/** Pure: build the user prompt listing the good-fit companies. Testable. */
+export function buildLookalikePrompt(signals: FitSignal[], n: number): string {
+  const lines = signals.map((s) => {
+    const traits = [s.aiNative ? 'AI-native' : null, s.segment].filter(Boolean).join(', ')
+    const reasons = (s.fitReasons ?? []).slice(0, 2).join('; ')
+    return `- ${s.company} — ${s.title}${traits ? ` (${traits})` : ''}${reasons ? ` — ${reasons}` : ''}`
+  })
+  return `These companies fit the candidate well:\n${lines.join('\n')}\n\nReturn {"queries": [...]} with ${n} search queries that would find OTHER companies (not the ones listed) with the same profile hiring Account Executives.`
+}
+
+/**
+ * Generate dynamic "find more like these" search queries from your good fits.
+ * Non-essential enhancement: returns [] on too-little-signal, over-budget, or
+ * any failure so the broad static sweep always still runs.
+ */
+export async function lookalikeQueries(
+  client: Anthropic,
+  signals: FitSignal[],
+  n = 3,
+): Promise<string[]> {
+  if (signals.length < 3) return [] // not enough signal to learn a profile yet
+  if (!(await hasBudget())) return []
+  try {
+    const response = await client.messages.create({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 400,
+      temperature: 0.4,
+      system: LOOKALIKE_SYSTEM_PROMPT,
+      messages: [{ role: 'user', content: buildLookalikePrompt(signals, n) }],
+    })
+    const usage = response.usage
+    await logUsage({
+      kind: 'lookalike',
+      model: 'claude-sonnet-4-6',
+      inputTokens: usage?.input_tokens ?? 0,
+      outputTokens: usage?.output_tokens ?? 0,
+      cachedTokens: (usage as { cache_read_input_tokens?: number })?.cache_read_input_tokens ?? 0,
+      roleId: null,
+    })
+    const raw = response.content[0]?.type === 'text' ? response.content[0].text : ''
+    const parsed = JSON.parse(extractJsonObject(raw, 'lookalike')) as { queries?: unknown }
+    if (!Array.isArray(parsed.queries)) return []
+    return parsed.queries
+      .filter((q): q is string => typeof q === 'string' && q.trim().length > 0)
+      .slice(0, n)
+  } catch {
+    return []
+  }
 }
 
 /** Best-effort company extraction from a search result title + URL. */

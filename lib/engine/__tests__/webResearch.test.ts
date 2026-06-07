@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest'
-import { isAggregatorHost, queriesForToday, detectAtsFromUrl } from '../webResearch'
+import {
+  isAggregatorHost,
+  queriesForToday,
+  buildLookalikePrompt,
+  type FitSignal,
+} from '../webResearch'
 
 describe('isAggregatorHost', () => {
   it('flags job-board aggregators that return mis-attributed listings', () => {
@@ -34,39 +39,25 @@ describe('queriesForToday', () => {
   })
 })
 
-describe('detectAtsFromUrl', () => {
-  it('detects a Greenhouse board slug from boards.greenhouse.io', () => {
-    expect(detectAtsFromUrl('https://boards.greenhouse.io/ramp/jobs/123')).toEqual({
-      ats: 'greenhouse',
-      slug: 'ramp',
-    })
+describe('buildLookalikePrompt', () => {
+  const signals: FitSignal[] = [
+    { company: 'OpenAI', title: 'Mid-Market AE', segment: 'mid-market', aiNative: true, fitReasons: ['AI-native', 'mid-market'] },
+    { company: 'Writer', title: 'Strategic AE', segment: 'mid-market', aiNative: true, fitReasons: ['generative AI'] },
+    { company: 'Ramp', title: 'Account Executive', segment: 'mid-market', aiNative: false, fitReasons: ['fintech SaaS'] },
+  ]
+
+  it('lists every good-fit company and asks for the requested count', () => {
+    const prompt = buildLookalikePrompt(signals, 3)
+    expect(prompt).toContain('OpenAI')
+    expect(prompt).toContain('Writer')
+    expect(prompt).toContain('Ramp')
+    expect(prompt).toContain('3 search queries')
   })
 
-  it('detects a Greenhouse slug from job-boards.greenhouse.io', () => {
-    expect(detectAtsFromUrl('https://job-boards.greenhouse.io/notion/jobs/9')).toEqual({
-      ats: 'greenhouse',
-      slug: 'notion',
-    })
-  })
-
-  it('detects an Ashby slug from jobs.ashbyhq.com', () => {
-    expect(detectAtsFromUrl('https://jobs.ashbyhq.com/openai/abc-def')).toEqual({
-      ats: 'ashby',
-      slug: 'openai',
-    })
-  })
-
-  it('returns null for a non-ATS company career page', () => {
-    expect(detectAtsFromUrl('https://www.cursor.com/careers/ae')).toBeNull()
-  })
-
-  it('returns null for an aggregator or unparseable URL', () => {
-    expect(detectAtsFromUrl('https://www.linkedin.com/jobs/view/1')).toBeNull()
-    expect(detectAtsFromUrl('garbage')).toBeNull()
-  })
-
-  it('does not mistake the bare board host for a slug', () => {
-    // No slug segment after the host → nothing to register.
-    expect(detectAtsFromUrl('https://boards.greenhouse.io/')).toBeNull()
+  it('surfaces derived traits so Claude can infer the profile', () => {
+    const prompt = buildLookalikePrompt(signals, 2)
+    expect(prompt).toContain('AI-native')
+    expect(prompt).toContain('mid-market')
+    expect(prompt).toContain('2 search queries')
   })
 })

@@ -4,6 +4,8 @@ import { anthropicKey } from '@/lib/env'
 import {
   queriesForToday,
   processWebResults,
+  gatherFitSignals,
+  lookalikeQueries,
   type WebSearchResult,
   type WebResearchReport,
 } from '@/lib/engine/webResearch'
@@ -67,8 +69,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'TAVILY_API_KEY not configured' }, { status: 500 })
   }
 
-  // Search the open web broadly — 6 rotating queries across the full lane.
-  const queries = queriesForToday(6)
+  const client = new Anthropic({ apiKey: anthropicKey() })
+
+  // Broad static sweep across the full lane, PLUS dynamic "find lookalikes"
+  // queries learned from companies that have fit you well so far.
+  const signals = await gatherFitSignals()
+  const dynamic = await lookalikeQueries(client, signals, 3)
+  const queries = [...queriesForToday(5), ...dynamic]
   const allResults: WebSearchResult[] = []
 
   for (const q of queries) {
@@ -80,9 +87,9 @@ export async function POST(req: Request) {
   const uniqueUrls = [...new Set(allResults.map((r) => r.url))]
   const extracted = await tavilyExtract(uniqueUrls.slice(0, 25)) // cap extraction calls
 
-  const client = new Anthropic({ apiKey: anthropicKey() })
   const report = await processWebResults(client, allResults, extracted, { maxScores, autoTailor: true })
   report.queriesRun = queries.length
+  report.lookalikeCount = dynamic.length
 
   return NextResponse.json(report)
 }
@@ -99,7 +106,12 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: 'TAVILY_API_KEY not configured' }, { status: 500 })
   }
 
-  const queries = queriesForToday(5) // broad daily sweep, sized to stay in the 300s budget
+  const client = new Anthropic({ apiKey: anthropicKey() })
+
+  // Broad daily sweep + dynamic lookalike queries. Sized to stay in 300s.
+  const signals = await gatherFitSignals()
+  const dynamic = await lookalikeQueries(client, signals, 2)
+  const queries = [...queriesForToday(4), ...dynamic]
   const allResults: WebSearchResult[] = []
 
   for (const q of queries) {
@@ -110,10 +122,10 @@ export async function GET(req: Request) {
   const uniqueUrls = [...new Set(allResults.map((r) => r.url))]
   const extracted = await tavilyExtract(uniqueUrls.slice(0, 20))
 
-  const client = new Anthropic({ apiKey: anthropicKey() })
   const report = await processWebResults(client, allResults, extracted, { maxScores: 8, autoTailor: true })
   report.queriesRun = queries.length
+  report.lookalikeCount = dynamic.length
 
-  console.log('cron research:', JSON.stringify({ scored: report.scored, tailored: report.tailored, companiesAdded: report.companiesAdded, errors: report.errors.length }))
+  console.log('cron research:', JSON.stringify({ scored: report.scored, tailored: report.tailored, lookalikes: report.lookalikeCount, errors: report.errors.length }))
   return NextResponse.json({ ok: true, ...report })
 }
