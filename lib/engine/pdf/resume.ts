@@ -139,12 +139,7 @@ export async function buildResumePdf(
 
   // ── Stat Boxes ──────────────────────────────────────────────────────
 
-  const stats = [
-    { big: '#1', sub: 'OF 30 AES  ·  Q1 2026' },
-    { big: '102.6%', sub: 'FY25 ATTAINMENT' },
-    { big: '58%', sub: 'ARR GROWTH  ·  FY24' },
-    { big: '5', sub: 'AI SYSTEMS DEPLOYED' },
-  ]
+  const stats = ctx.resumeStats
   const boxW = CONTENT_W / 4
   const boxH = 36
   const boxY = y - boxH
@@ -276,36 +271,39 @@ export async function buildResumePdf(
 
   sectionHeading('CORE SKILLS')
 
-  ensureSpace(30)
-  const salesSkills = 'Full-Cycle SaaS Sales, Consultative Discovery, Multithreading, Value & ROI Selling, New Business Acquisition, Account Expansion & Upsell, Pipeline Building from Zero, Contract Negotiation'
-  page.drawText('SALES', { x: MARGIN, y, size: 7, font: fontBold, color: DARK })
-  const salesLabelW = fontBold.widthOfTextAtSize('SALES', 7)
-  drawText(salesSkills, { size: 8, x: MARGIN + salesLabelW + 6, maxWidth: CONTENT_W - salesLabelW - 6, color: MID, lineHeight: 10.5 })
-  gap(3)
-
-  ensureSpace(20)
-  const techSkills = 'Claude API & Agent SDK, RAG / pgvector, Next.js, Supabase / Postgres, Stripe, Playwright, Apollo, Salesforce, Power BI'
-  page.drawText('AI & TECH', { x: MARGIN, y, size: 7, font: fontBold, color: DARK })
-  const techLabelW = fontBold.widthOfTextAtSize('AI & TECH', 7)
-  drawText(techSkills, { size: 8, x: MARGIN + techLabelW + 6, maxWidth: CONTENT_W - techLabelW - 6, color: MID, lineHeight: 10.5 })
-  gap(4)
+  for (let si = 0; si < ctx.resumeSkills.length; si++) {
+    const skill = ctx.resumeSkills[si]
+    ensureSpace(20)
+    page.drawText(skill.category, { x: MARGIN, y, size: 7, font: fontBold, color: DARK })
+    const labelW = fontBold.widthOfTextAtSize(skill.category, 7)
+    drawText(skill.items, { size: 8, x: MARGIN + labelW + 6, maxWidth: CONTENT_W - labelW - 6, color: MID, lineHeight: 10.5 })
+    gap(si < ctx.resumeSkills.length - 1 ? 3 : 4)
+  }
 
   // ── Education ───────────────────────────────────────────────────────
 
   sectionHeading('EDUCATION')
   ensureSpace(16)
-  page.drawText('BBA, Marketing Management', { x: MARGIN, y, size: 9, font: fontBold, color: DARK })
-  const eduDateStr = '2017 - 2021'
-  const eduDateW = fontRegular.widthOfTextAtSize(eduDateStr, 8.5)
-  page.drawText(eduDateStr, {
-    x: PAGE_W - MARGIN - eduDateW,
-    y: y + 0.5,
-    size: 8.5,
-    font: fontRegular,
-    color: FAINT,
-  })
+  // Parse education: "BBA, Marketing Management, University of St. Thomas, 2017–2021"
+  const eduParts = ctx.identity.education.split(',').map((s) => s.trim())
+  const eduDegree = eduParts.slice(0, 2).join(', ')
+  const eduSchool = eduParts[2] ?? ''
+  const eduYears = (eduParts[3] ?? '').replace('–', ' - ')
+  page.drawText(eduDegree, { x: MARGIN, y, size: 9, font: fontBold, color: DARK })
+  if (eduYears) {
+    const eduDateW = fontRegular.widthOfTextAtSize(eduYears, 8.5)
+    page.drawText(eduYears, {
+      x: PAGE_W - MARGIN - eduDateW,
+      y: y + 0.5,
+      size: 8.5,
+      font: fontRegular,
+      color: FAINT,
+    })
+  }
   y -= 12
-  page.drawText('University of St. Thomas', { x: MARGIN, y, size: 8.5, font: fontRegular, color: MID })
+  if (eduSchool) {
+    page.drawText(eduSchool, { x: MARGIN, y, size: 8.5, font: fontRegular, color: MID })
+  }
 
   return doc.save()
 }

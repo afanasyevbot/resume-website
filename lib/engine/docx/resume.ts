@@ -89,22 +89,15 @@ export async function buildResumeDocx(
     }),
   )
 
-  // Stat highlights
+  // Stat highlights (from context)
   children.push(new Paragraph({ children: [new TextRun({ text: '' })] }))
-  children.push(
-    new Paragraph({
-      children: [
-        new TextRun({ text: '#1', bold: true, size: 22 }),
-        new TextRun({ text: ' of 30 AEs · Q1 2026    ', size: 18 }),
-        new TextRun({ text: '102.6%', bold: true, size: 22 }),
-        new TextRun({ text: ' FY25 Attainment    ', size: 18 }),
-        new TextRun({ text: '58%', bold: true, size: 22 }),
-        new TextRun({ text: ' ARR Growth · FY24    ', size: 18 }),
-        new TextRun({ text: '5', bold: true, size: 22 }),
-        new TextRun({ text: ' AI Systems Deployed', size: 18 }),
-      ],
-    }),
-  )
+  const statRuns: TextRun[] = []
+  for (let si = 0; si < context.resumeStats.length; si++) {
+    const s = context.resumeStats[si]
+    statRuns.push(new TextRun({ text: s.big, bold: true, size: 22 }))
+    statRuns.push(new TextRun({ text: ` ${s.sub}${si < context.resumeStats.length - 1 ? '    ' : ''}`, size: 18 }))
+  }
+  children.push(new Paragraph({ children: statRuns }))
 
   // Experience — all roles
   children.push(sectionHeading('EXPERIENCE'))
@@ -163,33 +156,32 @@ export async function buildResumeDocx(
     )
   }
 
-  // Core Skills
+  // Core Skills (from context)
   children.push(sectionHeading('CORE SKILLS'))
-  children.push(
-    new Paragraph({
-      children: [
-        new TextRun({ text: 'SALES  ', bold: true, size: 18 }),
-        new TextRun({ text: 'Full-Cycle SaaS Sales, Consultative Discovery, Multithreading, Value & ROI Selling, New Business Acquisition, Account Expansion & Upsell, Pipeline Building from Zero, Contract Negotiation', size: 18 }),
-      ],
-    }),
-  )
-  children.push(
-    new Paragraph({
-      spacing: { before: 60 },
-      children: [
-        new TextRun({ text: 'AI & TECH  ', bold: true, size: 18 }),
-        new TextRun({ text: 'Claude API & Agent SDK, RAG / pgvector, Next.js, Supabase / Postgres, Stripe, Playwright, Apollo, Salesforce, Power BI', size: 18 }),
-      ],
-    }),
-  )
+  for (let si = 0; si < context.resumeSkills.length; si++) {
+    const skill = context.resumeSkills[si]
+    children.push(
+      new Paragraph({
+        ...(si > 0 ? { spacing: { before: 60 } } : {}),
+        children: [
+          new TextRun({ text: `${skill.category}  `, bold: true, size: 18 }),
+          new TextRun({ text: skill.items, size: 18 }),
+        ],
+      }),
+    )
+  }
 
-  // Education
+  // Education (from context)
   children.push(sectionHeading('EDUCATION'))
+  const eduParts = identity.education.split(',').map((s: string) => s.trim())
+  const eduDegree = eduParts.slice(0, 2).join(', ')
+  const eduSchool = eduParts[2] ?? ''
+  const eduYears = eduParts[3] ?? ''
   children.push(
     new Paragraph({
       children: [
-        new TextRun({ text: 'BBA, Marketing Management', bold: true, size: 20 }),
-        new TextRun({ text: '  ·  University of St. Thomas    2017 - 2021', size: 18 }),
+        new TextRun({ text: eduDegree, bold: true, size: 20 }),
+        new TextRun({ text: `  ·  ${eduSchool}${eduYears ? `    ${eduYears}` : ''}`, size: 18 }),
       ],
     }),
   )
