@@ -196,6 +196,16 @@ export default function RoleCard({ row, expanded, onToggleExpanded }: RoleCardPr
           </div>
         )}
 
+        {/* Summary */}
+        {row.jd_summary && (
+          <p
+            className="mt-3 text-[11.5px] leading-relaxed line-clamp-3"
+            style={{ color: 'var(--color-text-secondary)', fontFamily: 'var(--font-sans)' }}
+          >
+            {row.jd_summary}
+          </p>
+        )}
+
         {/* Data block */}
         <div className="mt-4 space-y-2">
           {row.location && <DataRow label="Location" value={row.location} />}

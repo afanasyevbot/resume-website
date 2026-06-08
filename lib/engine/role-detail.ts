@@ -42,6 +42,7 @@ interface RoleRowRaw {
   status: string
   created_at: string
   jd_text: string | null
+  jd_summary: string | null
   fit_reasons: unknown
   package_json: TailoredPackage | null
   package_id: string | number | null
@@ -86,7 +87,7 @@ export async function loadRoleDetail(id: number): Promise<RoleDetail | null> {
     select
       r.id, r.company, r.title, r.location, r.url, r.source, r.fit_score,
       r.segment, r.ai_native, r.route, r.status, r.created_at,
-      r.jd_text, r.fit_reasons,
+      r.jd_text, r.jd_summary, r.fit_reasons,
       p.id as package_id, p.package_json, p.status as package_status
     from roles r
     left join lateral (
@@ -144,6 +145,7 @@ export async function loadRoleDetail(id: number): Promise<RoleDetail | null> {
     package_json: row.package_json,
     package_id: row.package_id == null ? null : Number(row.package_id),
     user_rating: userRating,
+    jd_summary: row.jd_summary,
     jd_text: row.jd_text,
     fit_reasons: coerceFitReasons(row.fit_reasons),
     events,

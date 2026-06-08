@@ -3,7 +3,7 @@ import { decideRoute, DEFAULT_THRESHOLDS } from '../decideRoute'
 import type { MatchAssessment } from '../types'
 
 function assessment(partial: Partial<MatchAssessment>): MatchAssessment {
-  return { score: 0, reasons: [], aiNative: false, segment: 'mid-market', ...partial }
+  return { score: 0, reasons: [], aiNative: false, segment: 'mid-market', summary: null, ...partial }
 }
 
 describe('decideRoute', () => {
