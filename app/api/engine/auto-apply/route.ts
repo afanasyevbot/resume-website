@@ -154,9 +154,9 @@ async function runAutoApply(opts: RunOpts) {
 }
 
 /** Daily safety cap on automatic submissions (a bug can't spray more than this). */
-const DAILY_CAP = 5
+const DAILY_CAP = 10
 /** Minimum fit score the cron will auto-submit. The manual button has no floor. */
-const CRON_MIN_FIT = 80
+const CRON_MIN_FIT = 70
 
 /** How many roles were auto-applied (method=auto, i.e. by the cron — NOT the
  *  manual button) since midnight UTC today. */

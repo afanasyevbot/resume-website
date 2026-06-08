@@ -5,7 +5,11 @@ import { buildSystemPrompt } from '@/lib/buildSystemPrompt'
 import { getClientId, rateLimit } from '@/lib/rateLimit'
 import { anthropicKey } from '@/lib/env'
 
-const client = new Anthropic({ apiKey: anthropicKey() })
+let _client: Anthropic | undefined
+function client() {
+  if (!_client) _client = new Anthropic({ apiKey: anthropicKey() })
+  return _client
+}
 
 export async function POST(req: NextRequest) {
   if (!rateLimit(getClientId(req), 15, 60_000)) {
@@ -37,7 +41,7 @@ export async function POST(req: NextRequest) {
   ]
 
   try {
-    const response = await client.messages.create({
+    const response = await client().messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 600,
       temperature: 0,

@@ -87,7 +87,6 @@ export async function buildCoverLetterPdf(
 
   drawText(`Hiring Team`, { font: fontBold, size: 10 })
   drawText(role.company, { size: 10 })
-  drawText(`Re: ${role.title}`, { size: 10, color: MID })
   gap(16)
 
   // ── Body ───────────────────────────────────────────────────────────

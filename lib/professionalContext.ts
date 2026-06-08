@@ -330,6 +330,18 @@ export const professionalContext: ProfessionalContext = {
     },
   ],
 
+  resumeStats: [
+    { big: '#1', sub: 'OF 30 AES  ·  Q1 2026' },
+    { big: '102.6%', sub: 'FY25 ATTAINMENT' },
+    { big: '58%', sub: 'ARR GROWTH  ·  FY24' },
+    { big: '5', sub: 'AI SYSTEMS DEPLOYED' },
+  ],
+
+  resumeSkills: [
+    { category: 'SALES', items: 'Full-Cycle SaaS Sales, Consultative Discovery, Multithreading, Value & ROI Selling, New Business Acquisition, Account Expansion & Upsell, Pipeline Building from Zero, Contract Negotiation' },
+    { category: 'AI & TECH', items: 'Claude API & Agent SDK, RAG / pgvector, Next.js, Supabase / Postgres, Stripe, Playwright, Apollo, Salesforce, Power BI' },
+  ],
+
   skills: {
     deep: [
       'Full-cycle B2B SaaS sales (hunting, discovery, demo, negotiation, close)',

@@ -46,6 +46,8 @@ export interface ProfessionalContext {
   starStories: Array<{ title: string; summary: string }>
   projects: Project[]
   proBono: Project[]
+  resumeStats: { big: string; sub: string }[]
+  resumeSkills: { category: string; items: string }[]
   skills: {
     deep: string[]
     conversant: string[]

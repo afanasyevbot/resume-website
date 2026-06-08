@@ -6,7 +6,11 @@ import { getClientId, rateLimit } from '@/lib/rateLimit'
 import { anthropicKey } from '@/lib/env'
 import type { FitResult } from '@/lib/types'
 
-const client = new Anthropic({ apiKey: anthropicKey() })
+let _client: Anthropic | undefined
+function client() {
+  if (!_client) _client = new Anthropic({ apiKey: anthropicKey() })
+  return _client
+}
 
 const FIT_SYSTEM_PROMPT = `${buildSystemPrompt(professionalContext)}
 
@@ -58,7 +62,7 @@ export async function POST(req: NextRequest) {
 
   let raw: string
   try {
-    const response = await client.messages.create({
+    const response = await client().messages.create({
       model: 'claude-sonnet-4-6',
       max_tokens: 1000,
       temperature: 0,
