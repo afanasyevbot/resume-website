@@ -10,7 +10,6 @@ const CONTENT_W = PAGE_W - MARGIN * 2
 const DARK = rgb(0.11, 0.09, 0.06)
 const MID = rgb(0.35, 0.30, 0.20)
 const GREEN = rgb(0.25, 0.42, 0.17)
-const GREEN_LIGHT = rgb(0.25, 0.42, 0.17)
 const FAINT = rgb(0.55, 0.50, 0.42)
 
 /**
@@ -26,7 +25,6 @@ export async function buildResumePdf(
   const fontRegular = await doc.embedFont(StandardFonts.Helvetica)
   const fontBold = await doc.embedFont(StandardFonts.HelveticaBold)
   const fontItalic = await doc.embedFont(StandardFonts.HelveticaOblique)
-  const fontBoldItalic = await doc.embedFont(StandardFonts.HelveticaBoldOblique)
 
   let page = doc.addPage([PAGE_W, PAGE_H])
   let y = PAGE_H - MARGIN
