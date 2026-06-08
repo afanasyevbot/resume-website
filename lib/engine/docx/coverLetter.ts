@@ -67,11 +67,6 @@ export async function buildCoverLetterDocx(
       children: [new TextRun({ text: `Hiring Team, ${role.company}`, size: 22 })],
     }),
   )
-  children.push(
-    new Paragraph({
-      children: [new TextRun({ text: `Re: ${role.title}`, size: 22, italics: true })],
-    }),
-  )
 
   // Spacer
   children.push(new Paragraph({ children: [new TextRun({ text: '' })] }))

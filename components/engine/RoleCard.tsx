@@ -5,12 +5,14 @@ import type { RoleRow } from '@/lib/engine/dashboard'
 import { timeAgo } from '@/lib/engine/dashboard'
 import TailorAction, { TailorPackagePanel } from './TailorAction'
 import ApplyAction from './ApplyAction'
+import PerRoleAutoApply from './PerRoleAutoApply'
 import AgentTrail from './AgentTrail'
 import FeedbackButtons from './FeedbackButtons'
 import { avatarLetters, avatarTint } from './avatar'
 
-/** Statuses where "Mark applied" is offered — pre-applied, not-discarded. */
-const APPLYABLE_STATUSES = new Set(['scored', 'tailored', 'queued'])
+/** Statuses where "Mark applied" is offered — scored/queued only.
+ *  Tailored roles get the autonomous apply button instead. */
+const APPLYABLE_STATUSES = new Set(['scored', 'queued'])
 
 interface RoleCardProps {
   row: RoleRow
@@ -238,10 +240,10 @@ export default function RoleCard({ row, expanded, onToggleExpanded }: RoleCardPr
               href={row.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 text-center text-[11px] font-medium px-3 py-2 rounded transition-colors"
+              className="text-center text-[11px] font-medium px-3 py-2 rounded transition-colors"
               style={{
                 fontFamily: 'var(--font-sans)',
-                color: 'var(--color-text-bright)',
+                color: 'var(--color-text-secondary)',
                 background: 'transparent',
                 border: '1px solid var(--color-border)',
                 letterSpacing: '0.08em',
@@ -249,8 +251,11 @@ export default function RoleCard({ row, expanded, onToggleExpanded }: RoleCardPr
                 textDecoration: 'none',
               }}
             >
-              ↗ Apply
+              ↗ View
             </a>
+          )}
+          {row.status === 'tailored' && row.route === 'tailor' && (
+            <PerRoleAutoApply roleId={row.id} />
           )}
           {showTailor && (
             <div className="flex-1">
