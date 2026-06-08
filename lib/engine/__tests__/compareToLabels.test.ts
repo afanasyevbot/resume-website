@@ -4,7 +4,7 @@ import type { LabeledRole } from '../eval/compareToLabels'
 import type { MatchResult } from '../types'
 
 function result(score: number): MatchResult {
-  return { score, reasons: [], aiNative: true, segment: 'mid-market', route: 'tailor' }
+  return { score, reasons: [], aiNative: true, segment: 'mid-market', summary: null, route: 'tailor' }
 }
 
 const rows: LabeledRole[] = [

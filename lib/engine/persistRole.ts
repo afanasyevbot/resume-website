@@ -1,4 +1,5 @@
 import { sql } from './db'
+import { cleanJdText } from './cleanJd'
 import type { MatchResult, RouteDecision } from './types'
 
 export interface PersistableRole {
@@ -30,6 +31,7 @@ export async function persistScoredRole(
 ): Promise<PersistedRole> {
   const status = statusFromRoute(result.route)
   const source = role.source ?? 'manual'
+  const cleanedJd = cleanJdText(role.jobDescription)
 
   // Single CTE statement: role + events insert as one atomic SQL statement.
   // Postgres treats a single statement as an implicit transaction, so either
@@ -37,11 +39,11 @@ export async function persistScoredRole(
   const rows = await sql`
     with new_role as (
       insert into roles
-        (company, title, url, location, jd_text, source,
+        (company, title, url, location, jd_text, jd_summary, source,
          fit_score, fit_reasons, segment, ai_native, route, status)
       values
         (${role.company}, ${role.title}, ${role.url ?? null}, ${role.location ?? null},
-         ${role.jobDescription}, ${source},
+         ${cleanedJd}, ${result.summary ?? null}, ${source},
          ${result.score}, ${JSON.stringify(result.reasons)}::jsonb,
          ${result.segment}, ${result.aiNative}, ${result.route}, ${status})
       returning id

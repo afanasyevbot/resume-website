@@ -17,7 +17,8 @@ Return ONLY valid JSON, no markdown and no prose, in this exact shape:
   "score": <integer 0-100, overall fit>,
   "reasons": ["<short bullet>", "..."],
   "aiNative": <true if the company's core product is building or selling AI, else false>,
-  "segment": "<'mid-market' | 'enterprise' | 'unknown'>"
+  "segment": "<'mid-market' | 'enterprise' | 'unknown'>",
+  "summary": "<2-3 sentence plain-English summary of the role: what the company does, what the AE would own, and why it may/may not fit Matthew. Max 60 words.>"
 }
 
 Scoring guide:
@@ -31,17 +32,20 @@ const VALID_SEGMENTS: Segment[] = ['mid-market', 'enterprise', 'unknown']
 export function isMatchAssessment(value: unknown): value is MatchAssessment {
   if (value === null || typeof value !== 'object') return false
   const r = value as Record<string, unknown>
-  return (
-    typeof r.score === 'number' &&
-    Number.isInteger(r.score) &&
-    (r.score as number) >= 0 &&
-    (r.score as number) <= 100 &&
-    Array.isArray(r.reasons) &&
-    r.reasons.every((x) => typeof x === 'string') &&
-    typeof r.aiNative === 'boolean' &&
-    typeof r.segment === 'string' &&
-    VALID_SEGMENTS.includes(r.segment as Segment)
-  )
+  if (
+    typeof r.score !== 'number' ||
+    !Number.isInteger(r.score) ||
+    (r.score as number) < 0 ||
+    (r.score as number) > 100 ||
+    !Array.isArray(r.reasons) ||
+    !r.reasons.every((x) => typeof x === 'string') ||
+    typeof r.aiNative !== 'boolean' ||
+    typeof r.segment !== 'string' ||
+    !VALID_SEGMENTS.includes(r.segment as Segment)
+  ) return false
+  // summary is optional — normalize missing/non-string to null
+  if (typeof r.summary !== 'string') r.summary = null
+  return true
 }
 
 /** Calls Claude to assess a role. Throws on unparseable or invalid output.

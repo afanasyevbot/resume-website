@@ -44,6 +44,8 @@ export interface RoleRow {
   package_id: number | null
   /** Latest thumbs-up (1) / thumbs-down (-1) rating from the 'rated' events stream. */
   user_rating: 1 | -1 | null
+  /** Short AI-generated summary of the role (2-3 sentences). */
+  jd_summary: string | null
 }
 
 export interface DashboardData {
@@ -104,7 +106,7 @@ export async function listQueue(limit = 200): Promise<RoleRow[]> {
   const rows = await sql`
     select
       r.id, r.company, r.title, r.location, r.url, r.source, r.fit_score, r.segment,
-      r.ai_native, r.route, r.status, r.created_at,
+      r.ai_native, r.route, r.status, r.created_at, r.jd_summary,
       p.package_json, p.id as package_id,
       fb.rating as user_rating
     from roles r

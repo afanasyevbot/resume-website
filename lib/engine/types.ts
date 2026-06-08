@@ -8,6 +8,7 @@ export interface MatchAssessment {
   reasons: string[] // concise bullets: why it fits / where it doesn't
   aiNative: boolean // is the company's core product building/selling AI?
   segment: Segment // the role's sales segment
+  summary: string | null // 2-3 sentence plain-English summary of the role
 }
 
 /** A job posting to evaluate. */
