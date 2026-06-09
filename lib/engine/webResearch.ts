@@ -175,15 +175,32 @@ export async function processWebResults(
       continue
     }
 
+    // Resolve aggregator URLs to the actual ATS application URL.
+    // If the result came from an aggregator page (not a direct ATS host),
+    // search the extracted HTML for an embedded ATS URL. If we can't find
+    // one, skip — submitting an aggregator URL to the browser service will
+    // always return unknown_ats and leave the role stuck in needs_review.
+    let applyUrl = result.url
+    if (!isDirectAtsHost(result.url)) {
+      const resolved = extractDirectAtsUrl(jdText)
+      if (!resolved) {
+        errors.push(`${result.title}: aggregator URL with no embedded ATS link — skipping`)
+        continue
+      }
+      applyUrl = resolved
+      // Check dedup for the resolved URL too (same job may have been sourced directly)
+      if (knownUrls.has(applyUrl)) continue
+    }
+
     // Infer company name from the title or URL
-    const company = inferCompany(result.title, result.url)
+    const company = inferCompany(result.title, applyUrl)
 
     try {
       const role: PersistableRole = {
         company,
         title: cleanTitle(result.title),
         jobDescription: jdText.slice(0, 15000), // cap to prevent huge prompts
-        url: result.url,
+        url: applyUrl,
         location: null, // web results don't always have this
         source: 'research',
       }
@@ -197,7 +214,8 @@ export async function processWebResults(
 
       const persisted = await persistScoredRole(role, matchResult)
       scored++
-      knownUrls.add(result.url)
+      knownUrls.add(applyUrl)
+      if (applyUrl !== result.url) knownUrls.add(result.url) // block the aggregator URL too
 
       // Auto-tailor high-fit roles
       if (autoTailor && matchResult.route === 'tailor') {
@@ -282,6 +300,9 @@ const AGGREGATOR_HOSTS = [
   'remotive', 'remote.co', 'jobgether', 'workingnomads', 'teal', 'tealhq',
   'jobleads', 'hired.com', 'triplebyte', 'dice.com', 'lensa', 'jobright',
   'jooble', 'jobspresso',
+  // Pure noise — no embedded ATS links worth extracting
+  'liveblog365.com', 'bebee.com', 'dailyremote.com', 'remoterocketship.com',
+  'remoteleaf.com', 'jobgether.com', 'getwork.com', 'talent.com',
 ]
 
 /** True if the URL's host belongs to a known job-board aggregator. */
@@ -300,6 +321,53 @@ export function isAggregatorHost(url: string): boolean {
   } catch {
     return false
   }
+}
+
+/**
+ * Domains that host real, direct-apply job pages. URLs on these domains can
+ * be sent straight to the browser service without any resolution step.
+ */
+const DIRECT_ATS_HOSTS = [
+  'greenhouse.io', 'lever.co', 'ashbyhq.com', 'workday.com',
+  'smartrecruiters.com', 'icims.com', 'jobvite.com', 'taleo.net',
+  'myworkdayjobs.com', 'successfactors.com', 'breezy.hr', 'applytojob.com',
+]
+
+/** True if the URL is already a direct company ATS page (no resolution needed). */
+export function isDirectAtsHost(url: string): boolean {
+  try {
+    const host = new URL(url).hostname.replace(/^www\./, '').toLowerCase()
+    return DIRECT_ATS_HOSTS.some((d) => host === d || host.endsWith('.' + d))
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Scans raw HTML/text content for the first direct ATS application URL.
+ * Used when a result URL is an aggregator page — we look for the embedded
+ * "Apply" link pointing to greenhouse, lever, ashby, etc.
+ *
+ * Returns the first clean match, or null if none found.
+ */
+export function extractDirectAtsUrl(content: string): string | null {
+  // Build one pattern per ATS domain. We match URLs that have a path after
+  // the domain (i.e. actual job pages, not just the company homepage).
+  const patterns: RegExp[] = [
+    /https?:\/\/(?:boards\.|jobs\.|app\.)?greenhouse\.io\/[a-zA-Z0-9_-]+\/jobs\/[^\s"'<>)]+/g,
+    /https?:\/\/jobs\.lever\.co\/[a-zA-Z0-9_-]+\/[^\s"'<>)]+/g,
+    /https?:\/\/[a-zA-Z0-9_-]+\.ashbyhq\.com\/[^\s"'<>)]+/g,
+    /https?:\/\/[a-zA-Z0-9_-]+\.wd\d+\.myworkdayjobs\.com\/[^\s"'<>)]+/g,
+    /https?:\/\/[a-zA-Z0-9_-]+\.smartrecruiters\.com\/[^\s"'<>)]+/g,
+  ]
+  for (const pattern of patterns) {
+    const match = pattern.exec(content)
+    if (match) {
+      // Strip trailing HTML artifacts
+      return match[0].replace(/['")\]>.,;\\]+$/, '')
+    }
+  }
+  return null
 }
 
 // ── Find-lookalikes learning loop ────────────────────────────────────
