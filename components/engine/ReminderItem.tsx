@@ -45,6 +45,26 @@ export default function ReminderItem({ reminder }: ReminderItemProps) {
   const router = useRouter()
   const [busy, setBusy] = useState<null | 'done' | 'snooze'>(null)
   const [snoozeOpen, setSnoozeOpen] = useState(false)
+  const [copied, setCopied] = useState(false)
+  const [draftOpen, setDraftOpen] = useState(false)
+
+  const draft = reminder.outreachDraft ?? null
+
+  async function copyDraft() {
+    if (!draft) return
+    try {
+      await navigator.clipboard.writeText(draft)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2500)
+    } catch {
+      // fallback: select a textarea
+    }
+  }
+
+  async function copyAndOpenLinkedIn() {
+    if (draft) await copyDraft()
+    window.open(linkedinSearchUrl(reminder.company ?? ''), '_blank', 'noopener,noreferrer')
+  }
 
   const company = reminder.company ?? 'Unknown'
   const tint = avatarTint(company)
@@ -133,24 +153,51 @@ export default function ReminderItem({ reminder }: ReminderItemProps) {
           <span style={{ color: due.color }}>{due.text}</span>
         </p>
 
+        {/* Outreach draft preview — tap to expand */}
+        {draft && (
+          <div className="mt-1.5">
+            <button
+              type="button"
+              onClick={() => setDraftOpen((o) => !o)}
+              className="text-left w-full"
+              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+            >
+              <p
+                className="text-[10.5px] leading-snug"
+                style={{
+                  color: 'var(--color-text-dim)',
+                  fontFamily: 'var(--font-sans)',
+                  fontStyle: 'italic',
+                  display: '-webkit-box',
+                  WebkitLineClamp: draftOpen ? 999 : 2,
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
+                }}
+              >
+                {draft}
+              </p>
+            </button>
+          </div>
+        )}
+
         <div className="flex items-center gap-1.5 mt-2 relative">
-          <a
-            href={linkedinSearchUrl(company)}
-            target="_blank"
-            rel="noopener noreferrer"
+          {/* Primary CTA: copy draft + open LinkedIn in one click */}
+          <button
+            type="button"
+            onClick={copyAndOpenLinkedIn}
             className="text-[10px] font-medium px-2 py-1 rounded"
             style={{
               fontFamily: 'var(--font-sans)',
-              color: 'var(--color-text-secondary)',
+              color: copied ? '#9ab48a' : 'var(--color-gold)',
               background: 'transparent',
-              border: '1px solid var(--color-border)',
+              border: `1px solid ${copied ? '#9ab48a55' : 'var(--color-gold-faint, #b8861855)'}`,
               letterSpacing: '0.06em',
               textTransform: 'uppercase',
-              textDecoration: 'none',
+              cursor: 'pointer',
             }}
           >
-            ↗ LinkedIn
-          </a>
+            {copied ? '✓ Copied' : draft ? '↗ Copy + LinkedIn' : '↗ LinkedIn'}
+          </button>
           <button
             type="button"
             onClick={markDone}
