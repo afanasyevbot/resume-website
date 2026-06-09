@@ -26,6 +26,8 @@ export interface Reminder {
   created_at: string
   company?: string
   title?: string
+  /** The tailored LinkedIn outreach draft for this role, if one exists. */
+  outreachDraft?: string | null
 }
 
 /**
@@ -45,9 +47,17 @@ export function linkedinSearchUrl(company: string): string {
 export async function listDueReminders(limit = 20): Promise<Reminder[]> {
   const rows = await sql`
     select r.id, r.role_id, r.kind, r.due_at, r.completed_at, r.snoozed_until,
-           r.notes, r.created_at, ro.company, ro.title
+           r.notes, r.created_at, ro.company, ro.title,
+           coalesce(ap.package_json->>'outreachDraft', ap.outreach_draft) as "outreachDraft"
     from reminders r
     join roles ro on ro.id = r.role_id
+    left join lateral (
+      select outreach_draft, package_json
+      from application_packages
+      where role_id = r.role_id
+      order by created_at desc
+      limit 1
+    ) ap on true
     where r.completed_at is null
       and (r.snoozed_until is null or r.snoozed_until <= now())
     order by r.due_at asc
@@ -55,7 +65,7 @@ export async function listDueReminders(limit = 20): Promise<Reminder[]> {
   `
   // Neon HTTP returns BIGINT as string — coerce ids to Number so the runtime
   // shape matches the Reminder type and downstream API params validate.
-  return (rows as Array<Reminder & { id: string | number; role_id: string | number }>).map(
+  return (rows as Array<Reminder & { id: string | number; role_id: string | number; outreachDraft?: string | null }>).map(
     (r) => ({
       ...r,
       id: Number(r.id),
