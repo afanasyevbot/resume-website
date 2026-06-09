@@ -7,7 +7,11 @@ import { postSlackMessage } from './slack/client'
 import { questionText } from './slack/blocks'
 import type { TailoredPackage } from './tailorTypes'
 
-const BROWSER_URL = process.env.BROWSER_SERVICE_URL ?? 'http://localhost:4100'
+function getBrowserUrl(): string {
+  const u = process.env.BROWSER_SERVICE_URL
+  if (!u) throw new Error('BROWSER_SERVICE_URL is not set. Add this env var pointing to your browser agent service.')
+  return u
+}
 
 function getBrowserSecret(): string {
   const s = process.env.BROWSER_SERVICE_SECRET
@@ -86,12 +90,16 @@ export async function submitAndPersist(
   const ctx = professionalContext
   const facts = await loadScreeningFacts()
 
+  // Validate config before spending time on PDF generation
+  const browserUrl = getBrowserUrl()
+  const browserSecret = getBrowserSecret()
+
   let result: BrowserResult
   try {
     const pdfBytes = await buildResumePdf(role.package_json, { company: role.company, title: role.title })
-    const response = await fetch(`${BROWSER_URL}/apply`, {
+    const response = await fetch(`${browserUrl}/apply`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getBrowserSecret()}` },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${browserSecret}` },
       body: JSON.stringify({
         url: role.url,
         firstName: 'Matthew',

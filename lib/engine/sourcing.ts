@@ -72,7 +72,10 @@ function isRecentEnough(publishedAt: string | null, maxAgeDays: number): boolean
 async function fetchListings(company: TargetCompany): Promise<AtsListing[]> {
   if (company.ats === 'greenhouse') return greenhouse.listJobs(company.slug)
   if (company.ats === 'ashby') return ashby.listJobs(company.slug)
-  throw new Error(`Unsupported ATS: ${company.ats}`)
+  // Lever is in the schema but not yet implemented — skip gracefully so
+  // one unsupported entry doesn't crash the whole cron run.
+  console.warn(`[sourcing] Unsupported ATS type "${company.ats}" for ${company.name} — skipping`)
+  return []
 }
 
 // ── Scheduling (pure, testable) ──────────────────────────────────────
