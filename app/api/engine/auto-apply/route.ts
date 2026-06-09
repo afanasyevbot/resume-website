@@ -84,22 +84,41 @@ async function runAutoApply(opts: RunOpts) {
     `
     roles = (rows as typeof roles).map((r) => ({ ...r, id: Number(r.id), fit_score: r.fit_score == null ? null : Number(r.fit_score) }))
   } else {
-    const rows = await sql`
-      select r.id, r.company, r.title, r.url, r.fit_score, p.package_json
-      from roles r
-      join lateral (
-        select package_json from application_packages
-        where role_id = r.id order by created_at desc limit 1
-      ) p on true
-      where r.status = 'tailored'
-        and r.route = 'tailor'
-        and r.url is not null
-        and (r.url like '%greenhouse.io%' or r.url like '%ashbyhq.com%')
-        and coalesce(r.fit_score, 0) >= ${minFit}
-        and p.package_json is not null
-      order by r.fit_score desc nulls last
-      limit ${maxApply}
-    `
+    // Cron (auto) restricts to known-safe ATS platforms. Manual button is an
+    // explicit human action so we let it try any URL — the browser service
+    // will return skipped/needs_review for unsupported ATS types.
+    const rows = method === 'auto'
+      ? await sql`
+          select r.id, r.company, r.title, r.url, r.fit_score, p.package_json
+          from roles r
+          join lateral (
+            select package_json from application_packages
+            where role_id = r.id order by created_at desc limit 1
+          ) p on true
+          where r.status = 'tailored'
+            and r.route = 'tailor'
+            and r.url is not null
+            and (r.url like '%greenhouse.io%' or r.url like '%ashbyhq.com%')
+            and coalesce(r.fit_score, 0) >= ${minFit}
+            and p.package_json is not null
+          order by r.fit_score desc nulls last
+          limit ${maxApply}
+        `
+      : await sql`
+          select r.id, r.company, r.title, r.url, r.fit_score, p.package_json
+          from roles r
+          join lateral (
+            select package_json from application_packages
+            where role_id = r.id order by created_at desc limit 1
+          ) p on true
+          where r.status = 'tailored'
+            and r.route = 'tailor'
+            and r.url is not null
+            and coalesce(r.fit_score, 0) >= ${minFit}
+            and p.package_json is not null
+          order by r.fit_score desc nulls last
+          limit ${maxApply}
+        `
     roles = (rows as typeof roles).map((r) => ({ ...r, id: Number(r.id), fit_score: r.fit_score == null ? null : Number(r.fit_score) }))
   }
 
