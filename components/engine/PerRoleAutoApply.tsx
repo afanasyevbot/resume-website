@@ -23,15 +23,27 @@ export default function PerRoleAutoApply({ roleId }: Props) {
       const data = (await res.json().catch(() => ({}))) as {
         applied?: number
         needsReview?: number
+        skipped?: number
+        failed?: number
+        total?: number
+        results?: Array<{ reason: string | null }>
         error?: string
+        message?: string
       }
       if (!res.ok) throw new Error(data.error ?? `Failed (${res.status})`)
+      const reason = data.results?.[0]?.reason ?? null
       if (data.applied === 1) {
         setLabel('✓ Applied')
       } else if (data.needsReview === 1) {
-        setLabel('⚠ Review')
+        setLabel('⚠ Needs review')
+      } else if (data.skipped === 1) {
+        setLabel(`Skipped${reason ? ` · ${reason}` : ''}`)
+      } else if ((data.total ?? 0) === 0) {
+        setLabel(data.message ?? 'Not eligible')
+      } else if (data.failed === 1) {
+        setLabel(`Error${reason ? ` · ${reason}` : ' · browser service unavailable'}`)
       } else {
-        setLabel('Skipped')
+        setLabel(reason ?? 'No result')
       }
       setPhase('done')
       router.refresh()
@@ -59,17 +71,16 @@ export default function PerRoleAutoApply({ roleId }: Props) {
   }
 
   if (phase === 'done') {
+    const isApplied = label.startsWith('✓')
+    const isReview = label.startsWith('⚠')
+    const isError = label.startsWith('Error') || label.startsWith('Not eligible')
+    const bg = isApplied ? 'rgba(154,180,138,0.12)' : isReview ? 'rgba(184,134,42,0.12)' : 'rgba(168,70,58,0.10)'
+    const color = isApplied ? '#9ab48a' : isReview ? '#c89418' : isError ? '#a8463a' : '#888'
     return (
       <span
         className="text-[11px] font-medium px-3 py-1.5 rounded"
-        style={{
-          fontFamily: 'var(--font-sans)',
-          backgroundColor: label.startsWith('✓')
-            ? 'rgba(154,180,138,0.12)'
-            : 'rgba(184,134,42,0.12)',
-          color: label.startsWith('✓') ? '#9ab48a' : '#c89418',
-          letterSpacing: '0.06em',
-        }}
+        style={{ fontFamily: 'var(--font-sans)', backgroundColor: bg, color, letterSpacing: '0.06em', maxWidth: 280, display: 'inline-block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+        title={label}
       >
         {label}
       </span>
