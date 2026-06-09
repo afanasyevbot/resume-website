@@ -228,7 +228,7 @@ export async function buildResumePdf(
     for (const bullet of bullets) {
       ensureSpace(24)
       const bulletX = MARGIN + 8
-      page.drawText('□', { x: MARGIN, y: y + 1, size: 5, font: fontRegular, color: GREEN })
+      page.drawText('•', { x: MARGIN, y: y + 1, size: 5, font: fontRegular, color: GREEN })
       drawText(bullet, { size: 8.5, x: bulletX, maxWidth: CONTENT_W - 8, lineHeight: 11 })
       gap(1)
     }
