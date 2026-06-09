@@ -25,6 +25,8 @@ interface AutoApplyResult {
   /** Submitted but unconfirmed, or couldn't be completed — Matthew handles it. */
   needsReview: boolean
   skipped: boolean
+  /** Browser service threw or returned an error (service down, network, etc.). */
+  failed: boolean
   reason: string | null
   /** Required questions the engine had no truthful answer for (drives the alert). */
   unanswered?: string[]
@@ -125,7 +127,7 @@ async function runAutoApply(opts: RunOpts) {
         // Park it so it isn't re-picked next run while awaiting the decision.
         await sql`update roles set status = 'awaiting_approval', updated_at = now() where id = ${role.id}`
       }
-      results.push({ roleId: role.id, company: role.company, title: role.title, success: false, needsReview: false, skipped: true, reason: 'awaiting approval', atsType: null })
+      results.push({ roleId: role.id, company: role.company, title: role.title, success: false, needsReview: false, skipped: true, failed: false, reason: 'awaiting approval', atsType: null })
       continue
     }
 
@@ -140,6 +142,7 @@ async function runAutoApply(opts: RunOpts) {
       success: r.outcome === 'applied',
       needsReview: r.outcome === 'needs_review' && !dryRun,
       skipped: r.outcome === 'skipped' || dryRun,
+      failed: r.outcome === 'failed',
       reason: r.reason,
       unanswered: r.unanswered,
       atsType: null,
@@ -149,8 +152,9 @@ async function runAutoApply(opts: RunOpts) {
   const applied = results.filter((r) => r.success).length
   const needsReview = results.filter((r) => r.needsReview).length
   const skipped = results.filter((r) => r.skipped).length
+  const failed = results.filter((r) => r.failed).length
 
-  return { applied, needsReview, skipped, total: results.length, dryRun, results }
+  return { applied, needsReview, skipped, failed, total: results.length, dryRun, results }
 }
 
 /** Daily safety cap on automatic submissions (a bug can't spray more than this). */

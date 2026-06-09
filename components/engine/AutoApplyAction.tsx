@@ -7,11 +7,17 @@ interface AutoApplyReport {
   applied: number
   needsReview: number
   skipped: number
+  failed: number
   total: number
   dryRun: boolean
+  message?: string
   results: Array<{
     company: string
+    title: string
     success: boolean
+    needsReview: boolean
+    skipped: boolean
+    failed: boolean
     reason: string | null
   }>
 }
@@ -64,19 +70,45 @@ export default function AutoApplyAction() {
   }
 
   if (phase === 'done' && report) {
-    return (
-      <div
-        className="text-[11px] tabular-nums"
-        style={{ color: 'var(--color-text-secondary)', fontFamily: 'var(--font-sans)' }}
-      >
-        <span style={{ color: report.applied > 0 ? '#3f6a2c' : 'var(--color-text-dim)' }}>
-          {report.applied} applied
+    if (report.total === 0) {
+      return (
+        <span
+          className="text-[11px]"
+          style={{ color: 'var(--color-text-dim)', fontFamily: 'var(--font-sans)' }}
+        >
+          {report.message ?? 'No eligible roles (need tailored + Greenhouse/Ashby URL)'}
         </span>
-        {report.needsReview > 0 && (
-          <span style={{ color: '#9a6a08' }}> · {report.needsReview} to verify</span>
-        )}
-        {report.skipped > 0 && (
-          <span style={{ color: 'var(--color-text-dim)' }}> · {report.skipped} skipped</span>
+      )
+    }
+    return (
+      <div style={{ fontFamily: 'var(--font-sans)' }}>
+        <div className="text-[11px] tabular-nums" style={{ color: 'var(--color-text-secondary)' }}>
+          <span style={{ color: report.applied > 0 ? '#9ab48a' : 'var(--color-text-dim)' }}>
+            {report.applied} applied
+          </span>
+          {report.needsReview > 0 && (
+            <span style={{ color: '#c89418' }}> · {report.needsReview} to verify</span>
+          )}
+          {report.skipped > 0 && (
+            <span style={{ color: 'var(--color-text-dim)' }}> · {report.skipped} skipped</span>
+          )}
+          {report.failed > 0 && (
+            <span style={{ color: '#a8463a' }}> · {report.failed} error</span>
+          )}
+        </div>
+        {report.results.length > 0 && (
+          <div className="mt-1" style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {report.results.map((r, i) => {
+              const icon = r.success ? '✓' : r.needsReview ? '⚠' : r.failed ? '✗' : '–'
+              const color = r.success ? '#9ab48a' : r.needsReview ? '#c89418' : r.failed ? '#a8463a' : '#888'
+              return (
+                <div key={i} className="text-[10px]" style={{ color, lineHeight: 1.4 }}>
+                  {icon} {r.company}
+                  {r.reason && <span style={{ color: '#666', marginLeft: 4 }}>· {r.reason}</span>}
+                </div>
+              )
+            })}
+          </div>
         )}
       </div>
     )
