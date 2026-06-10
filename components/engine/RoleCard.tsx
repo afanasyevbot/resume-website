@@ -8,6 +8,7 @@ import ApplyAction from './ApplyAction'
 import PerRoleAutoApply from './PerRoleAutoApply'
 import ApprovalAction from './ApprovalAction'
 import { scoreBand } from '@/lib/engine/scoreBands'
+import OutcomeMenu from './OutcomeMenu'
 import AgentTrail from './AgentTrail'
 import FeedbackButtons from './FeedbackButtons'
 import { avatarLetters, avatarTint } from './avatar'
@@ -287,6 +288,7 @@ export default function RoleCard({ row, expanded, onToggleExpanded }: RoleCardPr
           {APPLYABLE_STATUSES.has(row.status.toLowerCase()) && (
             <ApplyAction roleId={row.id} status={row.status} />
           )}
+          <OutcomeMenu roleId={row.id} status={row.status} />
         </div>
       </div>
 
