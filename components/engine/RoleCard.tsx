@@ -7,6 +7,7 @@ import TailorAction, { TailorPackagePanel } from './TailorAction'
 import ApplyAction from './ApplyAction'
 import PerRoleAutoApply from './PerRoleAutoApply'
 import ApprovalAction from './ApprovalAction'
+import { scoreBand } from '@/lib/engine/scoreBands'
 import AgentTrail from './AgentTrail'
 import FeedbackButtons from './FeedbackButtons'
 import { avatarLetters, avatarTint } from './avatar'
@@ -229,8 +230,12 @@ export default function RoleCard({ row, expanded, onToggleExpanded }: RoleCardPr
                 <span
                   className="tabular-nums"
                   style={{ color: scoreColor(row.route, score) }}
+                  title={scoreBand(row.fit_score).meaning}
                 >
-                  {score}/100 · {row.route}
+                  {score}/100 ·{' '}
+                  <span style={{ color: scoreBand(row.fit_score).color }}>
+                    {scoreBand(row.fit_score).label}
+                  </span>
                 </span>
               }
             />
