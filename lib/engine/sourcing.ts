@@ -41,6 +41,28 @@ export interface SourcingReport {
   durationMs: number
 }
 
+/** Pure: converts a SourcingReport to the jsonb detail stored in a source_run event. */
+export function formatSourceRunDetail(r: SourcingReport): {
+  scored: number
+  tailored: number
+  errors: number
+  deadlineHit: boolean
+  capHit: boolean
+  durationS: number
+  summary: string
+} {
+  const stopReason = r.deadlineHit ? 'deadline hit' : r.capHit ? 'cap hit' : 'all companies done'
+  return {
+    scored: r.totalScored,
+    tailored: r.totalTailored,
+    errors: r.totalErrors,
+    deadlineHit: r.deadlineHit,
+    capHit: r.capHit,
+    durationS: Math.floor(r.durationMs / 1000),
+    summary: `scored ${r.totalScored}, tailored ${r.totalTailored} — ${stopReason}`,
+  }
+}
+
 interface RunOptions {
   /** Hard cap on the number of scoring calls per run (cost control). */
   maxScores?: number
