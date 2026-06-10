@@ -1,0 +1,86 @@
+import { sql } from './db'
+
+/**
+ * The Morning Brief — the engine narrating what it did since Matthew last
+ * looked, in plain English. Deterministic string composition from event
+ * counts (no LLM call: assembling counts into sentences is plain code).
+ */
+
+export interface BriefStats {
+  /** Pretty "14h" / "2d" label for the since-anchor. */
+  sinceLabel: string
+  /** New roles scanned+scored in the window. */
+  scanned: number
+  /** Confirmed submissions in the window. */
+  applied: Array<{ company: string }>
+  /** Roles parked for approval in the window. */
+  held: Array<{ company: string; fit: number | null }>
+  /** Dead listings retired in the window. */
+  retired: number
+  /** How many items are sitting in the decision deck right now. */
+  decisions: number
+}
+
+function joinNames(items: Array<{ company: string }>): string {
+  const names = [...new Set(items.map((i) => i.company))]
+  if (names.length === 1) return names[0]
+  if (names.length === 2) return `${names[0]} and ${names[1]}`
+  return `${names.slice(0, -1).join(', ')}, and ${names[names.length - 1]}`
+}
+
+export function composeBrief(s: BriefStats): string {
+  const parts: string[] = []
+
+  if (s.scanned === 0 && s.applied.length === 0 && s.held.length === 0 && s.retired === 0) {
+    const tail =
+      s.decisions > 0
+        ? `but ${s.decisions === 1 ? 'one item is' : `${s.decisions} items are`} still waiting on your call below.`
+        : 'Nothing needs you — see you after the next scan at 8:00am or 4:00pm.'
+    return `Quiet since you left${s.sinceLabel ? ` (${s.sinceLabel} ago)` : ''} — nothing new came in. ${tail}`
+  }
+
+  if (s.scanned > 0) parts.push(`scanned ${s.scanned} opening${s.scanned === 1 ? '' : 's'}`)
+  if (s.applied.length > 0) parts.push(`applied to ${joinNames(s.applied)} on your behalf`)
+  if (s.held.length > 0)
+    parts.push(
+      `held ${s.held.length === 1 ? joinNames(s.held) : `${s.held.length} roles`} for your call`,
+    )
+  if (s.retired > 0) parts.push(`retired ${s.retired} dead listing${s.retired === 1 ? '' : 's'}`)
+
+  const did =
+    parts.length === 1
+      ? parts[0]
+      : `${parts.slice(0, -1).join(', ')}, and ${parts[parts.length - 1]}`
+
+  const tail =
+    s.decisions === 0
+      ? ' Nothing needs you right now.'
+      : s.decisions === 1
+        ? ' One decision needs 30 seconds of your judgment.'
+        : ` ${s.decisions} decisions need a minute of your judgment.`
+
+  return `While you were away I ${did}.${tail}`
+}
+
+/** Gather window stats from the events table since `anchor` (ISO timestamp). */
+export async function briefStatsSince(anchor: string | null, decisions: number): Promise<BriefStats> {
+  if (!anchor) {
+    return { sinceLabel: '', scanned: 0, applied: [], held: [], retired: 0, decisions }
+  }
+  const rows = await sql`
+    select e.kind, r.company, (e.detail->>'fit')::int as fit
+    from events e
+    left join roles r on r.id = e.role_id
+    where e.created_at > ${anchor}
+      and e.kind in ('scored', 'applied', 'awaiting_approval', 'job_not_found')
+  `
+  const stats: BriefStats = { sinceLabel: '', scanned: 0, applied: [], held: [], retired: 0, decisions }
+  for (const row of rows as Array<{ kind: string; company: string | null; fit: number | null }>) {
+    if (row.kind === 'scored') stats.scanned += 1
+    else if (row.kind === 'applied') stats.applied.push({ company: row.company ?? 'a role' })
+    else if (row.kind === 'awaiting_approval')
+      stats.held.push({ company: row.company ?? 'a role', fit: row.fit })
+    else if (row.kind === 'job_not_found') stats.retired += 1
+  }
+  return stats
+}
