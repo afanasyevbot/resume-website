@@ -57,6 +57,8 @@ export interface SubmitResult {
   title: string
   reason: string | null
   unanswered: string[]
+  /** ATS platform the browser agent saw ('greenhouse', 'ashby', 'unknown', …). */
+  atsType: string | null
 }
 
 interface BrowserResult {
@@ -116,11 +118,11 @@ export async function submitAndPersist(
     })
     if (!response.ok) {
       const err = await response.text()
-      return { outcome: 'failed', company: role.company, title: role.title, reason: `browser ${response.status} ${err.slice(0, 120)}`, unanswered: [] }
+      return { outcome: 'failed', company: role.company, title: role.title, reason: `browser ${response.status} ${err.slice(0, 120)}`, unanswered: [], atsType: null }
     }
     result = (await response.json()) as BrowserResult
   } catch (err) {
-    return { outcome: 'failed', company: role.company, title: role.title, reason: err instanceof Error ? err.message : String(err), unanswered: [] }
+    return { outcome: 'failed', company: role.company, title: role.title, reason: err instanceof Error ? err.message : String(err), unanswered: [], atsType: null }
   }
 
   const outcome = decideApplyOutcome(result, dryRun)
@@ -137,7 +139,7 @@ export async function submitAndPersist(
         txn`insert into reminders (role_id, kind, due_at) values (${role.id}, 'linkedin_check_in', now() + interval '7 days')`,
       ])
     }
-    return { outcome, company: role.company, title: role.title, reason: null, unanswered: [] }
+    return { outcome, company: role.company, title: role.title, reason: null, unanswered: [], atsType: result.atsType ?? null }
   }
 
   if (outcome === 'needs_review') {
@@ -149,7 +151,7 @@ export async function submitAndPersist(
         txn`insert into events (role_id, kind, detail) values (${role.id}, 'submit_unconfirmed', ${detail}::jsonb)`,
       ])
     }
-    return { outcome, company: role.company, title: role.title, reason: 'submitted but unconfirmed', unanswered: [] }
+    return { outcome, company: role.company, title: role.title, reason: 'submitted but unconfirmed', unanswered: [], atsType: result.atsType ?? null }
   }
 
   // The listing no longer exists (e.g. Greenhouse ?error=true redirect).
@@ -163,13 +165,13 @@ export async function submitAndPersist(
         txn`insert into events (role_id, kind, detail) values (${role.id}, 'job_not_found', ${detail}::jsonb)`,
       ])
     }
-    return { outcome: 'skipped', company: role.company, title: role.title, reason: 'job_not_found', unanswered: [] }
+    return { outcome: 'skipped', company: role.company, title: role.title, reason: 'job_not_found', unanswered: [], atsType: result.atsType ?? null }
   }
 
   // skipped / failed (couldn't complete) → needs_review, and ask the first
   // unanswerable question on Slack if we can.
   if (!dryRun) {
-    const detail = JSON.stringify({ method, reason: result.reason ?? outcome, unanswered })
+    const detail = JSON.stringify({ method, atsType: result.atsType ?? null, reason: result.reason ?? outcome, unanswered })
     await tx((txn) => [
       txn`update roles set status = 'needs_review', updated_at = now() where id = ${role.id}`,
       txn`insert into events (role_id, kind, detail) values (${role.id}, 'needs_review', ${detail}::jsonb)`,
@@ -188,5 +190,5 @@ export async function submitAndPersist(
       }
     }
   }
-  return { outcome: 'needs_review', company: role.company, title: role.title, reason: result.reason ?? 'needs review', unanswered }
+  return { outcome: 'needs_review', company: role.company, title: role.title, reason: result.reason ?? 'needs review', unanswered, atsType: result.atsType ?? null }
 }

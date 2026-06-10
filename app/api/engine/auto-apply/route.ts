@@ -92,36 +92,47 @@ async function runAutoApply(opts: RunOpts) {
     // Cron (auto) restricts to known-safe ATS platforms. Manual button is an
     // explicit human action so we let it try any URL — the browser service
     // will return skipped/needs_review for unsupported ATS types.
+    // distinct on (url): if the same listing was sourced twice (e.g. via an
+    // aggregator AND the ATS), only the highest-fit copy is eligible — never
+    // submit the same application twice in one run.
     const rows = method === 'auto'
       ? await sql`
-          select r.id, r.company, r.title, r.url, r.fit_score, p.package_json
-          from roles r
-          join lateral (
-            select package_json from application_packages
-            where role_id = r.id order by created_at desc limit 1
-          ) p on true
-          where r.status = 'tailored'
-            and r.route = 'tailor'
-            and r.url is not null
-            and (r.url like '%greenhouse.io%' or r.url like '%ashbyhq.com%')
-            and coalesce(r.fit_score, 0) >= ${minFit}
-            and p.package_json is not null
-          order by r.fit_score desc nulls last
+          select * from (
+            select distinct on (r.url)
+              r.id, r.company, r.title, r.url, r.fit_score, p.package_json
+            from roles r
+            join lateral (
+              select package_json from application_packages
+              where role_id = r.id order by created_at desc limit 1
+            ) p on true
+            where r.status = 'tailored'
+              and r.route = 'tailor'
+              and r.url is not null
+              and (r.url like '%greenhouse.io%' or r.url like '%ashbyhq.com%')
+              and coalesce(r.fit_score, 0) >= ${minFit}
+              and p.package_json is not null
+            order by r.url, r.fit_score desc nulls last
+          ) dedup
+          order by dedup.fit_score desc nulls last
           limit ${maxApply}
         `
       : await sql`
-          select r.id, r.company, r.title, r.url, r.fit_score, p.package_json
-          from roles r
-          join lateral (
-            select package_json from application_packages
-            where role_id = r.id order by created_at desc limit 1
-          ) p on true
-          where r.status = 'tailored'
-            and r.route = 'tailor'
-            and r.url is not null
-            and coalesce(r.fit_score, 0) >= ${minFit}
-            and p.package_json is not null
-          order by r.fit_score desc nulls last
+          select * from (
+            select distinct on (r.url)
+              r.id, r.company, r.title, r.url, r.fit_score, p.package_json
+            from roles r
+            join lateral (
+              select package_json from application_packages
+              where role_id = r.id order by created_at desc limit 1
+            ) p on true
+            where r.status = 'tailored'
+              and r.route = 'tailor'
+              and r.url is not null
+              and coalesce(r.fit_score, 0) >= ${minFit}
+              and p.package_json is not null
+            order by r.url, r.fit_score desc nulls last
+          ) dedup
+          order by dedup.fit_score desc nulls last
           limit ${maxApply}
         `
     roles = (rows as typeof roles).map((r) => ({ ...r, id: Number(r.id), fit_score: r.fit_score == null ? null : Number(r.fit_score) }))
@@ -180,7 +191,7 @@ async function runAutoApply(opts: RunOpts) {
       failed: r.outcome === 'failed',
       reason: r.reason,
       unanswered: r.unanswered,
-      atsType: null,
+      atsType: r.atsType,
     })
   }
 
@@ -205,6 +216,17 @@ async function autoAppliedToday(): Promise<number> {
     select count(*)::int as n from events
     where kind = 'applied'
       and detail->>'method' = 'auto'
+      and created_at >= date_trunc('day', now())
+  `
+  return Number((rows as Array<{ n: number }>)[0]?.n ?? 0)
+}
+
+/** ALL confirmed submissions today, any method — backs the global daily cap so
+ *  a runaway manual loop can't spray applications past it either. */
+async function appliedTodayAnyMethod(): Promise<number> {
+  const rows = await sql`
+    select count(*)::int as n from events
+    where kind = 'applied'
       and created_at >= date_trunc('day', now())
   `
   return Number((rows as Array<{ n: number }>)[0]?.n ?? 0)
@@ -246,9 +268,15 @@ export async function POST(req: Request) {
   if (!(await hasBudget())) {
     return NextResponse.json({ error: 'Monthly spend cap reached.' }, { status: 429 })
   }
+  // The daily cap is global: manual submissions count against it too.
+  const todayTotal = await appliedTodayAnyMethod()
+  const remaining = Math.max(0, DAILY_CAP - todayTotal)
+  if (remaining === 0 && !(body.dryRun ?? false)) {
+    return NextResponse.json({ error: `Daily submission cap reached (${todayTotal}/${DAILY_CAP}).` }, { status: 429 })
+  }
   const report = await runAutoApply({
     roleIds: body.roleIds,
-    maxApply: Math.min(body.maxApply ?? 5, 10),
+    maxApply: Math.min(body.maxApply ?? 5, remaining || 1),
     dryRun: body.dryRun ?? false,
     minFit: 0,
     method: 'manual',
