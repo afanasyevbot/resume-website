@@ -14,13 +14,25 @@ const KIND_DOT: Record<string, string> = {
   offer:        '#c8901a',
   rejected:     '#c05545',
   discarded:    '#a99c7e',
+  needs_review: '#c8901a',
+  awaiting_approval: '#c8901a',
+  approval_post_failed: '#c05545',
+  auto_apply_run: '#566173',
 }
 
 const DEFAULT_DOT = '#a99c7e'
 
 function kindLabel(kind: string, company: string | null): string {
-  const k = kind.charAt(0).toUpperCase() + kind.slice(1).toLowerCase()
+  const pretty = kind.replace(/_/g, ' ')
+  const k = pretty.charAt(0).toUpperCase() + pretty.slice(1).toLowerCase()
   return company ? `${k} · ${company}` : k
+}
+
+/** Cron run events carry a human summary ("0 eligible of 3 tailored — …"). */
+function eventText(event: ActivityEvent): string {
+  const label = kindLabel(event.kind, event.company)
+  const summary = event.detail?.summary
+  return typeof summary === 'string' ? `${label} — ${summary}` : label
 }
 
 interface ActivityFeedProps {
@@ -104,7 +116,7 @@ export default function ActivityFeed({ events }: ActivityFeedProps) {
                         fontFamily: 'var(--font-sans)',
                       }}
                     >
-                      {kindLabel(event.kind, event.company)}
+                      {eventText(event)}
                     </span>
                     <span
                       className="text-[11px] tabular-nums flex-shrink-0"
