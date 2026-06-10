@@ -17,13 +17,24 @@ export interface ApprovalItem {
   summary: string | null
 }
 
+/** A role the engine couldn't auto-submit (unknown ATS) — Matthew applies manually. */
+export interface ManualApplyItem {
+  type: 'manual'
+  roleId: number
+  company: string
+  title: string
+  fit: number | null
+  reason: string | null
+  url: string | null
+}
+
 /** A due follow-up with its outreach draft ready to send. */
 export interface FollowUpItem {
   type: 'followup'
   reminder: Reminder
 }
 
-export type DeckItem = ApprovalItem | FollowUpItem
+export type DeckItem = ApprovalItem | ManualApplyItem | FollowUpItem
 
 interface DecisionDeckProps {
   items: DeckItem[]
@@ -91,6 +102,36 @@ export default function DecisionDeck({ items }: DecisionDeckProps) {
     }
   }
 
+  async function markApplied(item: ManualApplyItem) {
+    setBusy('manual')
+    // Open the job URL first so Matthew can apply
+    if (item.url) window.open(item.url, '_blank', 'noopener,noreferrer')
+    try {
+      const res = await fetch(`/api/engine/roles/${item.roleId}/manual-apply`, { method: 'POST' })
+      if (!res.ok) throw new Error(`Request failed (${res.status})`)
+      advance(currentIdx, `Marked applied to ${item.company} — finish the form in the new tab.`)
+    } catch (err) {
+      setBusy(null)
+      setNote(err instanceof Error ? err.message : 'Something went wrong.')
+    }
+  }
+
+  async function passManual(item: ManualApplyItem) {
+    setBusy('pass')
+    try {
+      const res = await fetch(`/api/engine/roles/${item.roleId}/manual-apply`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'skip' }),
+      })
+      if (!res.ok) throw new Error(`Request failed (${res.status})`)
+      advance(currentIdx, `Passed on ${item.company}.`)
+    } catch (err) {
+      setBusy(null)
+      setNote(err instanceof Error ? err.message : 'Something went wrong.')
+    }
+  }
+
   async function copyAndComplete(item: FollowUpItem) {
     setBusy('copy')
     try {
@@ -127,10 +168,12 @@ export default function DecisionDeck({ items }: DecisionDeckProps) {
       if (e.key === 'Enter') {
         e.preventDefault()
         if (current.type === 'approval') approve(current)
+        else if (current.type === 'manual') markApplied(current)
         else copyAndComplete(current)
       } else if (e.key === 'Escape') {
         e.preventDefault()
         if (current.type === 'approval') pass(current)
+        else if (current.type === 'manual') passManual(current)
         else snooze(current)
       }
     }
@@ -230,6 +273,75 @@ export default function DecisionDeck({ items }: DecisionDeckProps) {
             </Link>
           </div>
         </>
+      ) : current.type === 'manual' ? (
+        <>
+          <p className="text-[11px] uppercase mb-1" style={{ ...label, color: '#2563eb', fontSize: 10 }}>
+            Engine couldn&apos;t auto-submit · apply manually
+          </p>
+          <p className="text-[26px] font-semibold mb-1 mt-3" style={{ color: 'var(--color-text-bright)', fontFamily: 'var(--font-sans)' }}>
+            {current.company}
+          </p>
+          <p className="text-[14px] mb-5" style={{ color: 'var(--color-text-secondary)', fontFamily: 'var(--font-sans)' }}>
+            {current.title}
+          </p>
+          {current.fit != null && (
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <span className="text-[34px] font-semibold tabular-nums" style={{ color: '#b45309', fontFamily: 'var(--font-display)' }}>
+                {current.fit}
+              </span>
+              <span className="text-left text-[12.5px] leading-snug" style={{ color: 'var(--color-text-secondary)', fontFamily: 'var(--font-sans)' }}>
+                fit score — cover letter &amp; resume ready
+              </span>
+            </div>
+          )}
+          {current.reason && (
+            <p className="text-[13px] leading-relaxed mb-6 max-w-[480px] mx-auto" style={{ color: 'var(--color-text-secondary)', fontFamily: 'var(--font-sans)' }}>
+              {current.reason}
+            </p>
+          )}
+          <div className="flex items-center justify-center gap-3">
+            <button
+              onClick={() => markApplied(current)}
+              disabled={!!busy}
+              className="text-[13px] font-medium px-6 py-2.5 rounded"
+              style={{
+                fontFamily: 'var(--font-sans)',
+                backgroundColor: 'rgba(37,99,235,0.08)',
+                color: '#1d4ed8',
+                border: '1px solid rgba(37,99,235,0.30)',
+                cursor: busy ? 'wait' : 'pointer',
+              }}
+            >
+              {busy === 'manual' ? 'Opening…' : 'Open job & mark applied'}
+            </button>
+            <button
+              onClick={() => passManual(current)}
+              disabled={!!busy}
+              className="text-[13px] font-medium px-5 py-2.5 rounded"
+              style={{
+                fontFamily: 'var(--font-sans)',
+                backgroundColor: 'transparent',
+                color: 'var(--color-text-secondary)',
+                border: '1px solid var(--color-border)',
+                cursor: busy ? 'wait' : 'pointer',
+              }}
+            >
+              Pass
+            </button>
+            <Link
+              href={`/engine/roles/${current.roleId}`}
+              className="text-[13px] font-medium px-5 py-2.5 rounded"
+              style={{
+                fontFamily: 'var(--font-sans)',
+                color: 'var(--color-text-secondary)',
+                border: '1px solid var(--color-border)',
+                textDecoration: 'none',
+              }}
+            >
+              Why?
+            </Link>
+          </div>
+        </>
       ) : (
         <>
           <p className="text-[26px] font-semibold mb-1" style={{ color: 'var(--color-text-bright)', fontFamily: 'var(--font-sans)' }}>
@@ -291,7 +403,9 @@ export default function DecisionDeck({ items }: DecisionDeckProps) {
         </p>
       )}
       <p className="text-[11px] mt-4" style={{ color: 'var(--color-text-ghost)', fontFamily: 'var(--font-display)', letterSpacing: '0.06em' }}>
-        enter = {current.type === 'approval' ? 'apply' : 'copy & done'} · esc = {current.type === 'approval' ? 'pass' : 'snooze'}
+        {current.type === 'approval' && 'enter = apply · esc = pass'}
+        {current.type === 'manual' && 'enter = open & apply · esc = pass'}
+        {current.type === 'followup' && 'enter = copy & done · esc = snooze'}
       </p>
     </div>
   )
