@@ -111,3 +111,46 @@ describe('planSourcing', () => {
     expect(s.relevant).toBe(1) // only a1
   })
 })
+
+describe('planSourcing — GTM-wide title gate (Matthew wants GTM broadly, not just AE)', () => {
+  const gtmTitles = [
+    'Partnerships Manager',
+    'Strategic Alliances Lead',
+    'Channel Partner Manager',
+    'Solutions Engineer',
+    'Revenue Operations Manager',
+    'RevOps Analyst',
+    'Growth Lead',
+    'Founding GTM',
+    'GTM Engineer',
+    'Client Director',
+  ]
+
+  it('lets GTM-adjacent titles through to scoring', () => {
+    const fetched = [
+      {
+        company: { name: 'Acme', ats: 'greenhouse' as const, slug: 'acme' },
+        listings: gtmTitles.map((title, i) => listing({ url: `g${i}`, title })),
+      },
+    ]
+    const plan = planSourcing(fetched, new Set(), { maxAgeDays: 30 })
+    const passed = plan.work.map((w) => w.listing.title)
+    for (const t of gtmTitles) expect(passed).toContain(t)
+  })
+
+  it('still blocks clearly irrelevant titles', () => {
+    const fetched = [
+      {
+        company: { name: 'Acme', ats: 'greenhouse' as const, slug: 'acme' },
+        listings: [
+          listing({ url: 'x1', title: 'Senior Backend Engineer' }),
+          listing({ url: 'x2', title: 'Product Designer' }),
+          listing({ url: 'x3', title: 'Recruiting Coordinator' }),
+        ],
+      },
+    ]
+    const plan = planSourcing(fetched, new Set(), { maxAgeDays: 30 })
+    expect(plan.work.length).toBe(0)
+    expect(plan.skippedIrrelevant).toBe(3)
+  })
+})
