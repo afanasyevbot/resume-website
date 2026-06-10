@@ -3,6 +3,7 @@ const { chromium } = require('playwright')
 const { writeFileSync, mkdirSync } = require('fs')
 const { join } = require('path')
 const { matchAnswer } = require('./answer')
+const { classifyAtsUrl, isDeadGreenhouseListing } = require('./detect')
 
 const app = express()
 app.use(express.json({ limit: '5mb' }))
@@ -21,11 +22,11 @@ function auth(req, res, next) {
 
 // ── ATS form detection + filling ────────────────────────────────────
 
-/** Detect which ATS type a page is, or 'unknown'. */
-async function detectAtsType(page) {
-  const url = page.url()
-  if (url.includes('boards.greenhouse.io') || url.includes('job-boards.greenhouse.io')) return 'greenhouse'
-  if (url.includes('jobs.ashbyhq.com')) return 'ashby'
+/** Detect which ATS type a page is, or 'unknown'. Checks the requested URL
+ *  too — Greenhouse boards links often redirect to the company careers site. */
+async function detectAtsType(page, requestedUrl) {
+  const fromUrl = classifyAtsUrl(requestedUrl, page.url())
+  if (fromUrl) return fromUrl
   // Check for Greenhouse/Ashby iframes or known form selectors
   const hasGreenhouse = await page.$('#application_form, form#s2-application, [data-gapi-analytics-id]').catch(() => null)
   if (hasGreenhouse) return 'greenhouse'
@@ -275,8 +276,22 @@ app.post('/apply', auth, async (req, res) => {
     // Navigate to the application URL
     await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 })
 
+    // Dead listing? Greenhouse redirects closed jobs to the board index with
+    // ?error=true. Report it truthfully so the engine can retire the role
+    // instead of queuing it for pointless manual review.
+    if (isDeadGreenhouseListing(page.url())) {
+      const screenshot = await screenshotBase64(page)
+      return res.json({
+        success: false,
+        skipped: true,
+        reason: 'job_not_found',
+        atsType: 'greenhouse',
+        screenshots: { initial: screenshot },
+      })
+    }
+
     // Detect ATS type
-    const atsType = await detectAtsType(page)
+    const atsType = await detectAtsType(page, url)
     if (atsType === 'unknown') {
       const screenshot = await screenshotBase64(page)
       return res.json({
