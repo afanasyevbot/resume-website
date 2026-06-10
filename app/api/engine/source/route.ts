@@ -23,12 +23,13 @@ export async function POST(req: Request) {
   }
 }
 
-// Cron-triggered sourcing with auto-tailor. On Pro plan: 300s function limit,
-// 5 roles × ~33s each = ~165s, well within budget. Runs 2×/day (8am + 4pm CDT).
-// Dedup means each run works through the 34-company backlog incrementally.
-// Cost guard checks budget before each Claude call; if the $25/mo cap is hit,
-// the cron gracefully stops scoring/tailoring.
-const CRON_MAX_SCORES = 5
+// Cron-triggered sourcing with auto-tailor. Throughput is TIME-boxed, not
+// count-boxed: keep scoring until ~240s of the 300s function window is used,
+// with a cost-sanity cap of 25 (the old fixed cap of 5 starved the funnel —
+// 5 scores/run across 35 companies can't feed a 10-applies/day pipeline).
+// Cost guard still blocks every Claude call once the $25/mo cap is hit.
+const CRON_MAX_SCORES = 25
+const CRON_DEADLINE_MS = 240_000
 
 export async function GET(req: Request) {
   const cronSecret = process.env.CRON_SECRET
@@ -39,8 +40,8 @@ export async function GET(req: Request) {
 
   const client = new Anthropic({ apiKey: anthropicKey() })
   try {
-    const report = await runSourcing(client, { maxScores: CRON_MAX_SCORES, autoTailor: true })
-    console.log('cron sourcing:', JSON.stringify({ scored: report.totalScored, tailored: report.totalTailored, errors: report.totalErrors }))
+    const report = await runSourcing(client, { maxScores: CRON_MAX_SCORES, deadlineMs: CRON_DEADLINE_MS, autoTailor: true })
+    console.log('cron sourcing:', JSON.stringify({ scored: report.totalScored, tailored: report.totalTailored, errors: report.totalErrors, deadlineHit: report.deadlineHit }))
     return NextResponse.json({ ok: true, ...report })
   } catch (err) {
     console.error('GET /api/engine/source (cron) error:', err)
