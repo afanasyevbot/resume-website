@@ -2,8 +2,9 @@ import Link from 'next/link'
 import { loadDashboard } from '@/lib/engine/dashboard'
 import { recordVisitAndGetDigest } from '@/lib/engine/visit'
 import { briefStatsSince, composeBrief } from '@/lib/engine/brief'
+import { buildDeck } from '@/lib/engine/buildDeck'
 import EngineHeader from '@/components/engine/EngineHeader'
-import DecisionDeck, { type DeckItem } from '@/components/engine/DecisionDeck'
+import DecisionDeck from '@/components/engine/DecisionDeck'
 import PipelineStrip from '@/components/engine/PipelineStrip'
 import AgentWire from '@/components/engine/AgentWire'
 
@@ -18,24 +19,7 @@ export const dynamic = 'force-dynamic'
 export default async function EngineDashboard() {
   const [data, digest] = await Promise.all([loadDashboard(), recordVisitAndGetDigest()])
   const { counts, queue, activity, reminders } = data
-
-  // Decision deck: approvals first (highest value), then due follow-ups.
-  const approvals: DeckItem[] = queue
-    .filter((r) => r.status === 'awaiting_approval')
-    .map((r) => ({
-      type: 'approval' as const,
-      roleId: r.id,
-      company: r.company,
-      title: r.title,
-      fit: r.fit_score,
-      reason:
-        Array.isArray(r.fit_reasons) && typeof r.fit_reasons[0] === 'string'
-          ? (r.fit_reasons[0] as string)
-          : null,
-      summary: r.jd_summary,
-    }))
-  const followUps: DeckItem[] = reminders.map((rem) => ({ type: 'followup' as const, reminder: rem }))
-  const deck: DeckItem[] = [...approvals, ...followUps]
+  const deck = buildDeck(queue, reminders)
 
   const stats = await briefStatsSince(digest.since, deck.length)
   stats.sinceLabel = digest.sinceLabel
