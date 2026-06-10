@@ -1,54 +1,94 @@
+import Link from 'next/link'
 import { loadDashboard } from '@/lib/engine/dashboard'
 import { recordVisitAndGetDigest } from '@/lib/engine/visit'
+import { briefStatsSince, composeBrief } from '@/lib/engine/brief'
 import EngineHeader from '@/components/engine/EngineHeader'
-import SinceDigest from '@/components/engine/SinceDigest'
-import ActivityFeed from '@/components/engine/ActivityFeed'
-import ReminderList from '@/components/engine/ReminderList'
-import QueueWithTiles from '@/components/engine/QueueWithTiles'
-import ApprovalQueue from '@/components/engine/ApprovalQueue'
+import DecisionDeck, { type DeckItem } from '@/components/engine/DecisionDeck'
+import PipelineStrip from '@/components/engine/PipelineStrip'
+import AgentWire from '@/components/engine/AgentWire'
 
 export const dynamic = 'force-dynamic'
 
+/**
+ * The engine front page is a morning brief, not a dashboard: what the agent
+ * did (in a sentence), the few decisions only Matthew can make (one at a
+ * time), the pipeline in one line, and a timestamped wire of agent activity.
+ * The full role list lives at /engine/roles.
+ */
 export default async function EngineDashboard() {
-  // Run the visit-tracking + dashboard load in parallel.
-  const [data, digest] = await Promise.all([
-    loadDashboard(),
-    recordVisitAndGetDigest(),
-  ])
-  const { counts, deltas, queue, activity, reminders } = data
+  const [data, digest] = await Promise.all([loadDashboard(), recordVisitAndGetDigest()])
+  const { counts, queue, activity, reminders } = data
+
+  // Decision deck: approvals first (highest value), then due follow-ups.
+  const approvals: DeckItem[] = queue
+    .filter((r) => r.status === 'awaiting_approval')
+    .map((r) => ({
+      type: 'approval' as const,
+      roleId: r.id,
+      company: r.company,
+      title: r.title,
+      fit: r.fit_score,
+      reason:
+        Array.isArray(r.fit_reasons) && typeof r.fit_reasons[0] === 'string'
+          ? (r.fit_reasons[0] as string)
+          : null,
+      summary: r.jd_summary,
+    }))
+  const followUps: DeckItem[] = reminders.map((rem) => ({ type: 'followup' as const, reminder: rem }))
+  const deck: DeckItem[] = [...approvals, ...followUps]
+
+  const stats = await briefStatsSince(digest.since, deck.length)
+  stats.sinceLabel = digest.sinceLabel
+  const brief = composeBrief(stats)
 
   return (
     <main
-      className="max-w-[1200px] mx-auto px-6 lg:px-10 pt-10 pb-24"
+      className="max-w-[860px] mx-auto px-6 lg:px-10 pt-10 pb-24"
       style={{ fontFamily: 'var(--font-sans)' }}
     >
-      <EngineHeader digestSlot={<SinceDigest digest={digest} />} />
-
-      {/* Dashed semantic divider */}
-      <div
-        className="my-8"
-        style={{
-          borderTop: '1px dashed rgba(148,163,184,0.12)',
-        }}
-      />
-
-      {/* Roles held for approval — one-click approve/skip. Hidden when empty. */}
-      <ApprovalQueue rows={queue} />
-
-      {/* Today bar + clickable KPI tiles + queue + sidebar (client wrapper
-          so the tiles can drive the queue's status filter) */}
-      <QueueWithTiles
-        counts={counts}
-        deltas={deltas}
-        rows={queue}
-        reminders={reminders}
-        sidebar={
-          <>
-            <ReminderList reminders={reminders} />
-            <ActivityFeed events={activity} />
-          </>
+      <EngineHeader
+        digestSlot={
+          <p
+            className="mt-5 text-[17px] leading-relaxed max-w-[640px]"
+            style={{ color: 'var(--color-text-primary)', fontFamily: 'var(--font-sans)' }}
+          >
+            {brief}
+          </p>
         }
       />
+
+      <div className="my-8" style={{ borderTop: '1px dashed rgba(148,163,184,0.15)' }} />
+
+      {/* The decisions only Matthew can make — one at a time. */}
+      <DecisionDeck items={deck} />
+
+      {/* Pipeline in one line. */}
+      <div className="mt-10 mb-10">
+        <PipelineStrip counts={counts} rows={queue} />
+      </div>
+
+      {/* Everything the agent did, timestamped. */}
+      <div
+        className="vellum rounded-lg px-6 py-5"
+        style={{ border: '1px solid var(--color-border)' }}
+      >
+        <AgentWire events={activity} />
+      </div>
+
+      <div className="mt-8 text-center">
+        <Link
+          href="/engine/roles"
+          className="text-[12px] uppercase"
+          style={{
+            color: 'var(--color-text-muted)',
+            fontFamily: 'var(--font-display)',
+            letterSpacing: '0.18em',
+            textDecoration: 'none',
+          }}
+        >
+          Browse all roles →
+        </Link>
+      </div>
     </main>
   )
 }
