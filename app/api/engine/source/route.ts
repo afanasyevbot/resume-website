@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { NextResponse } from 'next/server'
-import { runSourcing } from '@/lib/engine/sourcing'
+import { runSourcing, formatSourceRunDetail } from '@/lib/engine/sourcing'
+import { sql } from '@/lib/engine/db'
 import { anthropicKey } from '@/lib/env'
 
 export const runtime = 'nodejs'
@@ -41,7 +42,10 @@ export async function GET(req: Request) {
   const client = new Anthropic({ apiKey: anthropicKey() })
   try {
     const report = await runSourcing(client, { maxScores: CRON_MAX_SCORES, deadlineMs: CRON_DEADLINE_MS, autoTailor: true })
-    console.log('cron sourcing:', JSON.stringify({ scored: report.totalScored, tailored: report.totalTailored, errors: report.totalErrors, deadlineHit: report.deadlineHit }))
+    const detail = formatSourceRunDetail(report)
+    // Persist summary so the funnel can be audited from the DB (not just Vercel logs)
+    await sql`insert into events (kind, detail) values ('source_run', ${JSON.stringify(detail)}::jsonb)`
+    console.log('cron sourcing:', JSON.stringify(detail))
     return NextResponse.json({ ok: true, ...report })
   } catch (err) {
     console.error('GET /api/engine/source (cron) error:', err)
