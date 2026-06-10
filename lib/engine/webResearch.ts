@@ -2,6 +2,7 @@ import type Anthropic from '@anthropic-ai/sdk'
 import { sql, tx } from './db'
 import { scoreRole } from './matcher'
 import { persistScoredRole, type PersistableRole } from './persistRole'
+import { checkApplyUrl } from './urlHealth'
 import { tailorRole } from './tailor'
 import type { TailorInput } from './tailorTypes'
 import { extractJsonObject } from './jsonExtract'
@@ -190,6 +191,15 @@ export async function processWebResults(
       applyUrl = resolved
       // Check dedup for the resolved URL too (same job may have been sourced directly)
       if (knownUrls.has(applyUrl)) continue
+    }
+
+    // Health-check the apply URL before spending a Claude call on scoring.
+    // Aggregator-extracted IDs routinely go stale (Greenhouse reposts), and a
+    // dead URL stalls the whole pipeline at apply time.
+    const health = await checkApplyUrl(applyUrl)
+    if (!health.ok) {
+      errors.push(`${result.title}: apply URL dead — ${health.reason}`)
+      continue
     }
 
     // Infer company name from the title or URL
