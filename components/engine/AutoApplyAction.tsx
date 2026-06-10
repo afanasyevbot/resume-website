@@ -83,7 +83,7 @@ export default function AutoApplyAction() {
     return (
       <div style={{ fontFamily: 'var(--font-sans)' }}>
         <div className="text-[11px] tabular-nums" style={{ color: 'var(--color-text-secondary)' }}>
-          <span style={{ color: report.applied > 0 ? '#9ab48a' : 'var(--color-text-dim)' }}>
+          <span style={{ color: report.applied > 0 ? '#6ee7a0' : 'var(--color-text-dim)' }}>
             {report.applied} applied
           </span>
           {report.needsReview > 0 && (
@@ -100,7 +100,7 @@ export default function AutoApplyAction() {
           <div className="mt-1" style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {report.results.map((r, i) => {
               const icon = r.success ? '✓' : r.needsReview ? '⚠' : r.failed ? '✗' : '–'
-              const color = r.success ? '#9ab48a' : r.needsReview ? '#c89418' : r.failed ? '#a8463a' : '#888'
+              const color = r.success ? '#6ee7a0' : r.needsReview ? '#c89418' : r.failed ? '#a8463a' : '#888'
               return (
                 <div key={i} className="text-[10px]" style={{ color, lineHeight: 1.4 }}>
                   {icon} {r.company}
@@ -129,7 +129,7 @@ export default function AutoApplyAction() {
       style={{
         fontFamily: 'var(--font-sans)',
         color: '#fff',
-        background: 'linear-gradient(90deg, #3f6a2c, #4f8038)',
+        background: 'linear-gradient(90deg, #3f6a2c, #4ade80)',
         border: 'none',
         padding: '5px 12px',
         borderRadius: 4,

@@ -24,7 +24,7 @@ function Panel({
     >
       <div
         className="px-5 py-3"
-        style={{ borderBottom: '1px dashed rgba(212,178,120,0.10)' }}
+        style={{ borderBottom: '1px dashed rgba(148,163,184,0.10)' }}
       >
         <p
           className="text-[11px] font-medium uppercase tracking-widest"
@@ -66,7 +66,7 @@ export default async function RoleDetailPage({
       {/* Dashed semantic divider — matches the dashboard rhythm */}
       <div
         className="my-8"
-        style={{ borderTop: '1px dashed rgba(212,178,120,0.12)' }}
+        style={{ borderTop: '1px dashed rgba(148,163,184,0.12)' }}
       />
 
       {/* Two-column layout: JD on left, agent surfaces on the right */}
@@ -138,7 +138,7 @@ export default async function RoleDetailPage({
               <p
                 className="mt-4 pt-3 text-[11px] tabular-nums"
                 style={{
-                  borderTop: '1px dashed rgba(212,178,120,0.08)',
+                  borderTop: '1px dashed rgba(148,163,184,0.08)',
                   color: 'var(--color-text-faint)',
                   fontFamily: 'var(--font-sans)',
                 }}
@@ -159,7 +159,7 @@ export default async function RoleDetailPage({
           >
             <div
               className="px-5 py-3 flex items-center justify-between"
-              style={{ borderBottom: '1px dashed rgba(212,178,120,0.10)' }}
+              style={{ borderBottom: '1px dashed rgba(148,163,184,0.10)' }}
             >
               <p
                 className="text-[11px] font-medium uppercase tracking-widest"
@@ -204,7 +204,7 @@ export default async function RoleDetailPage({
       {/* Actions row */}
       <div
         className="mt-8 pt-6 flex flex-wrap items-center gap-3"
-        style={{ borderTop: '1px dashed rgba(212,178,120,0.10)' }}
+        style={{ borderTop: '1px dashed rgba(148,163,184,0.10)' }}
       >
         {role.url && (
           <a

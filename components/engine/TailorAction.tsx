@@ -105,7 +105,7 @@ export default function TailorAction({
       {phase === 'error' && (
         <p
           className="text-[10px] text-right"
-          style={{ color: '#d49a8a', fontFamily: 'var(--font-sans)', maxWidth: 200 }}
+          style={{ color: '#fca5a5', fontFamily: 'var(--font-sans)', maxWidth: 200 }}
         >
           {error}
         </p>
@@ -127,8 +127,8 @@ export function TailorPackagePanel({
     <div
       className="grid grid-cols-1 lg:grid-cols-2 gap-5 px-5 py-5"
       style={{
-        borderTop: '1px dashed rgba(212,178,120,0.10)',
-        backgroundColor: 'rgba(212,178,120,0.025)',
+        borderTop: '1px dashed rgba(148,163,184,0.10)',
+        backgroundColor: 'rgba(148,163,184,0.025)',
       }}
     >
       {packageId !== null && (
@@ -194,13 +194,13 @@ export function TailorPackagePanel({
         <div className="lg:col-span-2">
           <p
             className="text-[11px] uppercase tracking-widest"
-            style={{ color: '#d49a8a', fontFamily: 'var(--font-sans)', letterSpacing: '0.14em' }}
+            style={{ color: '#fca5a5', fontFamily: 'var(--font-sans)', letterSpacing: '0.14em' }}
           >
             Lint issues still present
           </p>
           <ul
             className="mt-2 space-y-1 text-[12px]"
-            style={{ color: '#d49a8a', fontFamily: 'var(--font-sans)' }}
+            style={{ color: '#fca5a5', fontFamily: 'var(--font-sans)' }}
           >
             {(pkg.lintIssues ?? []).map((n, i) => (
               <li key={i}>· {n}</li>

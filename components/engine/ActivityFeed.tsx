@@ -5,23 +5,23 @@ import { timeAgo } from '@/lib/engine/dashboard'
 // Darker, saturated dots so they read on the cream activity panel.
 const KIND_DOT: Record<string, string> = {
   sourced:      '#566173',
-  scored:       '#7a6a4a',
-  tailored:     '#b8862a',
-  queued:       '#b8862a',
-  applied:      '#4f8038',
-  responded:    '#c8901a',
-  interviewing: '#8a6d3b',
-  offer:        '#c8901a',
-  rejected:     '#c05545',
-  discarded:    '#a99c7e',
-  needs_review: '#c8901a',
-  awaiting_approval: '#c8901a',
-  approval_post_failed: '#c05545',
-  job_not_found: '#a99c7e',
+  scored:       '#7d8aa0',
+  tailored:     '#e3a52e',
+  queued:       '#e3a52e',
+  applied:      '#4ade80',
+  responded:    '#f0b429',
+  interviewing: '#c4924d',
+  offer:        '#f0b429',
+  rejected:     '#f87171',
+  discarded:    '#5d6b80',
+  needs_review: '#f0b429',
+  awaiting_approval: '#f0b429',
+  approval_post_failed: '#f87171',
+  job_not_found: '#5d6b80',
   auto_apply_run: '#566173',
 }
 
-const DEFAULT_DOT = '#a99c7e'
+const DEFAULT_DOT = '#5d6b80'
 
 function kindLabel(kind: string, company: string | null): string {
   const pretty = kind.replace(/_/g, ' ')
@@ -51,7 +51,7 @@ export default function ActivityFeed({ events }: ActivityFeedProps) {
       {/* Section label */}
       <div
         className="px-5 py-3"
-        style={{ borderBottom: '1px dashed rgba(212,178,120,0.10)' }}
+        style={{ borderBottom: '1px dashed rgba(148,163,184,0.10)' }}
       >
         <p
           className="text-[11px] font-medium uppercase tracking-widest"

@@ -1,42 +1,38 @@
 /**
- * Engine routes get their own flat backdrop so the public site's
- * radial-gold gradient (rendered in the root layout) doesn't fight the
- * dashboard's data-density. A subtle grid pattern adds quiet cockpit
- * texture without competing with the data.
+ * Engine routes get their own "Night Desk" backdrop so the public site's
+ * radial-gold gradient (rendered in the root layout) doesn't bleed through.
+ * Deep ink canvas + fine instrument grid + a faint phosphor glow at the top
+ * — built for a daily morning check-in, not a brochure.
  */
 export default function EngineLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      {/* Opaque layer that sits ABOVE the root gradient (z-0) and BELOW
-          the page content (z-10). Suppresses the gold glow on /engine. */}
+      {/* Opaque ink layer ABOVE the root gradient (z-0), BELOW content (z-10). */}
       <div
         aria-hidden
         className="fixed inset-0 pointer-events-none"
         style={{
           zIndex: 1,
-          // Warm brown — lighter than the original near-black, stays in
-          // the same wood/leather family as the public resume site.
-          backgroundColor: '#2a2118',
+          backgroundColor: '#0a0e14',
           backgroundImage:
-            'linear-gradient(rgba(212,178,120,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(212,178,120,0.025) 1px, transparent 1px)',
-          backgroundSize: '48px 48px',
+            'linear-gradient(rgba(148,200,255,0.030) 1px, transparent 1px), linear-gradient(90deg, rgba(148,200,255,0.030) 1px, transparent 1px)',
+          backgroundSize: '44px 44px',
           backgroundPosition: '-1px -1px',
         }}
       />
-      {/* Soft vignette to the edges so the page doesn't feel like a flat slab */}
+      {/* Phosphor wash from the top + vignette at the edges for depth. */}
       <div
         aria-hidden
         className="fixed inset-0 pointer-events-none"
         style={{
           zIndex: 2,
           background:
-            'radial-gradient(ellipse 90% 70% at 50% 50%, transparent 0%, rgba(0,0,0,0.30) 100%)',
+            'radial-gradient(ellipse 90% 45% at 50% -10%, rgba(240,180,41,0.07) 0%, transparent 60%), radial-gradient(ellipse 90% 70% at 50% 55%, transparent 0%, rgba(0,0,0,0.38) 100%)',
         }}
       />
-      {/* Content must sit ABOVE the backdrop layers in this local stacking context.
-          .engine-cream re-tones the dark theme: warmer surfaces, brighter
-          labels, and a cream highlight on the top edge of every .vellum card. */}
-      <div className="engine-cream relative" style={{ zIndex: 10 }}>
+      {/* Content sits above the backdrop. .engine-ops re-tones every design
+          token (colors + fonts) for the Night Desk theme — see globals.css. */}
+      <div className="engine-ops relative" style={{ zIndex: 10 }}>
         {children}
       </div>
     </>

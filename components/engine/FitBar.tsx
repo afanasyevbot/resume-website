@@ -1,11 +1,11 @@
 // Darker on cream so the thin fill bar stays visible on light paper.
 const ROUTE_COLORS: Record<string, string> = {
-  tailor:  '#b8862a',
+  tailor:  '#e3a52e',
   flag:    '#b07b2e',
   discard: '#b0a486',
 }
 
-const DEFAULT_COLOR = '#a99c7e'
+const DEFAULT_COLOR = '#5d6b80'
 
 interface FitBarProps {
   score: number

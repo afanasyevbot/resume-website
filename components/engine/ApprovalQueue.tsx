@@ -18,12 +18,12 @@ export default function ApprovalQueue({ rows }: ApprovalQueueProps) {
   return (
     <div
       className="rounded-lg mb-8 overflow-hidden"
-      style={{ border: '1px solid rgba(200,144,26,0.35)', background: 'rgba(200,144,26,0.05)' }}
+      style={{ border: '1px solid rgba(240,180,41,0.35)', background: 'rgba(240,180,41,0.05)' }}
     >
-      <div className="px-5 py-3" style={{ borderBottom: '1px dashed rgba(200,144,26,0.2)' }}>
+      <div className="px-5 py-3" style={{ borderBottom: '1px dashed rgba(240,180,41,0.2)' }}>
         <p
           className="text-[11px] font-medium uppercase tracking-widest"
-          style={{ color: '#c8901a', fontFamily: 'var(--font-sans)', letterSpacing: '0.14em' }}
+          style={{ color: '#f0b429', fontFamily: 'var(--font-sans)', letterSpacing: '0.14em' }}
         >
           Needs your OK — {waiting.length} role{waiting.length === 1 ? '' : 's'} held for approval
         </p>
@@ -38,7 +38,7 @@ export default function ApprovalQueue({ rows }: ApprovalQueueProps) {
               key={r.id}
               className="px-5 py-4 flex flex-wrap items-center justify-between gap-3"
               style={{
-                borderBottom: i === waiting.length - 1 ? 'none' : '1px solid rgba(200,144,26,0.12)',
+                borderBottom: i === waiting.length - 1 ? 'none' : '1px solid rgba(240,180,41,0.12)',
               }}
             >
               <div className="min-w-0">

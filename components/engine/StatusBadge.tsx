@@ -8,17 +8,17 @@ interface BadgeConfig {
 const STATUS_MAP: Record<string, BadgeConfig> = {
   sourced:      { text: '#566173', bg: 'rgba(86,97,115,0.12)',  dot: '#566173' },
   scored:       { text: '#566173', bg: 'rgba(86,97,115,0.12)',  dot: '#566173' },
-  tailored:     { text: '#8a6310', bg: 'rgba(138,99,16,0.13)',  dot: '#b8862a' },
-  queued:       { text: '#8a6310', bg: 'rgba(138,99,16,0.13)',  dot: '#b8862a' },
-  needs_review:      { text: '#9a6a08', bg: 'rgba(200,148,24,0.16)', dot: '#c8901a' },
-  awaiting_approval: { text: '#6b5530', bg: 'rgba(107,85,48,0.14)', dot: '#8a6d3b' },
-  applied:      { text: '#3f6a2c', bg: 'rgba(63,106,44,0.13)',  dot: '#4f8038' },
-  responded:    { text: '#6b5530', bg: 'rgba(107,85,48,0.12)',  dot: '#8a6d3b' },
-  interviewing: { text: '#6b5530', bg: 'rgba(107,85,48,0.12)',  dot: '#8a6d3b' },
-  offer:        { text: '#9a6a08', bg: 'rgba(154,106,8,0.16)',  dot: '#c8901a' },
-  rejected:     { text: '#a8463a', bg: 'rgba(168,70,58,0.12)',  dot: '#c05545' },
-  discarded:    { text: '#8a7d62', bg: 'rgba(138,125,98,0.12)', dot: '#a99c7e' },
-  archived:     { text: '#8a7d62', bg: 'rgba(138,125,98,0.12)', dot: '#a99c7e' },
+  tailored:     { text: '#8a6310', bg: 'rgba(138,99,16,0.13)',  dot: '#e3a52e' },
+  queued:       { text: '#8a6310', bg: 'rgba(138,99,16,0.13)',  dot: '#e3a52e' },
+  needs_review:      { text: '#9a6a08', bg: 'rgba(200,148,24,0.16)', dot: '#f0b429' },
+  awaiting_approval: { text: '#6b5530', bg: 'rgba(107,85,48,0.14)', dot: '#c4924d' },
+  applied:      { text: '#3f6a2c', bg: 'rgba(63,106,44,0.13)',  dot: '#4ade80' },
+  responded:    { text: '#6b5530', bg: 'rgba(107,85,48,0.12)',  dot: '#c4924d' },
+  interviewing: { text: '#6b5530', bg: 'rgba(107,85,48,0.12)',  dot: '#c4924d' },
+  offer:        { text: '#9a6a08', bg: 'rgba(154,106,8,0.16)',  dot: '#f0b429' },
+  rejected:     { text: '#a8463a', bg: 'rgba(168,70,58,0.12)',  dot: '#f87171' },
+  discarded:    { text: '#8a7d62', bg: 'rgba(138,125,98,0.12)', dot: '#5d6b80' },
+  archived:     { text: '#8a7d62', bg: 'rgba(138,125,98,0.12)', dot: '#5d6b80' },
 }
 
 const FALLBACK: BadgeConfig = {

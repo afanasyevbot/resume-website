@@ -94,8 +94,8 @@ export default function AddRoleForm({ onClose }: AddRoleFormProps) {
       onSubmit={submit}
       className="px-5 py-4"
       style={{
-        borderBottom: '1px dashed rgba(212,178,120,0.10)',
-        backgroundColor: 'rgba(212,178,120,0.025)',
+        borderBottom: '1px dashed rgba(148,163,184,0.10)',
+        backgroundColor: 'rgba(148,163,184,0.025)',
       }}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -181,7 +181,7 @@ export default function AddRoleForm({ onClose }: AddRoleFormProps) {
       {phase === 'error' && (
         <p
           className="mt-3 text-[12px]"
-          style={{ color: '#d49a8a', fontFamily: 'var(--font-sans)' }}
+          style={{ color: '#fca5a5', fontFamily: 'var(--font-sans)' }}
         >
           {errorMsg}
         </p>
@@ -211,7 +211,7 @@ export default function AddRoleForm({ onClose }: AddRoleFormProps) {
           className="text-[12px] font-medium"
           style={{
             fontFamily: 'var(--font-sans)',
-            backgroundColor: canSubmit ? 'var(--color-gold)' : 'rgba(212,178,120,0.30)',
+            backgroundColor: canSubmit ? 'var(--color-gold)' : 'rgba(148,163,184,0.30)',
             color: canSubmit ? '#1a1510' : 'var(--color-text-faint)',
             border: 'none',
             padding: '8px 18px',

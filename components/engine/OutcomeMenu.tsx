@@ -78,7 +78,7 @@ export default function OutcomeMenu({ roleId, status }: OutcomeMenuProps) {
       {phase === 'error' && (
         <p
           className="text-[10px] text-right"
-          style={{ color: '#d49a8a', fontFamily: 'var(--font-sans)', maxWidth: 200 }}
+          style={{ color: '#fca5a5', fontFamily: 'var(--font-sans)', maxWidth: 200 }}
         >
           {error}
         </p>

@@ -34,36 +34,42 @@ export default function EngineHeader({ digestSlot }: EngineHeaderProps) {
       {/* Left: greeting + title */}
       <div>
         <p
-          className="text-[12px] uppercase mb-2"
+          className="text-[11px] uppercase mb-3"
           style={{
-            fontFamily: 'var(--font-sans)',
-            color: 'var(--color-text-faint)',
-            letterSpacing: '0.18em',
+            fontFamily: 'var(--font-display)',
+            color: 'var(--color-gold)',
+            letterSpacing: '0.3em',
           }}
         >
-          {greeting}, Matthew
+          ▸ {greeting}, Matthew
         </p>
         <h1
-          className="text-[48px] lg:text-[56px] font-semibold leading-none tracking-tight"
+          className="text-[34px] lg:text-[42px] font-semibold leading-none uppercase"
           style={{
             fontFamily: 'var(--font-display)',
             color: 'var(--color-text-bright)',
+            letterSpacing: '0.12em',
           }}
         >
-          Job Engine
+          Job&nbsp;Engine
         </h1>
         {digestSlot}
         <div
           className="flex items-center gap-2 mt-3"
-          style={{ color: 'var(--color-text-faint)', fontSize: 13 }}
+          style={{
+            color: 'var(--color-text-faint)',
+            fontSize: 12,
+            fontFamily: 'var(--font-display)',
+            letterSpacing: '0.06em',
+          }}
         >
           {/* Pulse dot */}
           <span
             className="inline-block w-2 h-2 rounded-full animate-pulse"
-            style={{ backgroundColor: 'var(--color-gold)' }}
+            style={{ backgroundColor: '#4ade80', boxShadow: '0 0 8px rgba(74,222,128,0.6)' }}
             aria-hidden="true"
           />
-          <span>Live · last sync just now</span>
+          <span>SYSTEM LIVE · sourcing 08:00 · auto-apply 09:00</span>
         </div>
       </div>
 
