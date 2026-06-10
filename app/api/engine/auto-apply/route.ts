@@ -14,8 +14,10 @@ export const runtime = 'nodejs'
 // Browser submits run sequentially and can be slow; Vercel Pro allows up to 300s.
 export const maxDuration = 300
 
-/** Fit at/above this auto-submits on the cron; 80..AUTO_FIT-1 asks for approval. */
-const AUTO_FIT = 86
+/** Fit at/above this auto-submits on the cron; CRON_MIN_FIT..AUTO_FIT-1 asks
+ *  for approval. Set to 75 per Matthew's policy (2026-06-09): volume matters,
+ *  and the previous 86 floor meant nothing ever auto-submitted. */
+const AUTO_FIT = 75
 
 interface AutoApplyResult {
   roleId: number
