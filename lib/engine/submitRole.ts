@@ -152,6 +152,20 @@ export async function submitAndPersist(
     return { outcome, company: role.company, title: role.title, reason: 'submitted but unconfirmed', unanswered: [] }
   }
 
+  // The listing no longer exists (e.g. Greenhouse ?error=true redirect).
+  // There is nothing for a human to review — retire the role with the reason
+  // recorded. If the job is reposted under a new URL, sourcing re-finds it.
+  if (result.reason === 'job_not_found') {
+    if (!dryRun) {
+      const detail = JSON.stringify({ method, url: role.url, reason: 'job_not_found' })
+      await tx((txn) => [
+        txn`update roles set status = 'discarded', updated_at = now() where id = ${role.id}`,
+        txn`insert into events (role_id, kind, detail) values (${role.id}, 'job_not_found', ${detail}::jsonb)`,
+      ])
+    }
+    return { outcome: 'skipped', company: role.company, title: role.title, reason: 'job_not_found', unanswered: [] }
+  }
+
   // skipped / failed (couldn't complete) → needs_review, and ask the first
   // unanswerable question on Slack if we can.
   if (!dryRun) {

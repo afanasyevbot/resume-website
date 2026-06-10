@@ -17,6 +17,7 @@ const KIND_DOT: Record<string, string> = {
   needs_review: '#c8901a',
   awaiting_approval: '#c8901a',
   approval_post_failed: '#c05545',
+  job_not_found: '#a99c7e',
   auto_apply_run: '#566173',
 }
 
