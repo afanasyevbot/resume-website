@@ -6,6 +6,7 @@ import { timeAgo } from '@/lib/engine/dashboard'
 import TailorAction, { TailorPackagePanel } from './TailorAction'
 import ApplyAction from './ApplyAction'
 import PerRoleAutoApply from './PerRoleAutoApply'
+import ApprovalAction from './ApprovalAction'
 import AgentTrail from './AgentTrail'
 import FeedbackButtons from './FeedbackButtons'
 import { avatarLetters, avatarTint } from './avatar'
@@ -267,6 +268,7 @@ export default function RoleCard({ row, expanded, onToggleExpanded }: RoleCardPr
           {row.status === 'tailored' && row.route === 'tailor' && (
             <PerRoleAutoApply roleId={row.id} />
           )}
+          {row.status === 'awaiting_approval' && <ApprovalAction roleId={row.id} />}
           {showTailor && (
             <div className="flex-1">
               <TailorAction

@@ -33,6 +33,8 @@ export interface RoleRow {
   url: string | null
   source: string | null
   fit_score: number | null
+  /** Matcher's stored reasons for the score (jsonb array of strings). */
+  fit_reasons: unknown[] | null
   segment: string | null
   ai_native: boolean | null
   route: string | null
@@ -105,7 +107,7 @@ export async function listQueue(limit = 200): Promise<RoleRow[]> {
   // most-recent 'rated' event per role (both optional, so left-join).
   const rows = await sql`
     select
-      r.id, r.company, r.title, r.location, r.url, r.source, r.fit_score, r.segment,
+      r.id, r.company, r.title, r.location, r.url, r.source, r.fit_score, r.fit_reasons, r.segment,
       r.ai_native, r.route, r.status, r.created_at, r.jd_summary,
       p.package_json, p.id as package_id,
       fb.rating as user_rating
