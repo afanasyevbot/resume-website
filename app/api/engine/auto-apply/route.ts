@@ -8,6 +8,7 @@ import { submitAndPersist } from '@/lib/engine/submitRole'
 import { buildAutoApplyRunDetail, recordAutoApplyRun, tailoredExclusions } from '@/lib/engine/autoApplyAudit'
 import { postSlackMessage } from '@/lib/engine/slack/client'
 import { approvalBlocks } from '@/lib/engine/slack/blocks'
+import { checkApplyUrl } from '@/lib/engine/urlHealth'
 import { verifySessionToken, SESSION_COOKIE } from '@/lib/engine/auth'
 
 export const runtime = 'nodejs'
@@ -150,6 +151,18 @@ async function runAutoApply(opts: RunOpts) {
     if (method === 'auto' && !dryRun && role.fit_score != null && role.fit_score < AUTO_FIT) {
       const existing = await sql`select 1 from slack_pending where role_id = ${role.id} and kind = 'approval' and status = 'pending' limit 1`
       if ((existing as unknown[]).length === 0) {
+        // Pre-flight: verify the listing is still live before interrupting Matthew.
+        if (role.url) {
+          const health = await checkApplyUrl(role.url)
+          if (!health.ok) {
+            await sql`update roles set status = 'discarded', updated_at = now() where id = ${role.id}`
+            const detail = JSON.stringify({ url: role.url, method: 'pre-approval-check', reason: 'job_not_found', healthReason: health.reason })
+            await sql`insert into events (role_id, kind, detail) values (${role.id}, 'job_not_found', ${detail}::jsonb)`
+            results.push({ roleId: role.id, company: role.company, title: role.title, success: false, needsReview: false, skipped: true, failed: false, reason: `listing gone before approval sent: ${health.reason}`, atsType: null })
+            continue
+          }
+        }
+
         const pend = await sql`insert into slack_pending (role_id, kind, status) values (${role.id}, 'approval', 'pending') returning id`
         const pendingId = Number((pend as Array<{ id: number }>)[0].id)
         const posted = await postSlackMessage(
