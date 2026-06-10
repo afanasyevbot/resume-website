@@ -5,6 +5,7 @@ import type { TailoredPackage } from '@/lib/engine/tailorTypes'
 import { hasBudget } from '@/lib/engine/costGuard'
 import { notifySlack, buildAutoApplyRecap } from '@/lib/engine/notify'
 import { submitAndPersist } from '@/lib/engine/submitRole'
+import { buildAutoApplyRunDetail, recordAutoApplyRun, tailoredExclusions } from '@/lib/engine/autoApplyAudit'
 import { postSlackMessage } from '@/lib/engine/slack/client'
 import { approvalBlocks } from '@/lib/engine/slack/blocks'
 import { verifySessionToken, SESSION_COOKIE } from '@/lib/engine/auth'
@@ -25,6 +26,8 @@ interface AutoApplyResult {
   /** Submitted but unconfirmed, or couldn't be completed — Matthew handles it. */
   needsReview: boolean
   skipped: boolean
+  /** Parked pending a Slack approval (borderline fit on the autonomous path). */
+  awaitingApproval?: boolean
   /** Browser service threw or returned an error (service down, network, etc.). */
   failed: boolean
   reason: string | null
@@ -123,7 +126,7 @@ async function runAutoApply(opts: RunOpts) {
   }
 
   if (roles.length === 0) {
-    return { applied: 0, needsReview: 0, skipped: 0, total: 0, dryRun, results: [], message: 'No eligible roles for auto-apply.' }
+    return { applied: 0, needsReview: 0, skipped: 0, failed: 0, awaitingApproval: 0, total: 0, dryRun, results: [], message: 'No eligible roles for auto-apply.' }
   }
 
   const results: AutoApplyResult[] = []
@@ -142,11 +145,22 @@ async function runAutoApply(opts: RunOpts) {
         )
         if (posted.ok) {
           await sql`update slack_pending set channel = ${posted.channel ?? null}, message_ts = ${posted.ts ?? null} where id = ${pendingId}`
+          // Park it so it isn't re-picked next run while awaiting the decision.
+          await sql`update roles set status = 'awaiting_approval', updated_at = now() where id = ${role.id}`
+          const detail = JSON.stringify({ method, fit: role.fit_score, autoFitFloor: AUTO_FIT })
+          await sql`insert into events (role_id, kind, detail) values (${role.id}, 'awaiting_approval', ${detail}::jsonb)`
+        } else {
+          // Slack never got the approval request. Parking the role anyway would
+          // strand it in 'awaiting_approval' with no message and no way out, so
+          // leave it 'tailored' (retried next run) and record why.
+          await sql`update slack_pending set status = 'failed' where id = ${pendingId}`
+          const detail = JSON.stringify({ method, fit: role.fit_score, reason: 'slack approval message failed to post — role left tailored for retry' })
+          await sql`insert into events (role_id, kind, detail) values (${role.id}, 'approval_post_failed', ${detail}::jsonb)`
+          results.push({ roleId: role.id, company: role.company, title: role.title, success: false, needsReview: false, skipped: false, failed: true, reason: 'slack approval message failed to post', atsType: null })
+          continue
         }
-        // Park it so it isn't re-picked next run while awaiting the decision.
-        await sql`update roles set status = 'awaiting_approval', updated_at = now() where id = ${role.id}`
       }
-      results.push({ roleId: role.id, company: role.company, title: role.title, success: false, needsReview: false, skipped: true, failed: false, reason: 'awaiting approval', atsType: null })
+      results.push({ roleId: role.id, company: role.company, title: role.title, success: false, needsReview: false, skipped: false, awaitingApproval: true, failed: false, reason: 'awaiting approval', atsType: null })
       continue
     }
 
@@ -172,8 +186,9 @@ async function runAutoApply(opts: RunOpts) {
   const needsReview = results.filter((r) => r.needsReview).length
   const skipped = results.filter((r) => r.skipped).length
   const failed = results.filter((r) => r.failed).length
+  const awaitingApproval = results.filter((r) => r.awaitingApproval).length
 
-  return { applied, needsReview, skipped, failed, total: results.length, dryRun, results }
+  return { applied, needsReview, skipped, failed, awaitingApproval, total: results.length, dryRun, results }
 }
 
 /** Daily safety cap on automatic submissions (a bug can't spray more than this). */
@@ -268,11 +283,35 @@ export async function GET(req: Request) {
     const alreadyToday = await autoAppliedToday()
     const remaining = Math.max(0, DAILY_CAP - alreadyToday)
     if (remaining === 0) {
+      const detail = buildAutoApplyRunDetail(
+        { applied: 0, needsReview: 0, skipped: 0, failed: 0, awaitingApproval: 0, total: 0 },
+        await tailoredExclusions(CRON_MIN_FIT),
+        { dryRun, minFit: CRON_MIN_FIT, appliedToday: alreadyToday },
+      )
+      detail.summary = `daily cap reached (${alreadyToday}/${DAILY_CAP}) — ${detail.summary}`
+      await recordAutoApplyRun(detail)
       return NextResponse.json({ ok: true, capReached: true, appliedToday: alreadyToday, cap: DAILY_CAP })
     }
 
     const report = await runAutoApply({ maxApply: remaining, dryRun, minFit: CRON_MIN_FIT, method: 'auto' })
     console.log('cron auto-apply:', JSON.stringify({ applied: report.applied, needsReview: report.needsReview, skipped: report.skipped, appliedToday: alreadyToday }))
+
+    // Run-level audit event: every cron run leaves a record — including runs
+    // that found nothing eligible, which used to be invisible.
+    await recordAutoApplyRun(
+      buildAutoApplyRunDetail(
+        {
+          applied: report.applied,
+          needsReview: report.needsReview,
+          skipped: report.skipped,
+          failed: report.failed,
+          awaitingApproval: report.awaitingApproval,
+          total: report.total,
+        },
+        await tailoredExclusions(CRON_MIN_FIT),
+        { dryRun, minFit: CRON_MIN_FIT, appliedToday: alreadyToday },
+      ),
+    )
 
     if (!dryRun) {
       const recap = buildAutoApplyRecap(report.results, alreadyToday + report.applied, DAILY_CAP)
