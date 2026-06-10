@@ -11,10 +11,12 @@ import * as ashby from './ats/ashby'
 /**
  * Title gate: cheap pre-filter so we never burn a Claude call on a role
  * that's obviously not a fit (e.g. engineers, marketers, designers).
- * Conservative — keep ANYTHING sales-flavored, let the matcher decide nuance.
+ * Conservative — keep ANYTHING GTM-flavored, let the matcher decide nuance.
+ * Matthew's targeting (2026-06-09): GTM roles broadly, not just AE titles —
+ * partnerships, alliances, channel, solutions, RevOps, growth all pass here.
  */
 const RELEVANT_TITLE_RE =
-  /\b(account executive|\bAE\b|account manager|\bAM\b|mid[-\s]?market|strategic|enterprise|sales|GTM|go[-\s]?to[-\s]?market|founding sales|business development|\bBDR\b|\bSDR\b|revenue|customer success|\bCS\b)\b/i
+  /\b(account executive|\bAE\b|account manager|\bAM\b|mid[-\s]?market|strategic|enterprise|sales|GTM|go[-\s]?to[-\s]?market|founding sales|business development|\bBDR\b|\bSDR\b|revenue|rev[-\s]?ops|customer success|\bCS\b|partner(?:ship)?s?|alliances?|channel|solutions|growth|client (?:director|executive|partner))\b/i
 
 export interface SourcingReport {
   /** Per-company stats. */
