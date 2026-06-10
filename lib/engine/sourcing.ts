@@ -36,6 +36,8 @@ export interface SourcingReport {
   totalSkippedIrrelevant: number
   totalErrors: number
   capHit: boolean
+  /** True if the run stopped because the time deadline passed, not the cap. */
+  deadlineHit: boolean
   durationMs: number
 }
 
@@ -46,6 +48,9 @@ interface RunOptions {
   maxAgeDays?: number
   /** Auto-tailor roles that score ≥70 (route=tailor). Default: true. */
   autoTailor?: boolean
+  /** Stop starting new scores once this much wall-clock time has elapsed —
+   *  lets the cron use its full serverless window instead of a fixed count. */
+  deadlineMs?: number
 }
 
 const DEFAULTS = { maxScores: 20, maxAgeDays: 30 }
@@ -178,6 +183,7 @@ export async function runSourcing(
   let totalTailored = 0
   let totalErrors = 0
   let capHit = false
+  let deadlineHit = false
 
   // Per-company stat objects, keyed by name so the round-robin executor can
   // attribute each scored role back to its company.
@@ -220,6 +226,10 @@ export async function runSourcing(
   for (const { company, listing: l } of plan.work) {
     if (totalScored >= maxScores) {
       capHit = true
+      break
+    }
+    if (opts.deadlineMs != null && Date.now() - t0 > opts.deadlineMs) {
+      deadlineHit = true
       break
     }
     // safe: plan.work is built from fetched which is a subset of companies, all pre-seeded above
@@ -303,6 +313,7 @@ export async function runSourcing(
     totalSkippedIrrelevant,
     totalErrors,
     capHit,
+    deadlineHit,
     durationMs: Date.now() - t0,
   }
 }
