@@ -5,6 +5,7 @@ import SinceDigest from '@/components/engine/SinceDigest'
 import ActivityFeed from '@/components/engine/ActivityFeed'
 import ReminderList from '@/components/engine/ReminderList'
 import QueueWithTiles from '@/components/engine/QueueWithTiles'
+import ApprovalQueue from '@/components/engine/ApprovalQueue'
 
 export const dynamic = 'force-dynamic'
 
@@ -30,6 +31,9 @@ export default async function EngineDashboard() {
           borderTop: '1px dashed rgba(212,178,120,0.12)',
         }}
       />
+
+      {/* Roles held for approval — one-click approve/skip. Hidden when empty. */}
+      <ApprovalQueue rows={queue} />
 
       {/* Today bar + clickable KPI tiles + queue + sidebar (client wrapper
           so the tiles can drive the queue's status filter) */}
