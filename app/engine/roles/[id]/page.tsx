@@ -5,6 +5,7 @@ import EventTimeline from '@/components/engine/EventTimeline'
 import { TailorPackagePanel } from '@/components/engine/TailorAction'
 import TailorButtonStandalone from '@/components/engine/TailorButtonStandalone'
 import ApplyAction from '@/components/engine/ApplyAction'
+import { scoreBand } from '@/lib/engine/scoreBands'
 
 export const dynamic = 'force-dynamic'
 
@@ -142,7 +143,11 @@ export default async function RoleDetailPage({
                   fontFamily: 'var(--font-sans)',
                 }}
               >
-                Fit {role.fit_score}/100 · route {role.route ?? '—'}
+                Fit {role.fit_score}/100 ·{' '}
+                <span style={{ color: scoreBand(role.fit_score).color }}>
+                  {scoreBand(role.fit_score).label}
+                </span>{' '}
+                — {scoreBand(role.fit_score).meaning}
               </p>
             )}
           </Panel>
