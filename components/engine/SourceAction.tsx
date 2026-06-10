@@ -80,7 +80,7 @@ export default function SourceAction() {
     return (
       <span
         className="text-[11px]"
-        style={{ color: '#d49a8a', fontFamily: 'var(--font-sans)' }}
+        style={{ color: '#fca5a5', fontFamily: 'var(--font-sans)' }}
       >
         {error}
       </span>

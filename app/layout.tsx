@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Cormorant_Garamond, Inter } from 'next/font/google'
+import { Cormorant_Garamond, Inter, Archivo, IBM_Plex_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
@@ -17,6 +17,21 @@ const inter = Inter({
   display: 'swap',
 })
 
+// Engine "Night Desk" theme fonts — used only inside .engine-ops.
+const archivo = Archivo({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-archivo',
+  display: 'swap',
+})
+
+const plexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-plex-mono',
+  display: 'swap',
+})
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://matthew-afanasiev.vercel.app'),
   title: 'Matthew Afanasiev',
@@ -31,7 +46,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${inter.variable} antialiased`}>
+    <html lang="en" className={`${cormorant.variable} ${inter.variable} ${archivo.variable} ${plexMono.variable} antialiased`}>
       <body>
         {/* Fixed gradient background */}
         <div

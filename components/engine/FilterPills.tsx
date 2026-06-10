@@ -45,7 +45,7 @@ export default function FilterPills({ active, onChange, counts }: FilterPillsPro
                 ? 'var(--color-text-whisper)'
                 : 'var(--color-text-muted)',
               backgroundColor: isActive
-                ? 'rgba(212,178,120,0.10)'
+                ? 'rgba(148,163,184,0.10)'
                 : 'transparent',
               border: '1px solid',
               borderColor: isActive

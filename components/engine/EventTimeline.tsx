@@ -6,7 +6,7 @@ const KIND_DOT: Record<string, string> = {
   scored:       '#e2d5c0',
   tailored:     '#d4b278',
   queued:       '#d4b278',
-  applied:      '#9ab48a',
+  applied:      '#6ee7a0',
   responded:    '#e9c98c',
   interviewing: '#e2d5c0',
   offer:        '#e9c98c',
@@ -144,7 +144,7 @@ export default function EventTimeline({ events }: EventTimelineProps) {
                   color: 'var(--color-text-muted)',
                   fontFamily:
                     'ui-monospace, SFMono-Regular, Menlo, monospace',
-                  backgroundColor: 'rgba(212,178,120,0.04)',
+                  backgroundColor: 'rgba(148,163,184,0.04)',
                   border: '1px solid var(--color-border-inner)',
                   borderRadius: 4,
                   padding: '6px 8px',

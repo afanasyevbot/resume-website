@@ -28,7 +28,7 @@ export default async function EngineDashboard() {
       <div
         className="my-8"
         style={{
-          borderTop: '1px dashed rgba(212,178,120,0.12)',
+          borderTop: '1px dashed rgba(148,163,184,0.12)',
         }}
       />
 

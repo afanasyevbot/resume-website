@@ -25,7 +25,7 @@ interface RoleCardProps {
 
 const ROUTE_ACCENT: Record<string, string> = {
   tailor: '#c89418', // gold
-  flag: '#b8862a', // amber
+  flag: '#e3a52e', // amber
   discard: '#cabd9f', // faint
 }
 
@@ -244,7 +244,7 @@ export default function RoleCard({ row, expanded, onToggleExpanded }: RoleCardPr
         </div>
 
         {/* Agent trail */}
-        <div className="mt-5 pt-4" style={{ borderTop: '1px dashed rgba(212,178,120,0.08)' }}>
+        <div className="mt-5 pt-4" style={{ borderTop: '1px dashed rgba(148,163,184,0.08)' }}>
           <AgentTrail status={row.status} hasPackage={hasPackage} source={row.source} />
         </div>
         </Link>

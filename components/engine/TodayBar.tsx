@@ -59,7 +59,7 @@ export default function TodayBar({
       className="vellum rounded-lg"
       style={{
         border: '1px solid var(--color-border)',
-        borderLeft: `3px solid ${caughtUp ? '#4f8038' : '#c89418'}`,
+        borderLeft: `3px solid ${caughtUp ? '#4ade80' : '#c89418'}`,
         padding: '14px 18px',
       }}
     >

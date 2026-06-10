@@ -74,8 +74,8 @@ export default function PerRoleAutoApply({ roleId }: Props) {
     const isApplied = label.startsWith('✓')
     const isReview = label.startsWith('⚠')
     const isError = label.startsWith('Error') || label.startsWith('Not eligible')
-    const bg = isApplied ? 'rgba(154,180,138,0.12)' : isReview ? 'rgba(184,134,42,0.12)' : 'rgba(168,70,58,0.10)'
-    const color = isApplied ? '#9ab48a' : isReview ? '#c89418' : isError ? '#a8463a' : '#888'
+    const bg = isApplied ? 'rgba(74,222,128,0.12)' : isReview ? 'rgba(184,134,42,0.12)' : 'rgba(168,70,58,0.10)'
+    const color = isApplied ? '#6ee7a0' : isReview ? '#c89418' : isError ? '#a8463a' : '#888'
     return (
       <span
         className="text-[11px] font-medium px-3 py-1.5 rounded"
@@ -105,7 +105,7 @@ export default function PerRoleAutoApply({ roleId }: Props) {
       style={{
         fontFamily: 'var(--font-sans)',
         color: '#fff',
-        background: 'linear-gradient(90deg, #3f6a2c, #4f8038)',
+        background: 'linear-gradient(90deg, #3f6a2c, #4ade80)',
         border: 'none',
         cursor: 'pointer',
         letterSpacing: '0.08em',

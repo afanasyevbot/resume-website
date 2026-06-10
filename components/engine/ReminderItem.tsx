@@ -188,9 +188,9 @@ export default function ReminderItem({ reminder }: ReminderItemProps) {
             className="text-[10px] font-medium px-2 py-1 rounded"
             style={{
               fontFamily: 'var(--font-sans)',
-              color: copied ? '#9ab48a' : 'var(--color-gold)',
+              color: copied ? '#6ee7a0' : 'var(--color-gold)',
               background: 'transparent',
-              border: `1px solid ${copied ? '#9ab48a55' : 'var(--color-gold-faint, #b8861855)'}`,
+              border: `1px solid ${copied ? '#6ee7a055' : 'var(--color-gold-faint, #b8861855)'}`,
               letterSpacing: '0.06em',
               textTransform: 'uppercase',
               cursor: 'pointer',

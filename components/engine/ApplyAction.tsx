@@ -33,8 +33,8 @@ export default function ApplyAction({ roleId, status }: ApplyActionProps) {
         className="inline-flex items-center text-[10px] font-medium px-2 py-1 rounded"
         style={{
           fontFamily: 'var(--font-sans)',
-          backgroundColor: 'rgba(154,180,138,0.10)',
-          color: '#9ab48a',
+          backgroundColor: 'rgba(74,222,128,0.10)',
+          color: '#6ee7a0',
           letterSpacing: '0.08em',
           textTransform: 'uppercase',
         }}
@@ -100,7 +100,7 @@ export default function ApplyAction({ roleId, status }: ApplyActionProps) {
       {phase === 'error' && (
         <p
           className="text-[10px] text-right"
-          style={{ color: '#d49a8a', fontFamily: 'var(--font-sans)', maxWidth: 200 }}
+          style={{ color: '#fca5a5', fontFamily: 'var(--font-sans)', maxWidth: 200 }}
         >
           {error}
         </p>

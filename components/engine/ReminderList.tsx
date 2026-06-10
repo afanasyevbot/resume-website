@@ -15,7 +15,7 @@ export default function ReminderList({ reminders }: ReminderListProps) {
       {/* Section label */}
       <div
         className="px-5 py-3 flex items-baseline justify-between"
-        style={{ borderBottom: '1px dashed rgba(212,178,120,0.10)' }}
+        style={{ borderBottom: '1px dashed rgba(148,163,184,0.10)' }}
       >
         <p
           className="text-[11px] font-medium uppercase tracking-widest"

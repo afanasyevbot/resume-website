@@ -27,9 +27,9 @@ function avatarTint(company: string): { bg: string; fg: string } {
   let h = 0
   for (let i = 0; i < company.length; i++) h = (h * 31 + company.charCodeAt(i)) >>> 0
   const palettes = [
-    { bg: 'rgba(212,178,120,0.18)', fg: '#d4b278' },
+    { bg: 'rgba(148,163,184,0.18)', fg: '#d4b278' },
     { bg: 'rgba(184,138,120,0.20)', fg: '#c89e88' },
-    { bg: 'rgba(154,180,138,0.16)', fg: '#a8c094' },
+    { bg: 'rgba(74,222,128,0.16)', fg: '#a8c094' },
     { bg: 'rgba(180,160,200,0.16)', fg: '#b8a4c8' },
     { bg: 'rgba(190,170,140,0.18)', fg: '#c8b89a' },
   ]
@@ -40,8 +40,8 @@ type TagVariant = 'gold' | 'sage' | 'cream' | 'muted'
 
 function Tag({ children, variant = 'muted' }: { children: React.ReactNode; variant?: TagVariant }) {
   const palette: Record<TagVariant, { bg: string; fg: string }> = {
-    gold: { bg: 'rgba(212,178,120,0.12)', fg: '#d4b278' },
-    sage: { bg: 'rgba(154,180,138,0.10)', fg: '#9ab48a' },
+    gold: { bg: 'rgba(148,163,184,0.12)', fg: '#d4b278' },
+    sage: { bg: 'rgba(74,222,128,0.10)', fg: '#6ee7a0' },
     cream: { bg: 'rgba(226,213,192,0.08)', fg: '#e2d5c0' },
     muted: { bg: 'rgba(154,163,180,0.08)', fg: '#9aa3b4' },
   }

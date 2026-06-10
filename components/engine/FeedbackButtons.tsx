@@ -64,8 +64,8 @@ export default function FeedbackButtons({ roleId, currentRating }: FeedbackButto
         style={{
           fontFamily: 'var(--font-sans)',
           color: upColor,
-          background: up ? 'rgba(212,178,120,0.10)' : 'transparent',
-          border: `1px solid ${up ? 'rgba(212,178,120,0.30)' : 'var(--color-border)'}`,
+          background: up ? 'rgba(148,163,184,0.10)' : 'transparent',
+          border: `1px solid ${up ? 'rgba(148,163,184,0.30)' : 'var(--color-border)'}`,
           cursor: pending !== null ? 'wait' : 'pointer',
         }}
       >
@@ -94,7 +94,7 @@ export default function FeedbackButtons({ roleId, currentRating }: FeedbackButto
       {error && (
         <span
           className="text-[10px] ml-1"
-          style={{ color: '#d49a8a', fontFamily: 'var(--font-sans)' }}
+          style={{ color: '#fca5a5', fontFamily: 'var(--font-sans)' }}
         >
           {error}
         </span>

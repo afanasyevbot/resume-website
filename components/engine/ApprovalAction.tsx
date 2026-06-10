@@ -56,7 +56,7 @@ export default function ApprovalAction({ roleId }: ApprovalActionProps) {
       >
         <span
           className="inline-block w-2 h-2 rounded-full animate-pulse"
-          style={{ backgroundColor: '#c8901a' }}
+          style={{ backgroundColor: '#f0b429' }}
         />
         {phase === 'approving' ? 'Submitting application…' : 'Skipping…'}
       </div>
@@ -67,7 +67,7 @@ export default function ApprovalAction({ roleId }: ApprovalActionProps) {
     return (
       <span
         className="text-[11px] font-medium"
-        style={{ color: '#9ab48a', fontFamily: 'var(--font-sans)' }}
+        style={{ color: '#6ee7a0', fontFamily: 'var(--font-sans)' }}
       >
         {message}
       </span>
@@ -81,9 +81,9 @@ export default function ApprovalAction({ roleId }: ApprovalActionProps) {
         className="text-[11px] font-medium px-3 py-1.5 rounded"
         style={{
           fontFamily: 'var(--font-sans)',
-          backgroundColor: 'rgba(200,144,26,0.15)',
-          color: '#c8901a',
-          border: '1px solid rgba(200,144,26,0.4)',
+          backgroundColor: 'rgba(240,180,41,0.15)',
+          color: '#f0b429',
+          border: '1px solid rgba(240,180,41,0.4)',
           cursor: 'pointer',
           letterSpacing: '0.08em',
           textTransform: 'uppercase',
@@ -109,7 +109,7 @@ export default function ApprovalAction({ roleId }: ApprovalActionProps) {
       {phase === 'error' && (
         <p
           className="text-[10px]"
-          style={{ color: '#d49a8a', fontFamily: 'var(--font-sans)', maxWidth: 220 }}
+          style={{ color: '#fca5a5', fontFamily: 'var(--font-sans)', maxWidth: 220 }}
         >
           {message}
         </p>
