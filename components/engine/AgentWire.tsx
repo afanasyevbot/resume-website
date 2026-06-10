@@ -1,24 +1,25 @@
+import Link from 'next/link'
 import type { ActivityEvent } from '@/lib/engine/dashboard'
 import { timeAgo } from '@/lib/engine/dashboard'
 
 /** Terminal-style verb + color per event kind. */
 const VERBS: Record<string, { verb: string; color: string }> = {
-  applied: { verb: 'APPLIED', color: '#4ade80' },
-  awaiting_approval: { verb: 'HELD', color: '#f0b429' },
-  approval_skipped: { verb: 'PASSED', color: '#7d8aa0' },
-  approval_post_failed: { verb: 'ALERT', color: '#f87171' },
-  submit_unconfirmed: { verb: 'UNCONFIRMED', color: '#f0b429' },
-  needs_review: { verb: 'NEEDS REVIEW', color: '#f0b429' },
-  job_not_found: { verb: 'RETIRED', color: '#f87171' },
-  auto_apply_run: { verb: 'RUN', color: '#60a5fa' },
-  tailored: { verb: 'TAILORED', color: '#f0b429' },
-  scored: { verb: 'SCORED', color: '#7d8aa0' },
-  sourced: { verb: 'FOUND', color: '#7d8aa0' },
-  rated: { verb: 'RATED', color: '#7d8aa0' },
-  responded: { verb: 'RESPONSE', color: '#a78bfa' },
-  interviewing: { verb: 'INTERVIEW', color: '#a78bfa' },
-  offer: { verb: 'OFFER', color: '#a78bfa' },
-  rejected: { verb: 'REJECTED', color: '#7d8aa0' },
+  applied: { verb: 'APPLIED', color: '#16a34a' },
+  awaiting_approval: { verb: 'HELD', color: '#b45309' },
+  approval_skipped: { verb: 'PASSED', color: '#64748b' },
+  approval_post_failed: { verb: 'ALERT', color: '#dc2626' },
+  submit_unconfirmed: { verb: 'UNCONFIRMED', color: '#b45309' },
+  needs_review: { verb: 'NEEDS REVIEW', color: '#b45309' },
+  job_not_found: { verb: 'RETIRED', color: '#dc2626' },
+  auto_apply_run: { verb: 'RUN', color: '#2563eb' },
+  tailored: { verb: 'TAILORED', color: '#b45309' },
+  scored: { verb: 'SCORED', color: '#64748b' },
+  sourced: { verb: 'FOUND', color: '#64748b' },
+  rated: { verb: 'RATED', color: '#64748b' },
+  responded: { verb: 'RESPONSE', color: '#7c3aed' },
+  interviewing: { verb: 'INTERVIEW', color: '#7c3aed' },
+  offer: { verb: 'OFFER', color: '#7c3aed' },
+  rejected: { verb: 'REJECTED', color: '#64748b' },
 }
 
 function lineFor(e: ActivityEvent): string {
@@ -47,8 +48,8 @@ export default function AgentWire({ events }: AgentWireProps) {
           <p style={{ color: 'var(--color-text-ghost)' }}>— no activity yet —</p>
         )}
         {events.map((e) => {
-          const v = VERBS[e.kind.toLowerCase()] ?? { verb: e.kind.toUpperCase().replace(/_/g, ' '), color: '#7d8aa0' }
-          return (
+          const v = VERBS[e.kind.toLowerCase()] ?? { verb: e.kind.toUpperCase().replace(/_/g, ' '), color: '#64748b' }
+          const row = (
             <div key={e.id} className="flex items-baseline gap-3">
               <span className="tabular-nums flex-shrink-0 w-12 text-right" style={{ color: 'var(--color-text-ghost)' }}>
                 {timeAgo(e.created_at)}
@@ -61,6 +62,16 @@ export default function AgentWire({ events }: AgentWireProps) {
               </span>
             </div>
           )
+          return e.role_id ? (
+            <Link
+              key={e.id}
+              href={`/engine/roles/${e.role_id}`}
+              style={{ textDecoration: 'none', display: 'block' }}
+              className="hover:opacity-75 transition-opacity"
+            >
+              {row}
+            </Link>
+          ) : row
         })}
       </div>
     </div>

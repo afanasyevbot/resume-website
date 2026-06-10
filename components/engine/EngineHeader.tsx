@@ -66,7 +66,7 @@ export default function EngineHeader({ digestSlot }: EngineHeaderProps) {
           {/* Pulse dot */}
           <span
             className="inline-block w-2 h-2 rounded-full animate-pulse"
-            style={{ backgroundColor: '#4ade80', boxShadow: '0 0 8px rgba(74,222,128,0.6)' }}
+            style={{ backgroundColor: '#16a34a', boxShadow: '0 0 6px rgba(22,163,74,0.4)' }}
             aria-hidden="true"
           />
           <span>SYSTEM LIVE · sourcing 08:00 · auto-apply 09:00</span>

@@ -19,6 +19,7 @@ export interface ActivityEvent {
   id: number
   kind: string
   company: string | null
+  role_id: number | null
   detail: Record<string, unknown> | null
   created_at: string
 }
@@ -157,13 +158,16 @@ export async function listQueue(limit = 200): Promise<RoleRow[]> {
 
 export async function listActivity(limit = 20): Promise<ActivityEvent[]> {
   const rows = await sql`
-    select e.id, e.kind, r.company as company, e.detail, e.created_at
+    select e.id, e.kind, e.role_id, r.company as company, e.detail, e.created_at
     from events e
     left join roles r on r.id = e.role_id
     order by e.created_at desc
     limit ${limit}
   `
-  return rows as ActivityEvent[]
+  return (rows as Array<ActivityEvent & { role_id: string | number | null }>).map((r) => ({
+    ...r,
+    role_id: r.role_id == null ? null : Number(r.role_id),
+  })) as ActivityEvent[]
 }
 
 export async function loadDashboard(): Promise<DashboardData> {
