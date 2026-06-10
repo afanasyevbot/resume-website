@@ -147,7 +147,7 @@ export default function DecisionDeck({ items }: DecisionDeckProps) {
         className="vellum rounded-xl px-8 py-10 text-center"
         style={{ border: '1px solid var(--color-border)' }}
       >
-        <p className="text-[13px] uppercase mb-2" style={{ ...label, color: '#4ade80' }}>
+        <p className="text-[13px] uppercase mb-2" style={{ ...label, color: '#16a34a' }}>
           ✓ Deck clear
         </p>
         <p className="text-[15px]" style={{ color: 'var(--color-text-secondary)', fontFamily: 'var(--font-sans)' }}>
@@ -160,9 +160,9 @@ export default function DecisionDeck({ items }: DecisionDeckProps) {
   return (
     <div
       className="vellum rounded-xl px-8 py-8 text-center"
-      style={{ border: '1px solid rgba(240,180,41,0.45)' }}
+      style={{ border: '1px solid rgba(180,83,9,0.30)' }}
     >
-      <p className="text-[11px] uppercase mb-4" style={{ ...label, color: '#f0b429' }}>
+      <p className="text-[11px] uppercase mb-4" style={{ ...label, color: '#b45309' }}>
         Decision {position} of {items.length}
       </p>
 
@@ -175,7 +175,7 @@ export default function DecisionDeck({ items }: DecisionDeckProps) {
             {current.title}
           </p>
           <div className="flex items-center justify-center gap-4 mb-4">
-            <span className="text-[34px] font-semibold tabular-nums" style={{ color: '#f0b429', fontFamily: 'var(--font-display)' }}>
+            <span className="text-[34px] font-semibold tabular-nums" style={{ color: '#b45309', fontFamily: 'var(--font-display)' }}>
               {current.fit ?? '—'}
             </span>
             <span className="text-left text-[12.5px] leading-snug" style={{ color: 'var(--color-text-secondary)', fontFamily: 'var(--font-sans)' }}>
@@ -194,9 +194,9 @@ export default function DecisionDeck({ items }: DecisionDeckProps) {
               className="text-[13px] font-medium px-6 py-2.5 rounded"
               style={{
                 fontFamily: 'var(--font-sans)',
-                backgroundColor: 'rgba(74,222,128,0.15)',
-                color: '#4ade80',
-                border: '1px solid rgba(74,222,128,0.45)',
+                backgroundColor: 'rgba(22,163,74,0.08)',
+                color: '#15803d',
+                border: '1px solid rgba(22,163,74,0.30)',
                 cursor: busy ? 'wait' : 'pointer',
               }}
             >
@@ -259,9 +259,9 @@ export default function DecisionDeck({ items }: DecisionDeckProps) {
               className="text-[13px] font-medium px-6 py-2.5 rounded"
               style={{
                 fontFamily: 'var(--font-sans)',
-                backgroundColor: 'rgba(74,222,128,0.15)',
-                color: '#4ade80',
-                border: '1px solid rgba(74,222,128,0.45)',
+                backgroundColor: 'rgba(22,163,74,0.08)',
+                color: '#15803d',
+                border: '1px solid rgba(22,163,74,0.30)',
                 cursor: busy ? 'wait' : 'pointer',
               }}
             >

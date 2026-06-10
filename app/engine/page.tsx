@@ -57,7 +57,7 @@ export default async function EngineDashboard() {
         }
       />
 
-      <div className="my-8" style={{ borderTop: '1px dashed rgba(148,163,184,0.15)' }} />
+      <div className="my-8" style={{ borderTop: '1px solid #e2e6ec' }} />
 
       {/* The decisions only Matthew can make — one at a time. */}
       <DecisionDeck items={deck} />
