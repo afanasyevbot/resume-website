@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
+import Link from 'next/link'
 
 function greetingFor(hour: number): string {
   if (hour < 5) return 'Up late'
@@ -73,9 +74,12 @@ export default function EngineHeader({ digestSlot }: EngineHeaderProps) {
         </div>
       </div>
 
-      {/* Right: sign out */}
-      <button
-        onClick={handleSignOut}
+      {/* Right: nav + sign out */}
+      <div className="flex items-center gap-4 mt-1">
+        <NavLink href="/engine/roles" label="Roles" />
+        <NavLink href="/engine/eval" label="Eval" />
+        <button
+          onClick={handleSignOut}
         className="mt-1 text-xs font-medium transition-colors"
         style={{
           fontFamily: 'var(--font-sans)',
@@ -92,6 +96,27 @@ export default function EngineHeader({ digestSlot }: EngineHeaderProps) {
       >
         Sign out
       </button>
+      </div>
     </header>
+  )
+}
+
+function NavLink({ href, label }: { href: string; label: string }) {
+  const pathname = usePathname()
+  const active = pathname === href || pathname.startsWith(href + '/')
+  return (
+    <Link
+      href={href}
+      className="text-xs font-medium transition-colors"
+      style={{
+        fontFamily: 'var(--font-sans)',
+        color: active ? 'var(--color-text-primary)' : 'var(--color-text-faint)',
+        letterSpacing: '0.08em',
+        textTransform: 'uppercase',
+        textDecoration: 'none',
+      }}
+    >
+      {label}
+    </Link>
   )
 }
