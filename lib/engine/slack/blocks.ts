@@ -47,3 +47,13 @@ export function questionText(opts: { company: string; title: string; question: s
     `_Reply in this channel with your answer and I'll fill it in and submit._`,
   ].join('\n')
 }
+
+/** Multi-question prompt: all blockers in one numbered list so Matthew can answer in one reply. */
+export function questionsText(opts: { company: string; title: string; questions: string[] }): string {
+  const numbered = opts.questions.map((q, i) => `${i + 1}. ${q}`).join('\n')
+  return [
+    `*${opts.company} — ${opts.title}* needs answers before I can submit:`,
+    numbered,
+    `_Reply with your answers (e.g. "1. 5 years  2. ~60%  3. No") and I'll fill them in and submit._`,
+  ].join('\n')
+}

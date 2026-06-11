@@ -136,6 +136,28 @@ export default function EventTimeline({ events }: EventTimelineProps) {
                 {timeAgo(event.created_at)}
               </span>
             </div>
+            {/* Screenshot thumbnail — links to full image in a new tab */}
+            {typeof event.detail?.screenshotUrl === 'string' && (
+              <a
+                href={event.detail.screenshotUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 block"
+                style={{ display: 'inline-block' }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={event.detail.screenshotUrl}
+                  alt="Form screenshot"
+                  style={{
+                    maxHeight: 120,
+                    borderRadius: 4,
+                    border: '1px solid var(--color-border-inner)',
+                    display: 'block',
+                  }}
+                />
+              </a>
+            )}
             {/* Pretty-printed JSON when there's structured detail */}
             {json && (
               <pre
