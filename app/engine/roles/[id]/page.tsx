@@ -5,6 +5,7 @@ import EventTimeline from '@/components/engine/EventTimeline'
 import { TailorPackagePanel } from '@/components/engine/TailorAction'
 import TailorButtonStandalone from '@/components/engine/TailorButtonStandalone'
 import ApplyAction from '@/components/engine/ApplyAction'
+import FeedbackButtons from '@/components/engine/FeedbackButtons'
 import { scoreBand } from '@/lib/engine/scoreBands'
 
 export const dynamic = 'force-dynamic'
@@ -229,6 +230,9 @@ export default async function RoleDetailPage({
             "✓ Applied" badge otherwise — always show it so the drilldown
             reflects the role's current applied state. */}
         <ApplyAction roleId={role.id} status={role.status} />
+        <div style={{ marginLeft: 'auto' }}>
+          <FeedbackButtons roleId={role.id} currentRating={role.user_rating} />
+        </div>
       </div>
     </main>
   )
