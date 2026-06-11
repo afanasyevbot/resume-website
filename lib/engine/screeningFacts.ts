@@ -42,3 +42,9 @@ export async function loadScreeningFacts(): Promise<ScreeningFacts | null> {
   if (!rows || rows.length === 0) return null
   return (rows[0] as { facts: ScreeningFacts }).facts
 }
+
+/** Merge a partial update into profile_facts. Safe to call with an empty patch. */
+export async function updateProfileFacts(patch: Partial<ScreeningFacts>): Promise<void> {
+  if (Object.keys(patch).length === 0) return
+  await sql`update profile_facts set facts = facts || ${JSON.stringify(patch)}::jsonb where id = 1`
+}

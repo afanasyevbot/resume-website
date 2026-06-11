@@ -6,6 +6,7 @@ import { postSlackMessage } from '@/lib/engine/slack/client'
 import { answerQuestion } from '@/lib/engine/slack/ask'
 import Anthropic from '@anthropic-ai/sdk'
 import { anthropicKey } from '@/lib/env'
+import { learnFromAnswers } from '@/lib/engine/slack/learnFacts'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300
@@ -135,6 +136,11 @@ export async function POST(req: Request) {
             manualAnswers,
             askOnSlack: true,
           })
+
+          // Persist any universal facts so future forms auto-answer them.
+          if (r.outcome === 'applied') {
+            await learnFromAnswers(questions, manualAnswers)
+          }
 
           const text =
             r.outcome === 'applied'

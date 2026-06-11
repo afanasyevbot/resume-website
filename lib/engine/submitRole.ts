@@ -6,6 +6,7 @@ import { loadScreeningFacts } from './screeningFacts'
 import { postSlackMessage } from './slack/client'
 import { questionsText } from './slack/blocks'
 import type { TailoredPackage } from './tailorTypes'
+import { put } from '@vercel/blob'
 
 function getBrowserUrl(): string {
   const u = process.env.BROWSER_SERVICE_URL
@@ -126,11 +127,24 @@ export async function submitAndPersist(
   }
 
   const outcome = decideApplyOutcome(result, dryRun)
-  const hasScreenshots = !!(result.screenshots?.preSubmit || result.screenshots?.postSubmit)
   const unanswered = (result.questions ?? []).filter((q) => q.value == null && q.required).map((q) => q.label)
 
+  // Upload the most useful screenshot to Vercel Blob (best-effort, skipped if no token).
+  let screenshotUrl: string | null = null
+  const rawScreenshot = result.screenshots?.postSubmit ?? result.screenshots?.preSubmit ?? result.screenshots?.initial ?? null
+  if (rawScreenshot && process.env.BLOB_READ_WRITE_TOKEN) {
+    try {
+      const buf = Buffer.from(rawScreenshot, 'base64')
+      const slug = `${role.id}-${Date.now()}`
+      const blob = await put(`screenshots/${slug}.png`, buf, { access: 'public', contentType: 'image/png' })
+      screenshotUrl = blob.url
+    } catch {
+      // Non-fatal — apply proceeds without screenshot
+    }
+  }
+
   if (outcome === 'applied') {
-    const detail = JSON.stringify({ method, atsType: result.atsType, confirmed: true, hasScreenshots })
+    const detail = JSON.stringify({ method, atsType: result.atsType, confirmed: true, screenshotUrl })
     if (!dryRun) {
       await tx((txn) => [
         txn`update roles set status = 'applied', updated_at = now() where id = ${role.id}`,
@@ -144,7 +158,7 @@ export async function submitAndPersist(
 
   if (outcome === 'needs_review') {
     // Submitted but unconfirmed.
-    const detail = JSON.stringify({ method, atsType: result.atsType, confirmed: false, hasScreenshots, note: 'Submit clicked but not confirmed — verify manually.' })
+    const detail = JSON.stringify({ method, atsType: result.atsType, confirmed: false, screenshotUrl, note: 'Submit clicked but not confirmed — verify manually.' })
     if (!dryRun) {
       await tx((txn) => [
         txn`update roles set status = 'needs_review', updated_at = now() where id = ${role.id}`,
@@ -171,7 +185,7 @@ export async function submitAndPersist(
   // skipped / failed (couldn't complete) → needs_review, and ask the first
   // unanswerable question on Slack if we can.
   if (!dryRun) {
-    const detail = JSON.stringify({ method, atsType: result.atsType ?? null, reason: result.reason ?? outcome, unanswered })
+    const detail = JSON.stringify({ method, atsType: result.atsType ?? null, reason: result.reason ?? outcome, unanswered, screenshotUrl })
     await tx((txn) => [
       txn`update roles set status = 'needs_review', updated_at = now() where id = ${role.id}`,
       txn`insert into events (role_id, kind, detail) values (${role.id}, 'needs_review', ${detail}::jsonb)`,
