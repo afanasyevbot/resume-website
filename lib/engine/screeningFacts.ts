@@ -25,6 +25,9 @@ export interface ScreeningFacts {
   ote: number
   startDate: string
   yearsSalesExperience: number
+  selfSourcedPct: number
+  martechYears: number
+  languageProficiency: Record<string, string>
   howHeard: string
   gender: string
   raceEthnicity: string

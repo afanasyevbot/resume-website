@@ -4,7 +4,7 @@ import { buildResumePdf } from './pdf/resume'
 import { decideApplyOutcome } from './applyDecision'
 import { loadScreeningFacts } from './screeningFacts'
 import { postSlackMessage } from './slack/client'
-import { questionText } from './slack/blocks'
+import { questionsText } from './slack/blocks'
 import type { TailoredPackage } from './tailorTypes'
 
 function getBrowserUrl(): string {
@@ -181,11 +181,13 @@ export async function submitAndPersist(
       // Only ask if there isn't already an open question for this role.
       const open = await sql`select 1 from slack_pending where role_id = ${role.id} and kind = 'question' and status = 'pending' limit 1`
       if ((open as unknown[]).length === 0) {
-        const q = unanswered[0]
-        const posted = await postSlackMessage(questionText({ company: role.company, title: role.title, question: q }))
+        // Post all unanswerable questions at once so Matthew can answer in one reply.
+        const posted = await postSlackMessage(questionsText({ company: role.company, title: role.title, questions: unanswered }))
         if (posted.ok) {
+          // Store as JSON array so the reply handler can map answers back to each question.
+          const questionsJson = JSON.stringify(unanswered)
           await sql`insert into slack_pending (role_id, kind, question, channel, message_ts, status)
-                    values (${role.id}, 'question', ${q}, ${posted.channel ?? null}, ${posted.ts ?? null}, 'pending')`
+                    values (${role.id}, 'question', ${questionsJson}, ${posted.channel ?? null}, ${posted.ts ?? null}, 'pending')`
         }
       }
     }

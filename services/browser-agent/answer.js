@@ -57,6 +57,14 @@ function matchAnswer(question, facts) {
     return (facts.identity && facts.identity.location) || null
   }
 
+  // 0d. City / bare location field ("Location (City)", "City", "Current city", etc.)
+  //     Extract just the city from "Minneapolis, MN" → "Minneapolis".
+  if (/^(city|location)[\s(]|^current (city|location)$|\bcity of (residence|location)\b/.test(L)) {
+    const loc = facts.identity && facts.identity.location
+    if (!loc) return null
+    return loc.split(',')[0].trim()
+  }
+
   // 1. Work authorization (US). Exclude background-check authorizations.
   if (
     /(authori[sz](e|ed|ation)|legally.*(work|employ)|work.*(eligib|authori)|right to work|eligible to work)/.test(L) &&
@@ -103,14 +111,35 @@ function matchAnswer(question, facts) {
     return facts.startDate || null
   }
 
-  // 7. Years of SALES experience. Must be about selling, not a specific tool
-  //    ("years of experience with Salesforce" → null).
+  // 7. Years / amount of SALES experience. Catches both "years of experience in sales"
+  //    and "how much experience working in Sales for a B2B SaaS company".
   if (
-    /years/.test(L) &&
-    /(sales|selling|quota|closing|b2b|saas sales|account exec)/.test(L) &&
-    !/\bwith\b/.test(L)
+    /(years|how much|amount of).*(experience|exp|selling|sold)/.test(L) &&
+    /(sales|selling|quota|closing|b2b|saas|account exec|revenue)/.test(L) &&
+    !/\bwith\b (salesforce|hubspot|crm|outreach|salesloft)/.test(L) &&
+    !/martech|marketing tech|email.*platform|cdp/.test(L)
   ) {
     return facts.yearsSalesExperience != null ? String(facts.yearsSalesExperience) : null
+  }
+
+  // 7b. Years selling martech / specific marketing technology products.
+  if (/(years|how (long|many)).*(martech|marketing tech|email.*platform|cdp|marketing automation|sms)|(martech|marketing tech).*(years|experience)/.test(L)) {
+    return facts.martechYears != null ? String(facts.martechYears) : null
+  }
+
+  // 7c. Self-sourced / outbound pipeline percentage.
+  if (/self.?sourc|pipeline.*(generat|creat|built)|outbound.*mix|portion.*deals|new.*logo.*sourc|how much.*prospect/.test(L)) {
+    return facts.selfSourcedPct != null ? `${facts.selfSourcedPct}%` : null
+  }
+
+  // 7d. Language proficiency (Spanish, French, etc.).
+  if (/\b(spanish|french|german|mandarin|portuguese|japanese|korean)\b/.test(L) || /language.*proficien|bilingual/.test(L)) {
+    if (!facts.languageProficiency) return null
+    const match = Object.keys(facts.languageProficiency).find((lang) => L.includes(lang))
+    if (!match) return null
+    const level = facts.languageProficiency[match]
+    if (choice) return pickOption(opts, /\bnone\b|\bno\b|not (proficient|fluent)|n\/a/i) || level
+    return level
   }
 
   // 8. How did you hear about us.
