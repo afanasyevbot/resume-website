@@ -112,30 +112,59 @@ describe('planSourcing', () => {
   })
 })
 
-describe('planSourcing — GTM-wide title gate (Matthew wants GTM broadly, not just AE)', () => {
-  const gtmTitles = [
-    'Partnerships Manager',
+describe('planSourcing — title gate: AE/GTM roles pass, non-sales roles blocked', () => {
+  const shouldPass = [
+    'Account Executive, Mid-Market',
     'Strategic Alliances Lead',
     'Channel Partner Manager',
-    'Solutions Engineer',
     'Revenue Operations Manager',
     'RevOps Analyst',
     'Growth Lead',
     'Founding GTM',
-    'GTM Engineer',
+    'GTM Lead',
     'Client Director',
+    'Partnerships Director',
+    'Enterprise Account Executive',
   ]
 
-  it('lets GTM-adjacent titles through to scoring', () => {
+  const shouldBlock = [
+    'Customer Success Manager',
+    'Mid-Market Customer Success Manager',
+    'Enterprise Customer Success Manager, AMER',
+    'Solution Engineer (Pre-Sales)',
+    'Solutions Engineer',
+    'Business Development Representative',
+    'Sales Development Representative',
+    'SDR',
+    'BDR',
+    'Data Scientist, GTM',
+    'Marketing Manager',
+    'Product Manager',
+  ]
+
+  it('lets AE and GTM-adjacent titles through to scoring', () => {
     const fetched = [
       {
         company: { name: 'Acme', ats: 'greenhouse' as const, slug: 'acme' },
-        listings: gtmTitles.map((title, i) => listing({ url: `g${i}`, title })),
+        listings: shouldPass.map((title, i) => listing({ url: `p${i}`, title })),
       },
     ]
     const plan = planSourcing(fetched, new Set(), { maxAgeDays: 30 })
     const passed = plan.work.map((w) => w.listing.title)
-    for (const t of gtmTitles) expect(passed).toContain(t)
+    for (const t of shouldPass) expect(passed, `expected "${t}" to pass`).toContain(t)
+  })
+
+  it('blocks non-sales roles before they reach the scorer', () => {
+    const fetched = [
+      {
+        company: { name: 'Acme', ats: 'greenhouse' as const, slug: 'acme' },
+        listings: shouldBlock.map((title, i) => listing({ url: `b${i}`, title })),
+      },
+    ]
+    const plan = planSourcing(fetched, new Set(), { maxAgeDays: 30 })
+    const passed = plan.work.map((w) => w.listing.title)
+    for (const t of shouldBlock) expect(passed, `expected "${t}" to be blocked`).not.toContain(t)
+    expect(plan.skippedIrrelevant).toBe(shouldBlock.length)
   })
 
   it('still blocks clearly irrelevant titles', () => {

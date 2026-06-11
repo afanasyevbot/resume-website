@@ -10,13 +10,18 @@ import * as ashby from './ats/ashby'
 
 /**
  * Title gate: cheap pre-filter so we never burn a Claude call on a role
- * that's obviously not a fit (e.g. engineers, marketers, designers).
- * Conservative — keep ANYTHING GTM-flavored, let the matcher decide nuance.
- * Matthew's targeting (2026-06-09): GTM roles broadly, not just AE titles —
- * partnerships, alliances, channel, solutions, RevOps, growth all pass here.
+ * that's obviously not a fit. Two-pass: must match the allow-list AND must
+ * not match the block-list. The block-list wins ties.
+ * Matthew's targeting (2026-06-09): AE, GTM, partnerships, RevOps, channel.
+ * NOT: CSM, BDR/SDR, Solutions Engineer, pre-sales, data roles.
  */
 const RELEVANT_TITLE_RE =
-  /\b(account executive|\bAE\b|account manager|\bAM\b|mid[-\s]?market|strategic|enterprise|sales|GTM|go[-\s]?to[-\s]?market|founding sales|business development|\bBDR\b|\bSDR\b|revenue|rev[-\s]?ops|customer success|\bCS\b|partner(?:ship)?s?|alliances?|channel|solutions|growth|client (?:director|executive|partner))\b/i
+  /\b(account executive|\bAE\b|account manager|\bAM\b|mid[-\s]?market|strategic|enterprise|sales|GTM|go[-\s]?to[-\s]?market|founding sales|business development|revenue|rev[-\s]?ops|partner(?:ship)?s?|alliances?|channel|growth|client (?:director|executive|partner))\b/i
+
+// Roles that look GTM-adjacent but aren't what Matthew is targeting.
+// Checked AFTER the allow-list so legitimate AE titles still pass.
+const BLOCKED_TITLE_RE =
+  /\b(customer success|CSM|solution(?:s)? engineer|pre[-\s]?sales|BDR|SDR|business development rep(?:resentative)?|sales development|data scientist|data analyst|marketing manager|product manager)\b/i
 
 export interface SourcingReport {
   /** Per-company stats. */
@@ -154,7 +159,7 @@ export function planSourcing(
         continue
       }
       stat.new += 1
-      if (!RELEVANT_TITLE_RE.test(l.title)) {
+      if (!RELEVANT_TITLE_RE.test(l.title) || BLOCKED_TITLE_RE.test(l.title)) {
         skippedIrrelevant += 1
         continue
       }
