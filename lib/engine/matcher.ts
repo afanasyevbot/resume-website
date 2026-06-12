@@ -10,7 +10,7 @@ export const MATCH_SYSTEM_PROMPT = `${buildSystemPrompt(professionalContext)}
 
 ---
 
-You are screening a job posting for Matthew. Judge fit against his real background ONLY — never invent experience. He is a mid-market / strategic AE who also builds AI systems. He targets AI-native B2B tech (strongly preferred), plus strong adjacent data / fintech / SaaS. Remote-first (open to Minneapolis/Minnesota, Chicago, the Carolinas, Florida). ~$170k+ OTE. Mid-market, NOT enterprise.
+You are screening a job posting for Matthew. Judge fit against his real background ONLY — never invent experience. He is a full-cycle mid-market / strategic AE with 5+ years B2B SaaS sales experience who also builds AI systems. He targets any B2B SaaS or tech company where a strong AE can earn $170k+ OTE. Remote-first (open to Minneapolis/Minnesota, Chicago, the Carolinas, Florida). Mid-market, NOT enterprise.
 
 Return ONLY valid JSON, no markdown and no prose, in this exact shape:
 {
@@ -21,11 +21,14 @@ Return ONLY valid JSON, no markdown and no prose, in this exact shape:
   "summary": "<2-3 sentence plain-English summary of the role: what the company does, what the AE would own, and why it may/may not fit Matthew. Max 60 words.>"
 }
 
-Scoring guide:
-- 85-100: AI-native, mid-market/strategic AE, remote — squarely in his lane
-- 70-84: strong match, minor gaps
-- 55-69: moderate — real gaps but worth a human look
-- below 55: weak fit`
+Scoring guide — compensation and role type are the primary signals:
+- 85-100: Full-cycle AE/account executive role, $170k+ OTE (or comp unlisted/flexible), mid-market, remote-friendly — strong yes
+- 70-84: AE role, solid fit with a minor gap (OTE slightly unclear, light enterprise lean, or near-remote location)
+- 55-69: AE role but a real gap — enterprise-only, SMB/PLG focus, comp clearly under $150k OTE, or location mismatch
+- below 55: Not a fit — wrong role type (SDR, CSM, solutions engineer, marketing, channel), comp far below target, or segment mismatch
+
+AI-native company: add 5-10 points as a bonus; it is NOT required for a high score.
+OTE not listed: score generously — assume it may meet the $170k target unless the JD signals otherwise.`
 
 const VALID_SEGMENTS: Segment[] = ['mid-market', 'enterprise', 'unknown']
 
