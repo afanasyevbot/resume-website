@@ -1,5 +1,6 @@
 import { sql } from './db'
 import { cleanJdText } from './cleanJd'
+import { atsTypeFromUrl } from './ats/capability'
 import type { MatchResult, RouteDecision } from './types'
 
 export interface PersistableRole {
@@ -32,6 +33,9 @@ export async function persistScoredRole(
   const status = statusFromRoute(result.route)
   const source = role.source ?? 'manual'
   const cleanedJd = cleanJdText(role.jobDescription)
+  // Normalize the ATS platform up front so the apply cron can gate on capability
+  // (does a submitter exist?) rather than re-parsing the URL later.
+  const atsType = atsTypeFromUrl(role.url)
 
   // Single CTE statement: role + events insert as one atomic SQL statement.
   // Postgres treats a single statement as an implicit transaction, so either
@@ -40,12 +44,12 @@ export async function persistScoredRole(
     with new_role as (
       insert into roles
         (company, title, url, location, jd_text, jd_summary, source,
-         fit_score, fit_reasons, segment, ai_native, route, status)
+         fit_score, fit_reasons, segment, ai_native, route, status, ats_type)
       values
         (${role.company}, ${role.title}, ${role.url ?? null}, ${role.location ?? null},
          ${cleanedJd}, ${result.summary ?? null}, ${source},
          ${result.score}, ${JSON.stringify(result.reasons)}::jsonb,
-         ${result.segment}, ${result.aiNative}, ${result.route}, ${status})
+         ${result.segment}, ${result.aiNative}, ${result.route}, ${status}, ${atsType})
       returning id
     ),
     sourced_event as (
