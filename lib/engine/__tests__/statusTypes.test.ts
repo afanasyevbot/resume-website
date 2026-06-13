@@ -1,5 +1,31 @@
 import { describe, it, expect } from 'vitest'
-import { OUTCOME_STATUSES, canLogOutcome } from '../statusTypes'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { OUTCOME_STATUSES, ROLE_STATUSES, canLogOutcome } from '../statusTypes'
+
+describe('ROLE_STATUSES ⇄ DB CHECK drift guard', () => {
+  it('every outcome status is also a valid role status', () => {
+    for (const o of OUTCOME_STATUSES) expect(ROLE_STATUSES).toContain(o)
+  })
+
+  it('covers the statuses the engine actually writes', () => {
+    // The lifecycle the code sets via `status = '...'` across the engine.
+    for (const s of ['scored', 'tailored', 'awaiting_approval', 'needs_review', 'applied', 'discarded', 'archived']) {
+      expect(ROLE_STATUSES).toContain(s)
+    }
+  })
+
+  it('matches the CHECK list in migration 0015 EXACTLY (no silent drift)', () => {
+    const sql = readFileSync(
+      join(process.cwd(), 'db/migrations/0015_roles_url_unique_status_check.sql'),
+      'utf8',
+    )
+    // Pull the quoted values inside the status in (...) CHECK.
+    const block = sql.slice(sql.indexOf('status in ('))
+    const quoted = [...block.matchAll(/'([a-z_]+)'/g)].map((m) => m[1])
+    expect(new Set(quoted)).toEqual(new Set(ROLE_STATUSES))
+  })
+})
 
 describe('canLogOutcome — outcome transitions', () => {
   it('an applied role can log any outcome', () => {
