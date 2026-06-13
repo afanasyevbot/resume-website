@@ -2,12 +2,11 @@
  * Plain-English meaning of a fit score — the single source of truth for what
  * the engine DOES at each score, so the dashboard never shows a bare number.
  *
- * Band edges mirror the live policy constants:
- *   75 = AUTO_FIT       (app/api/engine/auto-apply/route.ts) — auto-submits
- *   70 = CRON_MIN_FIT / DEFAULT_THRESHOLDS.tailor             — approval queue
- *   45 = DEFAULT_THRESHOLDS.flag (lib/engine/decideRoute.ts)  — below = discard
- * If those constants change, change these edges too.
+ * Band edges come from the policy module (thresholds.ts) so the labels can
+ * never drift from what the cron actually does.
  */
+
+import { AUTO_FIT, TAILOR_FLOOR, LOOK_FLOOR, FLAG_FLOOR } from './thresholds'
 
 export interface ScoreBand {
   label: string
@@ -21,28 +20,28 @@ export function scoreBand(score: number | null | undefined): ScoreBand {
   if (score == null) {
     return { label: 'Unscored', meaning: 'Not yet scored by the matcher.', color: '#5d6b80' }
   }
-  if (score >= 75) {
+  if (score >= AUTO_FIT) {
     return {
       label: 'Auto-apply',
       meaning: 'Submits automatically on the daily run — no action needed.',
       color: '#4ade80',
     }
   }
-  if (score >= 70) {
+  if (score >= TAILOR_FLOOR) {
     return {
       label: 'Needs your OK',
       meaning: 'Tailored and ready, but held for your one-click approval.',
       color: '#f0b429',
     }
   }
-  if (score >= 55) {
+  if (score >= LOOK_FLOOR) {
     return {
       label: 'Worth a look',
       meaning: 'Flagged for review — decent fit, not auto-tailored.',
       color: '#e3a52e',
     }
   }
-  if (score >= 45) {
+  if (score >= FLAG_FLOOR) {
     return {
       label: 'Long shot',
       meaning: 'Kept visible, but the matcher sees real gaps.',

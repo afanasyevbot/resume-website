@@ -4,15 +4,20 @@
  * Compares the matcher's 0-100 fit score against Matthew's human rating to
  * answer "is the matcher actually catching the roles I'd say yes to?".
  *
- * Mapping: thumbs-up (1) → 80 (anchor for "yes, tailor this"),
+ * Mapping: thumbs-up (1) → 80 (anchor for "yes, I'd apply"),
  *          thumbs-down (-1) → 20 (anchor for "skip this").
  * The anchors are intentionally inside the 0-100 band so MAE stays comparable
  * to the existing labeled-eval helper (compareToLabels.ts).
  *
- * Agreement uses the matcher's own routing threshold: scores >= 60 are
- * "tailor"-side, scores < 60 are "discard/flag"-side. We measure how often
- * that matches the human rating.
+ * Agreement is measured at the threshold the engine ACTUALLY acts on — AUTO_FIT,
+ * the auto-apply floor (thresholds.ts). A thumb-up means "I'd apply"; the matcher
+ * "agrees autonomously" when it scored the role at/above AUTO_FIT. The old code
+ * graded agreement at a hardcoded 60 — a bar the engine never uses — so the
+ * number it reported was meaningless. The whole value of the eval is measuring
+ * against the decision the engine really makes.
  */
+
+import { AUTO_FIT } from '../thresholds'
 
 export interface FeedbackEvalRow {
   /** Matcher score, 0-100. */
@@ -25,30 +30,34 @@ export interface FeedbackEvalReport {
   n: number
   /** Mean absolute error between matcherScore and the rating-anchor (80/20). */
   mae: number
-  /** Share of rows where matcher (>=60 vs <60) matches rating (1 vs -1). */
+  /** Share of rows where the matcher's auto-apply decision matches the rating. */
   agreement: number
+  /** The cutoff agreement was measured at (AUTO_FIT). Surfaced so the UI labels it. */
+  threshold: number
   breakdown: {
-    /** matcher >= 60 AND rating = 1 — matcher said tailor, human agreed. */
-    tailorAgree: number
-    /** matcher >= 60 AND rating = -1 — matcher said tailor, human disagreed. */
-    tailorDisagree: number
-    /** matcher < 60 AND rating = -1 — matcher said skip, human agreed. */
-    discardAgree: number
-    /** matcher < 60 AND rating = 1 — matcher said skip, human disagreed (miss). */
-    discardDisagree: number
+    /** score >= AUTO_FIT AND rating = 1 — engine would auto-apply, human agreed. */
+    applyAgree: number
+    /** score >= AUTO_FIT AND rating = -1 — engine would auto-apply, human said NO (false apply). */
+    applyDisagree: number
+    /** score < AUTO_FIT AND rating = -1 — engine would hold/skip, human agreed. */
+    holdAgree: number
+    /** score < AUTO_FIT AND rating = 1 — engine would hold/skip, human said YES (the miss). */
+    holdDisagree: number
   }
 }
 
 const RATING_TO_SCORE: Record<1 | -1, number> = { 1: 80, [-1]: 20 }
-const TAILOR_THRESHOLD = 60
 
-export function runFeedbackEval(rows: FeedbackEvalRow[]): FeedbackEvalReport {
+export function runFeedbackEval(
+  rows: FeedbackEvalRow[],
+  threshold: number = AUTO_FIT,
+): FeedbackEvalReport {
   const n = rows.length
   const breakdown = {
-    tailorAgree: 0,
-    tailorDisagree: 0,
-    discardAgree: 0,
-    discardDisagree: 0,
+    applyAgree: 0,
+    applyDisagree: 0,
+    holdAgree: 0,
+    holdDisagree: 0,
   }
   let totalDiff = 0
   let agree = 0
@@ -56,17 +65,17 @@ export function runFeedbackEval(rows: FeedbackEvalRow[]): FeedbackEvalReport {
   for (const row of rows) {
     const anchor = RATING_TO_SCORE[row.rating]
     totalDiff += Math.abs(row.matcherScore - anchor)
-    const matcherSaidTailor = row.matcherScore >= TAILOR_THRESHOLD
-    if (matcherSaidTailor && row.rating === 1) {
-      breakdown.tailorAgree++
+    const wouldAutoApply = row.matcherScore >= threshold
+    if (wouldAutoApply && row.rating === 1) {
+      breakdown.applyAgree++
       agree++
-    } else if (matcherSaidTailor && row.rating === -1) {
-      breakdown.tailorDisagree++
-    } else if (!matcherSaidTailor && row.rating === -1) {
-      breakdown.discardAgree++
+    } else if (wouldAutoApply && row.rating === -1) {
+      breakdown.applyDisagree++
+    } else if (!wouldAutoApply && row.rating === -1) {
+      breakdown.holdAgree++
       agree++
     } else {
-      breakdown.discardDisagree++
+      breakdown.holdDisagree++
     }
   }
 
@@ -74,6 +83,7 @@ export function runFeedbackEval(rows: FeedbackEvalRow[]): FeedbackEvalReport {
     n,
     mae: n === 0 ? 0 : totalDiff / n,
     agreement: n === 0 ? 0 : agree / n,
+    threshold,
     breakdown,
   }
 }

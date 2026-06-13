@@ -7,6 +7,7 @@ import { tailorRole } from './tailor'
 import type { TailorInput } from './tailorTypes'
 import { extractJsonObject } from './jsonExtract'
 import { hasBudget, logUsage } from './costGuard'
+import { TAILOR_FLOOR } from './thresholds'
 
 /**
  * Web Research Sourcing Agent
@@ -409,7 +410,7 @@ export async function gatherFitSignals(limit = 12): Promise<FitSignal[]> {
       from events where role_id = r.id and kind = 'rated'
       order by created_at desc limit 1
     ) fb on true
-    where r.fit_score >= 70 or r.status = 'applied' or fb.rating = 1
+    where r.fit_score >= ${TAILOR_FLOOR} or r.status = 'applied' or fb.rating = 1
     order by r.company, (fb.rating = 1) desc nulls last, r.fit_score desc nulls last
     limit ${limit}
   `
