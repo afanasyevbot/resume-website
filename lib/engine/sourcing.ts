@@ -54,9 +54,17 @@ export function formatSourceRunDetail(r: SourcingReport): {
   deadlineHit: boolean
   capHit: boolean
   durationS: number
+  failedCompanies: string[]
   summary: string
 } {
   const stopReason = r.deadlineHit ? 'deadline hit' : r.capHit ? 'cap hit' : 'all companies done'
+  // Companies whose ATS list call failed outright (e.g. dead slug → 404). These
+  // are the ones worth surfacing: a fetch failure means ZERO jobs seen from that
+  // company, so a stale slug silently starves the funnel. Per-listing errors
+  // (empty JD, score failure) are excluded — they don't blind us to a company.
+  const failedCompanies = r.perCompany
+    .filter((c) => c.errors.some((e) => e.startsWith('fetch failed')))
+    .map((c) => c.company)
   return {
     scored: r.totalScored,
     tailored: r.totalTailored,
@@ -64,6 +72,7 @@ export function formatSourceRunDetail(r: SourcingReport): {
     deadlineHit: r.deadlineHit,
     capHit: r.capHit,
     durationS: Math.floor(r.durationMs / 1000),
+    failedCompanies,
     summary: `scored ${r.totalScored}, tailored ${r.totalTailored} — ${stopReason}`,
   }
 }
