@@ -1,5 +1,6 @@
 import { sql } from './db'
 import { listDueReminders, type Reminder } from './reminders'
+import { loadCronHealth, type EngineHealth } from './health'
 
 export interface KpiCounts {
   sourced: number
@@ -57,6 +58,8 @@ export interface DashboardData {
   queue: RoleRow[]
   activity: ActivityEvent[]
   reminders: Reminder[]
+  /** Cron heartbeat — is each scheduled job still running? */
+  health: EngineHealth
 }
 
 export async function getCounts(): Promise<KpiCounts> {
@@ -170,15 +173,25 @@ export async function listActivity(limit = 20): Promise<ActivityEvent[]> {
   })) as ActivityEvent[]
 }
 
-export async function loadDashboard(): Promise<DashboardData> {
-  const [counts, deltas, queue, activity, reminders] = await Promise.all([
+/** Benign health snapshot when the heartbeat query itself fails — the feature
+ *  added to surface outages must not become a way to blank the whole dashboard. */
+const EMPTY_HEALTH: EngineHealth = { crons: [], needsAttention: false, failedCompanies: [] }
+
+export async function loadDashboard(opts: { withHealth?: boolean } = {}): Promise<DashboardData> {
+  // Only the front page renders HealthLine; pages that don't (e.g. /engine/roles)
+  // skip the heartbeat query instead of paying for an events scan they discard.
+  const withHealth = opts.withHealth ?? true
+  const [counts, deltas, queue, activity, reminders, health] = await Promise.all([
     getCounts(),
     getDeltas(),
     listQueue(),
     listActivity(),
     listDueReminders(),
+    // Isolated: a failing heartbeat query degrades to "no health shown", never
+    // takes down counts/queue/activity/reminders with it.
+    withHealth ? loadCronHealth().catch(() => EMPTY_HEALTH) : Promise.resolve(EMPTY_HEALTH),
   ])
-  return { counts, deltas, queue, activity, reminders }
+  return { counts, deltas, queue, activity, reminders, health }
 }
 
 /** Compact "2m / 3h / 1d / Jun 4" relative time. PURE — testable. */

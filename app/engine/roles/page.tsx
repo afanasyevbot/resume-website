@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic'
  * and workbench for digging in.
  */
 export default async function RolesPage() {
-  const { counts, deltas, queue, activity, reminders } = await loadDashboard()
+  const { counts, deltas, queue, activity, reminders } = await loadDashboard({ withHealth: false })
 
   return (
     <main

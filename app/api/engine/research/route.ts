@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { NextResponse } from 'next/server'
 import { anthropicKey } from '@/lib/env'
+import { sql } from '@/lib/engine/db'
 import {
   queriesForToday,
   processWebResults,
@@ -14,6 +15,13 @@ export const runtime = 'nodejs'
 export const maxDuration = 300
 
 const TAVILY_API_KEY = process.env.TAVILY_API_KEY
+
+/** Heartbeat: every cron run leaves a record so a dead/parked research job is
+ *  visible from the DB instead of looking identical to a quiet day. Written
+ *  even on the Tavily-unconfigured early-return — that's the loudest case. */
+async function recordResearchRun(detail: Record<string, unknown>): Promise<void> {
+  await sql`insert into events (kind, detail) values ('research_run', ${JSON.stringify(detail)}::jsonb)`
+}
 
 // ── Tavily helpers (direct HTTP — we can't import MCP tools in a route) ──
 
@@ -102,28 +110,57 @@ export async function GET(req: Request) {
   }
 
   if (!TAVILY_API_KEY) {
+    // The single most important heartbeat to persist: a total research outage.
+    await recordResearchRun({
+      tavilyConfigured: false,
+      queriesRun: 0,
+      scored: 0,
+      tailored: 0,
+      errors: 0,
+      summary: 'TAVILY_API_KEY not set — research did nothing',
+    })
     return NextResponse.json({ error: 'TAVILY_API_KEY not configured' }, { status: 500 })
   }
 
   const client = new Anthropic({ apiKey: anthropicKey() })
 
-  // Broad daily sweep + dynamic lookalike queries. Sized to stay in 300s.
-  const signals = await gatherFitSignals()
-  const dynamic = await lookalikeQueries(client, signals, 2)
-  const queries = [...queriesForToday(4), ...dynamic]
-  const allResults: WebSearchResult[] = []
+  // Wrap the whole run so a mid-run throw (Tavily network error, Anthropic
+  // timeout, SQL failure) still leaves an errored heartbeat — otherwise a
+  // crashing cron keeps the last SUCCESS row and looks healthy for up to 30h.
+  try {
+    // Broad daily sweep + dynamic lookalike queries. Sized to stay in 300s.
+    const signals = await gatherFitSignals()
+    const dynamic = await lookalikeQueries(client, signals, 2)
+    const queries = [...queriesForToday(4), ...dynamic]
+    const allResults: WebSearchResult[] = []
 
-  for (const q of queries) {
-    const results = await tavilySearch(q)
-    allResults.push(...results)
+    for (const q of queries) {
+      const results = await tavilySearch(q)
+      allResults.push(...results)
+    }
+
+    const uniqueUrls = [...new Set(allResults.map((r) => r.url))]
+    const extracted = await tavilyExtract(uniqueUrls.slice(0, 20))
+
+    const report = await processWebResults(client, allResults, extracted, { maxScores: 8, autoTailor: true, lookalikeCount: dynamic.length })
+    report.queriesRun = queries.length
+
+    await recordResearchRun({
+      tavilyConfigured: true,
+      queriesRun: queries.length,
+      scored: report.scored,
+      tailored: report.tailored,
+      lookalikes: report.lookalikeCount,
+      errors: report.errors.length,
+      foundNothing: allResults.length === 0,
+      summary: `scored ${report.scored}, tailored ${report.tailored}${allResults.length === 0 ? ' — Tavily returned 0 results' : ''}`,
+    })
+    console.log('cron research:', JSON.stringify({ scored: report.scored, tailored: report.tailored, lookalikes: report.lookalikeCount, errors: report.errors.length }))
+    return NextResponse.json({ ok: true, ...report })
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    await recordResearchRun({ tavilyConfigured: true, errored: true, queriesRun: 0, scored: 0, tailored: 0, errors: 1, summary: `research run threw: ${message}` })
+    console.error('GET /api/engine/research (cron) error:', err)
+    return NextResponse.json({ error: 'Research failed.' }, { status: 502 })
   }
-
-  const uniqueUrls = [...new Set(allResults.map((r) => r.url))]
-  const extracted = await tavilyExtract(uniqueUrls.slice(0, 20))
-
-  const report = await processWebResults(client, allResults, extracted, { maxScores: 8, autoTailor: true, lookalikeCount: dynamic.length })
-  report.queriesRun = queries.length
-
-  console.log('cron research:', JSON.stringify({ scored: report.scored, tailored: report.tailored, lookalikes: report.lookalikeCount, errors: report.errors.length }))
-  return NextResponse.json({ ok: true, ...report })
 }

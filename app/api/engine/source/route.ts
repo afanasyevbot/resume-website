@@ -48,6 +48,11 @@ export async function GET(req: Request) {
     console.log('cron sourcing:', JSON.stringify(detail))
     return NextResponse.json({ ok: true, ...report })
   } catch (err) {
+    // Leave an errored heartbeat so a crashing sourcing cron shows red on the
+    // dashboard instead of silently keeping the last successful run's timestamp.
+    const message = err instanceof Error ? err.message : String(err)
+    const errDetail = JSON.stringify({ errored: true, scored: 0, tailored: 0, errors: 1, summary: `source run threw: ${message}` })
+    await sql`insert into events (kind, detail) values ('source_run', ${errDetail}::jsonb)`.catch(() => {})
     console.error('GET /api/engine/source (cron) error:', err)
     return NextResponse.json({ error: 'Sourcing failed.' }, { status: 502 })
   }

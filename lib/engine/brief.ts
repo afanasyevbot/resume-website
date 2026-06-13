@@ -1,10 +1,43 @@
 import { sql } from './db'
+import { timeAgo } from './dashboard'
+import type { EngineHealth } from './health'
 
 /**
  * The Morning Brief — the engine narrating what it did since Matthew last
  * looked, in plain English. Deterministic string composition from event
  * counts (no LLM call: assembling counts into sentences is plain code).
  */
+
+/**
+ * PURE: the one thing that must override a reassuring brief — a cron that's
+ * stuck (stale) or ran-but-broke (failed, e.g. Tavily down), or a batch of dead
+ * job boards. Returns a leading warning sentence, or null when healthy. A
+ * stuck/broken cron wins over failed-boards (the bigger problem). Uses the same
+ * timeAgo formatter as HealthLine so both surfaces describe a timestamp identically.
+ */
+export function healthWarning(health: EngineHealth | undefined, now: Date = new Date()): string | null {
+  if (!health) return null
+  const broken = health.crons.filter((c) => c.stale || c.failed)
+  if (broken.length > 0) {
+    const clauses = broken.map((c) => {
+      if (c.failed) return `${c.label.toLowerCase()} ran but failed (check its API key / logs)`
+      return c.lastRunAt
+        ? `${c.label.toLowerCase()} hasn't run since ${timeAgo(c.lastRunAt, now)} ago`
+        : `${c.label.toLowerCase()} has never run`
+    })
+    const joined =
+      clauses.length === 1
+        ? clauses[0]
+        : `${clauses.slice(0, -1).join(', ')} and ${clauses[clauses.length - 1]}`
+    return `⚠ Something may be wrong — ${joined}. The engine runs about twice a day, so this likely means a job is stuck.`
+  }
+  if (health.failedCompanies.length > 0) {
+    const names = health.failedCompanies
+    const list = names.length <= 3 ? names.join(', ') : `${names.slice(0, 3).join(', ')} +${names.length - 3} more`
+    return `Heads up: ${names.length} job board${names.length === 1 ? '' : 's'} came back empty in the last sourcing run (${list}) — they may have moved.`
+  }
+  return null
+}
 
 export interface BriefStats {
   /** Pretty "14h" / "2d" label for the since-anchor. */
@@ -28,15 +61,19 @@ function joinNames(items: Array<{ company: string }>): string {
   return `${names.slice(0, -1).join(', ')}, and ${names[names.length - 1]}`
 }
 
-export function composeBrief(s: BriefStats): string {
+export function composeBrief(s: BriefStats, health?: EngineHealth, now: Date = new Date()): string {
   const parts: string[] = []
+  // A stuck cron or dead boards must override the narrative — otherwise a quiet
+  // brief reads as "all good" during an outage. Lead with the warning.
+  const warning = healthWarning(health, now)
+  const lead = warning ? `${warning} ` : ''
 
   if (s.scanned === 0 && s.applied.length === 0 && s.held.length === 0 && s.retired === 0) {
     const tail =
       s.decisions > 0
         ? `but ${s.decisions === 1 ? 'one item is' : `${s.decisions} items are`} still waiting on your call below.`
-        : 'Nothing needs you — see you after the next scan at 8:00am or 4:00pm.'
-    return `Quiet since you left${s.sinceLabel ? ` (${s.sinceLabel} ago)` : ''} — nothing new came in. ${tail}`
+        : 'Nothing needs you — see you after the next scan.'
+    return `${lead}Quiet since you left${s.sinceLabel ? ` (${s.sinceLabel} ago)` : ''} — nothing new came in. ${tail}`
   }
 
   if (s.scanned > 0) parts.push(`scanned ${s.scanned} opening${s.scanned === 1 ? '' : 's'}`)
@@ -59,7 +96,7 @@ export function composeBrief(s: BriefStats): string {
         ? ' One decision needs 30 seconds of your judgment.'
         : ` ${s.decisions} decisions need a minute of your judgment.`
 
-  return `While you were away I ${did}.${tail}`
+  return `${lead}While you were away I ${did}.${tail}`
 }
 
 /** Gather window stats from the events table since `anchor` (ISO timestamp). */
