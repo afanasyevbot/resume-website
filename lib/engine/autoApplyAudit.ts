@@ -48,6 +48,19 @@ export function runAllFailed(counts: { total: number; applied: number; failed: n
   return counts.total > 0 && counts.applied === 0 && counts.failed === counts.total
 }
 
+/** PURE: on the autonomous path, should this role be HELD for approval instead
+ *  of auto-submitted? Yes if it's web-scraped (research — no human vetted the
+ *  company, so never auto-apply under Matthew's name) OR its fit is below the
+ *  auto bar. */
+export function shouldHoldForApproval(
+  source: string | null,
+  fitScore: number | null,
+  autoFit: number,
+): boolean {
+  if (source === 'research') return true
+  return fitScore != null && fitScore < autoFit
+}
+
 /**
  * Count tailored roles the cron query excludes, and why. Mirrors the cron's
  * eligibility filters in runAutoApply — if those change, change this too.
