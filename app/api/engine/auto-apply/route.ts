@@ -323,6 +323,20 @@ export async function POST(req: Request) {
   return NextResponse.json(report)
 }
 
+/** Leave a fresh, non-errored heartbeat when the cron ran but was GATED (spend
+ *  cap, lock contention). The engine is alive and firing — just held — so the
+ *  heartbeat must stay green, not look stale/dead. Best-effort: if the DB is the
+ *  reason we're gated, this write fails and the run correctly ages to stale. */
+async function recordGatedRun(reason: string): Promise<void> {
+  const detail = buildAutoApplyRunDetail(
+    { applied: 0, needsReview: 0, skipped: 0, failed: 0, awaitingApproval: 0, total: 0 },
+    { tailoredTotal: 0, blockedByUrlWhitelist: 0, belowFitFloor: 0, noPackage: 0, eligible: 0 },
+    { dryRun: false, minFit: CRON_MIN_FIT, appliedToday: 0 },
+  )
+  detail.summary = reason
+  await recordAutoApplyRun(detail).catch(() => {})
+}
+
 /**
  * GET /api/engine/auto-apply — daily cron. Auto-submits high-fit tailored roles
  * within the daily cap. Guardrails: CRON_SECRET auth, fit ≥ CRON_MIN_FIT, at
@@ -335,6 +349,8 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
   if (!(await hasBudget())) {
+    // Alive but spend-gated — leave a heartbeat so it isn't flagged stuck.
+    await recordGatedRun('skipped — monthly spend cap reached')
     return NextResponse.json({ error: 'Monthly spend cap reached.' }, { status: 429 })
   }
 
@@ -345,6 +361,9 @@ export async function GET(req: Request) {
   // two overlapping runs can't both submit past the daily cap. (Dry runs skip the
   // lock — they don't submit.)
   if (!dryRun && !(await claimCronLock('auto_apply'))) {
+    // Another run holds the lock (it will write its own heartbeat); leave a
+    // fresh one here too so a stuck lock can't make the cron look dead.
+    await recordGatedRun('skipped — another run in progress')
     return NextResponse.json({ ok: true, skipped: 'another run in progress' })
   }
 
