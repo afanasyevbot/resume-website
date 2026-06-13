@@ -5,7 +5,7 @@ import type { TailoredPackage } from '@/lib/engine/tailorTypes'
 import { hasBudget } from '@/lib/engine/costGuard'
 import { notifySlack, buildAutoApplyRecap } from '@/lib/engine/notify'
 import { submitAndPersist } from '@/lib/engine/submitRole'
-import { buildAutoApplyRunDetail, recordAutoApplyRun, tailoredExclusions, runAllFailed } from '@/lib/engine/autoApplyAudit'
+import { buildAutoApplyRunDetail, recordAutoApplyRun, tailoredExclusions, runAllFailed, shouldHoldForApproval } from '@/lib/engine/autoApplyAudit'
 import { postSlackMessage } from '@/lib/engine/slack/client'
 import { approvalBlocks } from '@/lib/engine/slack/blocks'
 import { checkApplyUrl } from '@/lib/engine/urlHealth'
@@ -67,12 +67,13 @@ async function runAutoApply(opts: RunOpts) {
     title: string
     url: string
     fit_score: number | null
+    source: string | null
     package_json: TailoredPackage
   }>
 
   if (roleIds && roleIds.length > 0) {
     const rows = await sql`
-      select r.id, r.company, r.title, r.url, r.fit_score, p.package_json
+      select r.id, r.company, r.title, r.url, r.fit_score, r.source, p.package_json
       from roles r
       join lateral (
         select package_json from application_packages
@@ -97,7 +98,7 @@ async function runAutoApply(opts: RunOpts) {
       ? await sql`
           select * from (
             select distinct on (r.url)
-              r.id, r.company, r.title, r.url, r.fit_score, p.package_json
+              r.id, r.company, r.title, r.url, r.fit_score, r.source, p.package_json
             from roles r
             join lateral (
               select package_json from application_packages
@@ -117,7 +118,7 @@ async function runAutoApply(opts: RunOpts) {
       : await sql`
           select * from (
             select distinct on (r.url)
-              r.id, r.company, r.title, r.url, r.fit_score, p.package_json
+              r.id, r.company, r.title, r.url, r.fit_score, r.source, p.package_json
             from roles r
             join lateral (
               select package_json from application_packages
@@ -143,9 +144,12 @@ async function runAutoApply(opts: RunOpts) {
   const results: AutoApplyResult[] = []
 
   for (const role of roles) {
-    // Borderline fit on the AUTONOMOUS path → ask for approval instead of submitting.
-    // The manual button (method='manual') is an explicit human action → no gating.
-    if (method === 'auto' && !dryRun && role.fit_score != null && role.fit_score < AUTO_FIT) {
+    // Borderline fit OR a web-scraped role → ask for approval instead of
+    // auto-submitting. Research-sourced roles surface a company NO human vetted,
+    // so they never auto-apply under Matthew's name regardless of score — they
+    // go to the Slack/deck approval path. The manual button (method='manual')
+    // is an explicit human action → no gating.
+    if (method === 'auto' && !dryRun && shouldHoldForApproval(role.source, role.fit_score, AUTO_FIT)) {
       const existing = await sql`select 1 from slack_pending where role_id = ${role.id} and kind = 'approval' and status = 'pending' limit 1`
       if ((existing as unknown[]).length === 0) {
         // Pre-flight: verify the listing is still live before interrupting Matthew.

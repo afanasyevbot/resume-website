@@ -5,6 +5,7 @@ import { decideApplyOutcome } from './applyDecision'
 import { loadScreeningFacts } from './screeningFacts'
 import { postSlackMessage } from './slack/client'
 import { questionsText } from './slack/blocks'
+import { atsTypeFromUrl } from './ats/capability'
 import type { TailoredPackage } from './tailorTypes'
 import { put } from '@vercel/blob'
 
@@ -90,6 +91,14 @@ export async function submitAndPersist(
   const askOnSlack = opts.askOnSlack ?? true
   const ctx = professionalContext
   const facts = await loadScreeningFacts()
+
+  // Security chokepoint: never send Matthew's resume + PII to a host that isn't
+  // a known ATS. A poisoned/aggregator/spoofed URL that slipped through sourcing
+  // is refused here — fail CLOSED — covering the cron AND every approval caller
+  // in one place. (Known ATS hosts only; the browser service handles the rest.)
+  if (!atsTypeFromUrl(role.url)) {
+    return { outcome: 'failed', company: role.company, title: role.title, reason: `refused: ${(() => { try { return new URL(role.url).hostname } catch { return 'invalid url' } })()} is not a known ATS host`, unanswered: [], atsType: null }
+  }
 
   // Validate config before spending time on PDF generation. A missing browser
   // service is an infra problem, not a role problem — fail cleanly so the role

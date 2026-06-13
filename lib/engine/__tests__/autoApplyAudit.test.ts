@@ -1,5 +1,24 @@
 import { describe, it, expect } from 'vitest'
-import { buildAutoApplyRunDetail, runAllFailed, type RunCounts, type TailoredExclusions } from '../autoApplyAudit'
+import { buildAutoApplyRunDetail, runAllFailed, shouldHoldForApproval, type RunCounts, type TailoredExclusions } from '../autoApplyAudit'
+
+describe('shouldHoldForApproval — never auto-apply an unvetted scraped role', () => {
+  it('holds a research-sourced role even at a high fit', () => {
+    expect(shouldHoldForApproval('research', 95, 75)).toBe(true)
+  })
+
+  it('auto-submits a high-fit ATS-sourced role (no hold)', () => {
+    expect(shouldHoldForApproval('ats', 82, 75)).toBe(false)
+  })
+
+  it('holds any role below the auto bar regardless of source', () => {
+    expect(shouldHoldForApproval('ats', 72, 75)).toBe(true)
+    expect(shouldHoldForApproval('research', 72, 75)).toBe(true)
+  })
+
+  it('a null source at/above the bar is not held (legacy/manual rows)', () => {
+    expect(shouldHoldForApproval(null, 80, 75)).toBe(false)
+  })
+})
 
 describe('runAllFailed — browser-service-down signature', () => {
   it('is true when the run attempted submits and every one failed', () => {
