@@ -34,14 +34,22 @@ export interface CronStatus {
   kind: CronKind
   label: string
   lastRunAt: string | null
+  /** Hasn't run within its window — the cron may be dead. */
   stale: boolean
+  /** Ran recently but the run itself reported an outage/error (Tavily down, a
+   *  thrown run, an all-errors run). A fresh timestamp is NOT enough to be
+   *  healthy — otherwise the heartbeat masks the very outage it exists to show. */
+  failed: boolean
+  /** Why this cron needs attention, for the warning text. */
+  reason: 'stale' | 'failed' | null
   /** Companies whose ATS fetch failed in the latest run (source_run only). */
   failedCompanies: string[]
 }
 
 export interface EngineHealth {
   crons: CronStatus[]
-  anyStale: boolean
+  /** Any cron stale OR failed — the dashboard should raise a flag. */
+  needsAttention: boolean
   /** Failed-to-fetch companies from the latest source run — surfaced on the brief. */
   failedCompanies: string[]
 }
@@ -52,6 +60,17 @@ interface LastRun {
   detail: Record<string, unknown> | null
 }
 
+/** Did this run report a failure in its own detail blob? A run can be RECENT
+ *  yet broken — e.g. research wrote a fresh row but TAVILY_API_KEY was unset, or
+ *  a run caught an exception and stamped errored:true. Recency alone can't see
+ *  these, so the heartbeat must read the run's own verdict. */
+function runFailed(detail: Record<string, unknown> | null): boolean {
+  if (!detail) return false
+  if (detail.errored === true) return true
+  if (detail.tavilyConfigured === false) return true
+  return false
+}
+
 /** PURE: turn the latest-run-per-kind rows into a health snapshot given `now`. */
 export function assessCronHealth(runs: LastRun[], now: Date = new Date()): EngineHealth {
   const byKind = new Map(runs.map((r) => [r.kind, r]))
@@ -60,16 +79,18 @@ export function assessCronHealth(runs: LastRun[], now: Date = new Date()): Engin
     const lastRunAt = run?.lastRunAt ?? null
     const ageMs = lastRunAt ? now.getTime() - new Date(lastRunAt).getTime() : Infinity
     const stale = ageMs > STALE_HOURS[kind] * 3_600_000
-    const failed =
+    const failed = !stale && runFailed(run?.detail ?? null)
+    const failedCompanies =
       run?.detail && Array.isArray(run.detail.failedCompanies)
         ? (run.detail.failedCompanies as unknown[]).filter((x): x is string => typeof x === 'string')
         : []
-    return { kind, label: LABELS[kind], lastRunAt, stale, failedCompanies: failed }
+    const reason: CronStatus['reason'] = stale ? 'stale' : failed ? 'failed' : null
+    return { kind, label: LABELS[kind], lastRunAt, stale, failed, reason, failedCompanies }
   })
   const src = crons.find((c) => c.kind === 'source_run')
   return {
     crons,
-    anyStale: crons.some((c) => c.stale),
+    needsAttention: crons.some((c) => c.stale || c.failed),
     failedCompanies: src?.failedCompanies ?? [],
   }
 }

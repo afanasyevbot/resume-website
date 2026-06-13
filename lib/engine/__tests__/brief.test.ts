@@ -4,14 +4,20 @@ import type { EngineHealth } from '../health'
 
 const NOW = new Date('2026-06-12T12:00:00Z')
 
-function health(partial: Partial<EngineHealth> & { crons: EngineHealth['crons'] }): EngineHealth {
-  return { anyStale: partial.crons.some((c) => c.stale), failedCompanies: [], ...partial }
+type Cron = EngineHealth['crons'][number]
+
+function cron(kind: Cron['kind'], label: string, partial: Partial<Cron> = {}): Cron {
+  return { kind, label, lastRunAt: '2026-06-12T08:00:00Z', stale: false, failed: false, reason: null, failedCompanies: [], ...partial }
 }
 
-const freshCrons: EngineHealth['crons'] = [
-  { kind: 'source_run', label: 'Sourcing', lastRunAt: '2026-06-12T08:00:00Z', stale: false, failedCompanies: [] },
-  { kind: 'auto_apply_run', label: 'Auto-apply', lastRunAt: '2026-06-12T09:00:00Z', stale: false, failedCompanies: [] },
-  { kind: 'research_run', label: 'Research', lastRunAt: '2026-06-12T08:30:00Z', stale: false, failedCompanies: [] },
+function health(partial: Partial<EngineHealth> & { crons: Cron[] }): EngineHealth {
+  return { needsAttention: partial.crons.some((c) => c.stale || c.failed), failedCompanies: [], ...partial }
+}
+
+const freshCrons: Cron[] = [
+  cron('source_run', 'Sourcing', { lastRunAt: '2026-06-12T08:00:00Z' }),
+  cron('auto_apply_run', 'Auto-apply', { lastRunAt: '2026-06-12T09:00:00Z' }),
+  cron('research_run', 'Research', { lastRunAt: '2026-06-12T08:30:00Z' }),
 ]
 
 describe('composeBrief — the chief-of-staff morning sentence', () => {
@@ -71,7 +77,7 @@ describe('composeBrief — the chief-of-staff morning sentence', () => {
   it('OVERRIDES a reassuring quiet brief when a cron is stale', () => {
     const stale = health({
       crons: [
-        { kind: 'source_run', label: 'Sourcing', lastRunAt: '2026-06-10T08:00:00Z', stale: true, failedCompanies: [] },
+        cron('source_run', 'Sourcing', { lastRunAt: '2026-06-10T08:00:00Z', stale: true, reason: 'stale' }),
         ...freshCrons.slice(1),
       ],
     })
@@ -102,10 +108,19 @@ describe('healthWarning — the one thing that overrides a calm brief', () => {
 
   it('names the stale cron and how long it has been', () => {
     const w = healthWarning(
-      health({ crons: [{ kind: 'source_run', label: 'Sourcing', lastRunAt: '2026-06-10T12:00:00Z', stale: true, failedCompanies: [] }, ...freshCrons.slice(1)] }),
+      health({ crons: [cron('source_run', 'Sourcing', { lastRunAt: '2026-06-10T12:00:00Z', stale: true, reason: 'stale' }), ...freshCrons.slice(1)] }),
       NOW,
     )
-    expect(w).toMatch(/sourcing hasn't run in 2d/i)
+    expect(w).toMatch(/sourcing hasn't run since 2d ago/i)
+  })
+
+  it('warns on a RECENT-but-failed cron (Tavily down), not just stale ones', () => {
+    const w = healthWarning(
+      health({ crons: [cron('research_run', 'Research', { lastRunAt: '2026-06-12T11:30:00Z', failed: true, reason: 'failed' }), ...freshCrons.slice(0, 2)] }),
+      NOW,
+    )
+    expect(w).toMatch(/something may be wrong/i)
+    expect(w).toMatch(/research ran but failed/i)
   })
 
   it('surfaces failed boards when nothing is stale', () => {
@@ -117,10 +132,10 @@ describe('healthWarning — the one thing that overrides a calm brief', () => {
     expect(w).toMatch(/Ramp, Vanta, Mercury \+1 more/)
   })
 
-  it('prioritizes a stale cron over failed boards', () => {
+  it('prioritizes a stuck cron over failed boards', () => {
     const w = healthWarning(
       health({
-        crons: [{ kind: 'source_run', label: 'Sourcing', lastRunAt: null, stale: true, failedCompanies: [] }, ...freshCrons.slice(1)],
+        crons: [cron('source_run', 'Sourcing', { lastRunAt: null, stale: true, reason: 'stale' }), ...freshCrons.slice(1)],
         failedCompanies: ['Ramp'],
       }),
       NOW,

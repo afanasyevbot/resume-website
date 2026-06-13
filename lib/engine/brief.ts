@@ -1,4 +1,5 @@
 import { sql } from './db'
+import { timeAgo } from './dashboard'
 import type { EngineHealth } from './health'
 
 /**
@@ -7,27 +8,23 @@ import type { EngineHealth } from './health'
  * counts (no LLM call: assembling counts into sentences is plain code).
  */
 
-/** Coarse "3h" / "2d" label for a timestamp — local to keep brief decoupled. */
-function agoLabel(iso: string, now: Date): string {
-  const hours = Math.floor((now.getTime() - new Date(iso).getTime()) / 3_600_000)
-  if (hours < 1) return 'under an hour'
-  if (hours < 24) return `${hours}h`
-  return `${Math.floor(hours / 24)}d`
-}
-
 /**
- * PURE: the one thing that must override a reassuring brief — a stuck cron or
- * a batch of dead job boards. Returns a leading warning sentence, or null when
- * everything is healthy. Staleness wins over failed-boards (a dead cron is the
- * bigger problem and implies we can't even trust the board counts).
+ * PURE: the one thing that must override a reassuring brief — a cron that's
+ * stuck (stale) or ran-but-broke (failed, e.g. Tavily down), or a batch of dead
+ * job boards. Returns a leading warning sentence, or null when healthy. A
+ * stuck/broken cron wins over failed-boards (the bigger problem). Uses the same
+ * timeAgo formatter as HealthLine so both surfaces describe a timestamp identically.
  */
 export function healthWarning(health: EngineHealth | undefined, now: Date = new Date()): string | null {
   if (!health) return null
-  const stale = health.crons.filter((c) => c.stale)
-  if (stale.length > 0) {
-    const clauses = stale.map((c) =>
-      c.lastRunAt ? `${c.label.toLowerCase()} hasn't run in ${agoLabel(c.lastRunAt, now)}` : `${c.label.toLowerCase()} has never run`,
-    )
+  const broken = health.crons.filter((c) => c.stale || c.failed)
+  if (broken.length > 0) {
+    const clauses = broken.map((c) => {
+      if (c.failed) return `${c.label.toLowerCase()} ran but failed (check its API key / logs)`
+      return c.lastRunAt
+        ? `${c.label.toLowerCase()} hasn't run since ${timeAgo(c.lastRunAt, now)} ago`
+        : `${c.label.toLowerCase()} has never run`
+    })
     const joined =
       clauses.length === 1
         ? clauses[0]
@@ -75,7 +72,7 @@ export function composeBrief(s: BriefStats, health?: EngineHealth, now: Date = n
     const tail =
       s.decisions > 0
         ? `but ${s.decisions === 1 ? 'one item is' : `${s.decisions} items are`} still waiting on your call below.`
-        : 'Nothing needs you — see you after the next scan at 8:00am or 4:00pm.'
+        : 'Nothing needs you — see you after the next scan.'
     return `${lead}Quiet since you left${s.sinceLabel ? ` (${s.sinceLabel} ago)` : ''} — nothing new came in. ${tail}`
   }
 

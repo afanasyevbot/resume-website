@@ -12,7 +12,7 @@ describe('assessCronHealth — cron heartbeat', () => {
     expect(h.crons.find((c) => c.kind === 'source_run')!.stale).toBe(false)
   })
 
-  it('anyStale is false only when ALL three crons are fresh', () => {
+  it('needsAttention is false only when ALL three crons are fresh and clean', () => {
     const at = '2026-06-12T08:00:00Z' // 4h ago — fresh for all
     const h = assessCronHealth(
       [
@@ -22,7 +22,7 @@ describe('assessCronHealth — cron heartbeat', () => {
       ],
       NOW,
     )
-    expect(h.anyStale).toBe(false)
+    expect(h.needsAttention).toBe(false)
   })
 
   it('marks a cron stale once it is past its absolute threshold (source: 26h)', () => {
@@ -32,7 +32,40 @@ describe('assessCronHealth — cron heartbeat', () => {
       NOW,
     )
     expect(h.crons.find((c) => c.kind === 'source_run')!.stale).toBe(true)
-    expect(h.anyStale).toBe(true)
+    expect(h.needsAttention).toBe(true)
+  })
+
+  it('flags a RECENT-but-failed run (the masking bug): Tavily down → failed, not healthy', () => {
+    // research ran 30m ago (fresh) but TAVILY_API_KEY was unset.
+    const h = assessCronHealth(
+      [{ kind: 'research_run', lastRunAt: '2026-06-12T11:30:00Z', detail: { tavilyConfigured: false } }],
+      NOW,
+    )
+    const research = h.crons.find((c) => c.kind === 'research_run')!
+    expect(research.stale).toBe(false) // it IS recent
+    expect(research.failed).toBe(true) // but it's broken — must not show green
+    expect(research.reason).toBe('failed')
+    expect(h.needsAttention).toBe(true)
+  })
+
+  it('flags a recent run that stamped errored:true (a thrown cron caught itself)', () => {
+    const h = assessCronHealth(
+      [{ kind: 'source_run', lastRunAt: '2026-06-12T11:00:00Z', detail: { errored: true } }],
+      NOW,
+    )
+    expect(h.crons.find((c) => c.kind === 'source_run')!.failed).toBe(true)
+    expect(h.needsAttention).toBe(true)
+  })
+
+  it('a healthy recent run is neither stale nor failed', () => {
+    const h = assessCronHealth(
+      [{ kind: 'research_run', lastRunAt: '2026-06-12T11:30:00Z', detail: { tavilyConfigured: true, scored: 3 } }],
+      NOW,
+    )
+    const research = h.crons.find((c) => c.kind === 'research_run')!
+    expect(research.stale).toBe(false)
+    expect(research.failed).toBe(false)
+    expect(research.reason).toBeNull()
   })
 
   it('does NOT flag a normal overnight gap as stale (16h < 26h)', () => {
@@ -48,7 +81,7 @@ describe('assessCronHealth — cron heartbeat', () => {
     const h = assessCronHealth([], NOW)
     expect(h.crons.every((c) => c.stale)).toBe(true)
     expect(h.crons.every((c) => c.lastRunAt === null)).toBe(true)
-    expect(h.anyStale).toBe(true)
+    expect(h.needsAttention).toBe(true)
   })
 
   it('reports all three crons even when only one has run', () => {

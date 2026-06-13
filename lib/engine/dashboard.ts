@@ -173,14 +173,23 @@ export async function listActivity(limit = 20): Promise<ActivityEvent[]> {
   })) as ActivityEvent[]
 }
 
-export async function loadDashboard(): Promise<DashboardData> {
+/** Benign health snapshot when the heartbeat query itself fails — the feature
+ *  added to surface outages must not become a way to blank the whole dashboard. */
+const EMPTY_HEALTH: EngineHealth = { crons: [], needsAttention: false, failedCompanies: [] }
+
+export async function loadDashboard(opts: { withHealth?: boolean } = {}): Promise<DashboardData> {
+  // Only the front page renders HealthLine; pages that don't (e.g. /engine/roles)
+  // skip the heartbeat query instead of paying for an events scan they discard.
+  const withHealth = opts.withHealth ?? true
   const [counts, deltas, queue, activity, reminders, health] = await Promise.all([
     getCounts(),
     getDeltas(),
     listQueue(),
     listActivity(),
     listDueReminders(),
-    loadCronHealth(),
+    // Isolated: a failing heartbeat query degrades to "no health shown", never
+    // takes down counts/queue/activity/reminders with it.
+    withHealth ? loadCronHealth().catch(() => EMPTY_HEALTH) : Promise.resolve(EMPTY_HEALTH),
   ])
   return { counts, deltas, queue, activity, reminders, health }
 }
