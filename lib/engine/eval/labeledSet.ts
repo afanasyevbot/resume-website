@@ -2,6 +2,9 @@ import { decideRoute } from '../decideRoute'
 import type { LabeledRole } from './compareToLabels'
 import type { Segment } from '../types'
 
+/** A labeled role plus the prod role id, so the live eval can fetch its JD. */
+export type LabeledRoleWithId = LabeledRole & { id: number }
+
 /**
  * Ground-truth eval set for the matcher rubric — real roles the engine sourced,
  * each given a 1-10 fit label from Matthew's actual profile so we can measure
@@ -28,30 +31,30 @@ function r(score: number, segment: Segment, aiNative: boolean) {
   return { score, segment, aiNative, reasons: [], summary: null, route: decideRoute({ score, segment, aiNative, reasons: [], summary: null }) }
 }
 
-export const LABELED_SET: LabeledRole[] = [
+export const LABELED_SET: LabeledRoleWithId[] = [
   // ── Strong fits — mid-market AE in his lane (rubric scores these too low) ──
-  { company: 'Customer.io', title: 'Senior Account Executive', label: 8, result: r(82, 'mid-market', false) },
+  { id: 204, company: 'Customer.io', title: 'Senior Account Executive', label: 8, result: r(82, 'mid-market', false) },
   // Matthew THUMBED UP — textbook mid-market AE fit, yet scored 74 (below auto bar):
-  { company: 'Customer.io', title: 'Mid-Market Account Executive, Americas', label: 9, result: r(74, 'mid-market', false) },
+  { id: 96, company: 'Customer.io', title: 'Mid-Market Account Executive, Americas', label: 9, result: r(74, 'mid-market', false) },
   // Matthew THUMBED UP — mid-market AE at an AI company, scored 72:
-  { company: 'Hirequorum', title: 'Account Executive, Mid-Market', label: 8, result: r(72, 'mid-market', true) },
-  { company: 'Anthropic', title: 'Growth Account Executive, AI Native', label: 8, result: r(72, 'mid-market', true) },
-  { company: 'WorkOS', title: 'GTM - AI Native Sales', label: 8, result: r(72, 'unknown', true) },
-  { company: 'Sumo Logic', title: 'Mid-Market Account Executive', label: 7, result: r(62, 'mid-market', false) },
-  { company: 'Agiloft', title: 'Mid-Market Account Executive (Remote)', label: 7, result: r(62, 'mid-market', false) },
+  { id: 93, company: 'Hirequorum', title: 'Account Executive, Mid-Market', label: 8, result: r(72, 'mid-market', true) },
+  { id: 78, company: 'Anthropic', title: 'Growth Account Executive, AI Native', label: 8, result: r(72, 'mid-market', true) },
+  { id: 32, company: 'WorkOS', title: 'GTM - AI Native Sales', label: 8, result: r(72, 'unknown', true) },
+  { id: 94, company: 'Sumo Logic', title: 'Mid-Market Account Executive', label: 7, result: r(62, 'mid-market', false) },
+  { id: 113, company: 'Agiloft', title: 'Mid-Market Account Executive (Remote)', label: 7, result: r(62, 'mid-market', false) },
 
   // ── Adjacent — right title, a real gap (geo, vertical, big-co commercial) ──
-  { company: 'BILL', title: 'Mid-Market Account Executive - AP', label: 6, result: r(52, 'mid-market', false) },
-  { company: 'Vercel', title: 'Account Executive - Startups, Greenfield', label: 6, result: r(52, 'mid-market', true) },
-  { company: 'Harvey', title: 'Mid Market Account Executive, EMEA', label: 5, result: r(52, 'mid-market', true) },
-  { company: 'Datadog', title: 'Commercial Account Executive', label: 5, result: r(28, 'mid-market', false) },
+  { id: 114, company: 'BILL', title: 'Mid-Market Account Executive - AP', label: 6, result: r(52, 'mid-market', false) },
+  { id: 165, company: 'Vercel', title: 'Account Executive - Startups, Greenfield', label: 6, result: r(52, 'mid-market', true) },
+  { id: 256, company: 'Harvey', title: 'Mid Market Account Executive, EMEA', label: 5, result: r(52, 'mid-market', true) },
+  { id: 131, company: 'Datadog', title: 'Commercial Account Executive', label: 5, result: r(28, 'mid-market', false) },
 
   // ── No — enterprise-only AE, CSM, BDR, ops, engineering (rubric ~right here) ──
-  { company: 'Anthropic', title: 'Enterprise Account Executive - Retail', label: 3, result: r(38, 'enterprise', true) },
-  { company: 'Anthropic', title: 'Enterprise Account Executive, Telecommunications', label: 2, result: r(28, 'enterprise', true) },
-  { company: 'Notion', title: 'Mid-Market Customer Success Manager', label: 2, result: r(42, 'mid-market', true) },
-  { company: 'Databricks', title: 'Business Development Representative', label: 2, result: r(42, 'enterprise', true) },
-  { company: 'Cohere', title: 'RevOps Analyst (Analytics)', label: 2, result: r(18, 'enterprise', true) },
-  { company: 'Conga', title: 'Customer Success Manager', label: 1, result: r(12, 'enterprise', false) },
-  { company: 'Ramp', title: 'Senior Software Engineer | GTM Platform, Backend', label: 1, result: r(8, 'unknown', true) },
+  { id: 36, company: 'Anthropic', title: 'Enterprise Account Executive - Retail', label: 3, result: r(38, 'enterprise', true) },
+  { id: 38, company: 'Anthropic', title: 'Enterprise Account Executive, Telecommunications', label: 2, result: r(28, 'enterprise', true) },
+  { id: 105, company: 'Notion', title: 'Mid-Market Customer Success Manager', label: 2, result: r(42, 'mid-market', true) },
+  { id: 103, company: 'Databricks', title: 'Business Development Representative', label: 2, result: r(42, 'enterprise', true) },
+  { id: 249, company: 'Cohere', title: 'RevOps Analyst (Analytics)', label: 2, result: r(18, 'enterprise', true) },
+  { id: 129, company: 'Conga', title: 'Customer Success Manager', label: 1, result: r(12, 'enterprise', false) },
+  { id: 173, company: 'Ramp', title: 'Senior Software Engineer | GTM Platform, Backend', label: 1, result: r(8, 'unknown', true) },
 ]

@@ -21,14 +21,24 @@ Return ONLY valid JSON, no markdown and no prose, in this exact shape:
   "summary": "<2-3 sentence plain-English summary of the role: what the company does, what the AE would own, and why it may/may not fit Matthew. Max 60 words.>"
 }
 
-Scoring guide — compensation and role type are the primary signals:
-- 85-100: Full-cycle AE/account executive role, $170k+ OTE (or comp unlisted/flexible), mid-market, remote-friendly — strong yes
-- 70-84: AE role, solid fit with a minor gap (OTE slightly unclear, light enterprise lean, or near-remote location)
-- 55-69: AE role but a real gap — enterprise-only, SMB/PLG focus, comp clearly under $150k OTE, or location mismatch
-- below 55: Not a fit — wrong role type (SDR, CSM, solutions engineer, marketing, channel), comp far below target, or segment mismatch
+Scoring guide — compensation and role type are the primary signals. Calibrate to
+these anchors and do NOT cluster genuine fits in the low 70s:
+- 82-95: A full-cycle AE / Account Executive role at a B2B SaaS or tech company,
+  mid-market or strategic (non-enterprise), remote or remote-friendly. This is his
+  CORE LANE — score it here even when OTE is unlisted and even when the company is
+  not AI-native. A clean mid-market AE role with no real disqualifier belongs HERE,
+  not in the 70s. (AI-native core product: +3-5, toward the top of the band.)
+  Example: a remote Mid-Market Account Executive at a B2B SaaS company ≈ 82-85.
+- 70-81: An AE role with ONE real, specific gap — a clear enterprise lean, a
+  non-remote location outside his list, or comp signaled clearly below target.
+- 55-69: An AE role with a SERIOUS gap — enterprise-only, SMB/PLG transactional,
+  or comp clearly under $150k OTE.
+- 30-54: Sales-adjacent but the wrong role type — SDR/BDR, Customer Success,
+  RevOps / sales-ops, solutions / sales engineering, sales management/leadership.
+- below 30: Not a sales role at all — engineering, marketing, finance, ops, recruiting.
 
-AI-native company: add 5-10 points as a bonus; it is NOT required for a high score.
-OTE not listed: score generously — assume it may meet the $170k target unless the JD signals otherwise.`
+OTE not listed: assume it may meet the $170k target unless the JD signals otherwise
+— do NOT dock points for a missing number.`
 
 const VALID_SEGMENTS: Segment[] = ['mid-market', 'enterprise', 'unknown']
 

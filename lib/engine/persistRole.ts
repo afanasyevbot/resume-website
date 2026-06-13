@@ -40,6 +40,9 @@ export async function persistScoredRole(
   // Single CTE statement: role + events insert as one atomic SQL statement.
   // Postgres treats a single statement as an implicit transaction, so either
   // both inserts succeed or neither does — no orphan roles without events.
+  // ON CONFLICT (url) DO NOTHING is the integrity backstop behind the callers'
+  // best-effort dedup: if the same URL was inserted concurrently, the insert
+  // no-ops (and writes no duplicate events), and we fall back to the existing row.
   const rows = await sql`
     with new_role as (
       insert into roles
@@ -50,6 +53,7 @@ export async function persistScoredRole(
          ${cleanedJd}, ${result.summary ?? null}, ${source},
          ${result.score}, ${JSON.stringify(result.reasons)}::jsonb,
          ${result.segment}, ${result.aiNative}, ${result.route}, ${status}, ${atsType})
+      on conflict (url) where url is not null do nothing
       returning id
     ),
     sourced_event as (
@@ -64,6 +68,13 @@ export async function persistScoredRole(
     )
     select id from new_role
   `
+
+  // No row returned → URL already existed (conflict). Return the existing role
+  // so callers never crash on a duplicate; no new scoring/events were written.
+  if (rows.length === 0) {
+    const existing = (await sql`select id, status from roles where url = ${role.url} limit 1`) as Array<{ id: number; status: string }>
+    if (existing[0]) return { id: Number(existing[0].id), status: existing[0].status }
+  }
   const id = Number((rows[0] as { id: number }).id)
 
   return { id, status }
