@@ -40,4 +40,25 @@ describe('formatSourceRunDetail — what gets stored in the source_run event', (
     expect(detail.summary).toMatch(/15/)
     expect(detail.summary).toMatch(/deadline/i)
   })
+
+  it('names companies that failed to fetch (so dead slugs do not hide in the count)', () => {
+    const report = {
+      ...baseReport,
+      totalErrors: 2,
+      perCompany: [
+        { company: 'OpenAI', ats: 'greenhouse', listed: 0, new: 0, relevant: 0, scored: 0, tailored: 0, errors: ['fetch failed: greenhouse list openai: 404'] },
+        { company: 'Anthropic', ats: 'greenhouse', listed: 30, new: 5, relevant: 3, scored: 3, tailored: 1, errors: [] },
+        { company: 'Groq', ats: 'greenhouse', listed: 0, new: 0, relevant: 0, scored: 0, tailored: 0, errors: ['fetch failed: greenhouse list groq: 404'] },
+        // A per-listing error (empty JD) is NOT a fetch failure — must not be listed.
+        { company: 'Vercel', ats: 'greenhouse', listed: 4, new: 2, relevant: 1, scored: 0, tailored: 0, errors: ['Senior AE: empty JD'] },
+      ],
+    }
+    const detail = formatSourceRunDetail(report)
+    expect(detail.failedCompanies).toEqual(['OpenAI', 'Groq'])
+  })
+
+  it('reports an empty failedCompanies array when every company fetched cleanly', () => {
+    const detail = formatSourceRunDetail(baseReport)
+    expect(detail.failedCompanies).toEqual([])
+  })
 })
