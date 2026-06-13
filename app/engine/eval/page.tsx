@@ -191,12 +191,42 @@ export default async function EvalPage() {
               accent={report.mae <= 15 ? '#16a34a' : report.mae <= 30 ? '#b45309' : '#dc2626'}
             />
             <StatBox
-              label="Misses"
-              value={String(report.breakdown.discardDisagree)}
-              sub="good fits the scorer missed"
-              accent={report.breakdown.discardDisagree > 0 ? '#dc2626' : '#16a34a'}
+              label="Held misses"
+              value={String(report.breakdown.holdDisagree)}
+              sub={`liked, but scored <${report.threshold}`}
+              accent={report.breakdown.holdDisagree > 0 ? '#dc2626' : '#16a34a'}
             />
           </div>
+
+          {/* The question Matthew actually asks: of the roles I'd apply to,
+              how many would the engine auto-send? This is the "why don't I see
+              it applying" answer in one line. */}
+          {(() => {
+            const liked = report.breakdown.applyAgree + report.breakdown.holdDisagree
+            const wouldApply = report.breakdown.applyAgree
+            if (liked === 0) return null
+            const allClear = wouldApply === liked
+            return (
+              <div
+                className="rounded-lg px-5 py-4 mb-6"
+                style={{
+                  border: `1px solid ${allClear ? 'rgba(22,163,74,0.30)' : 'rgba(220,38,38,0.30)'}`,
+                  background: allClear ? 'rgba(22,163,74,0.05)' : 'rgba(220,38,38,0.04)',
+                }}
+              >
+                <p className="text-[14px]" style={{ color: 'var(--color-text-bright)', fontFamily: 'var(--font-sans)' }}>
+                  <strong>{wouldApply} of {liked}</strong> roles you thumbs-upped would auto-apply
+                  (score ≥ {report.threshold}).
+                </p>
+                {!allClear && (
+                  <p className="text-[12.5px] mt-1" style={{ color: 'var(--color-text-secondary)', fontFamily: 'var(--font-sans)' }}>
+                    The other {liked - wouldApply} scored below {report.threshold} — the engine holds them for your approval
+                    instead of applying. If these are real fits, the rubric is scoring them too low.
+                  </p>
+                )}
+              </div>
+            )
+          })()}
 
           {/* Breakdown */}
           <div
@@ -216,10 +246,10 @@ export default async function EvalPage() {
             </div>
             <div className="grid grid-cols-2 divide-x divide-dashed" style={{ borderColor: 'rgba(148,163,184,0.12)' }}>
               {[
-                { label: '✓ Scorer said yes, you agreed', n: report.breakdown.tailorAgree, good: true },
-                { label: '✗ Scorer said yes, you disagreed', n: report.breakdown.tailorDisagree, good: false },
-                { label: '✓ Scorer said no, you agreed', n: report.breakdown.discardAgree, good: true },
-                { label: '✗ Scorer said no, you disagreed (miss)', n: report.breakdown.discardDisagree, good: false },
+                { label: `✓ Would auto-apply (≥${report.threshold}), you agreed`, n: report.breakdown.applyAgree, good: true },
+                { label: `✗ Would auto-apply (≥${report.threshold}), you said no`, n: report.breakdown.applyDisagree, good: false },
+                { label: `✓ Would hold (<${report.threshold}), you agreed`, n: report.breakdown.holdAgree, good: true },
+                { label: `✗ Would hold (<${report.threshold}), you'd apply (miss)`, n: report.breakdown.holdDisagree, good: false },
               ].map((row) => (
                 <div key={row.label} className="px-5 py-4">
                   <p

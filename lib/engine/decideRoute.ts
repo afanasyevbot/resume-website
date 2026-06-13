@@ -1,4 +1,5 @@
 import type { MatchAssessment, RouteDecision } from './types'
+import { TAILOR_FLOOR, FLAG_FLOOR } from './thresholds'
 
 export interface RouteThresholds {
   tailor: number // score >= this → tailor
@@ -8,7 +9,9 @@ export interface RouteThresholds {
 // flag floor is intentionally low (45): anything 45-69 surfaces in the queue
 // as a bare "worth a human look" role — never auto-tailored, just reviewable.
 // Only 70+ auto-tailors. Below 45 is discarded as clear noise.
-export const DEFAULT_THRESHOLDS: RouteThresholds = { tailor: 70, flag: 45 }
+// Edges come from the single policy module (thresholds.ts) so the router can
+// never drift from what the apply cron actually does.
+export const DEFAULT_THRESHOLDS: RouteThresholds = { tailor: TAILOR_FLOOR, flag: FLAG_FLOOR }
 
 /**
  * Deterministic routing. The LLM produces the judgment (score/segment);

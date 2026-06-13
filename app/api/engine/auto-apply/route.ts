@@ -10,15 +10,11 @@ import { postSlackMessage } from '@/lib/engine/slack/client'
 import { approvalBlocks } from '@/lib/engine/slack/blocks'
 import { checkApplyUrl } from '@/lib/engine/urlHealth'
 import { verifySessionToken, SESSION_COOKIE } from '@/lib/engine/auth'
+import { AUTO_FIT, TAILOR_FLOOR } from '@/lib/engine/thresholds'
 
 export const runtime = 'nodejs'
 // Browser submits run sequentially and can be slow; Vercel Pro allows up to 300s.
 export const maxDuration = 300
-
-/** Fit at/above this auto-submits on the cron; CRON_MIN_FIT..AUTO_FIT-1 asks
- *  for approval. Set to 75 per Matthew's policy (2026-06-09): volume matters,
- *  and the previous 86 floor meant nothing ever auto-submitted. */
-const AUTO_FIT = 75
 
 interface AutoApplyResult {
   roleId: number
@@ -219,8 +215,9 @@ async function runAutoApply(opts: RunOpts) {
 
 /** Daily safety cap on automatic submissions (a bug can't spray more than this). */
 const DAILY_CAP = 10
-/** Minimum fit score the cron will auto-submit. The manual button has no floor. */
-const CRON_MIN_FIT = 70
+/** Minimum fit score the cron will pick a role up. Roles TAILOR_FLOOR..AUTO_FIT-1
+ *  are held for approval; AUTO_FIT+ auto-submit. The manual button has no floor. */
+const CRON_MIN_FIT = TAILOR_FLOOR
 
 /** How many roles were auto-applied (method=auto, i.e. by the cron — NOT the
  *  manual button) since midnight UTC today. */
