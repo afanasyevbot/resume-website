@@ -1,5 +1,23 @@
 import { describe, it, expect } from 'vitest'
-import { buildAutoApplyRunDetail, type RunCounts, type TailoredExclusions } from '../autoApplyAudit'
+import { buildAutoApplyRunDetail, runAllFailed, type RunCounts, type TailoredExclusions } from '../autoApplyAudit'
+
+describe('runAllFailed — browser-service-down signature', () => {
+  it('is true when the run attempted submits and every one failed', () => {
+    expect(runAllFailed({ total: 3, applied: 0, failed: 3 })).toBe(true)
+  })
+
+  it('is false for a healthy "nothing eligible" run (total 0) — not an outage', () => {
+    expect(runAllFailed({ total: 0, applied: 0, failed: 0 })).toBe(false)
+  })
+
+  it('is false when at least one submit succeeded', () => {
+    expect(runAllFailed({ total: 3, applied: 1, failed: 2 })).toBe(false)
+  })
+
+  it('is false when some failed but others were skipped/needs-review (not a total outage)', () => {
+    expect(runAllFailed({ total: 3, applied: 0, failed: 1 })).toBe(false)
+  })
+})
 
 const ZERO_EXCLUSIONS: TailoredExclusions = {
   tailoredTotal: 0,

@@ -5,7 +5,7 @@ import type { TailoredPackage } from '@/lib/engine/tailorTypes'
 import { hasBudget } from '@/lib/engine/costGuard'
 import { notifySlack, buildAutoApplyRecap } from '@/lib/engine/notify'
 import { submitAndPersist } from '@/lib/engine/submitRole'
-import { buildAutoApplyRunDetail, recordAutoApplyRun, tailoredExclusions } from '@/lib/engine/autoApplyAudit'
+import { buildAutoApplyRunDetail, recordAutoApplyRun, tailoredExclusions, runAllFailed } from '@/lib/engine/autoApplyAudit'
 import { postSlackMessage } from '@/lib/engine/slack/client'
 import { approvalBlocks } from '@/lib/engine/slack/blocks'
 import { checkApplyUrl } from '@/lib/engine/urlHealth'
@@ -187,10 +187,18 @@ async function runAutoApply(opts: RunOpts) {
       continue
     }
 
-    const r = await submitAndPersist(
-      { id: role.id, company: role.company, title: role.title, url: role.url, fit_score: role.fit_score, package_json: role.package_json },
-      { dryRun, method, askOnSlack: method !== 'manual' },
-    )
+    // Isolate each role: an unexpected throw (browser service down, PDF gen
+    // failure, transient SQL error) fails THAT role and moves on, instead of
+    // unwinding the whole cron run and losing the roles already processed.
+    let r
+    try {
+      r = await submitAndPersist(
+        { id: role.id, company: role.company, title: role.title, url: role.url, fit_score: role.fit_score, package_json: role.package_json },
+        { dryRun, method, askOnSlack: method !== 'manual' },
+      )
+    } catch (err) {
+      r = { outcome: 'failed' as const, company: role.company, title: role.title, reason: err instanceof Error ? err.message : String(err), unanswered: [] as string[], atsType: null }
+    }
     results.push({
       roleId: role.id,
       company: role.company,
@@ -367,24 +375,35 @@ export async function GET(req: Request) {
 
     // Run-level audit event: every cron run leaves a record — including runs
     // that found nothing eligible, which used to be invisible.
-    await recordAutoApplyRun(
-      buildAutoApplyRunDetail(
-        {
-          applied: report.applied,
-          needsReview: report.needsReview,
-          skipped: report.skipped,
-          failed: report.failed,
-          awaitingApproval: report.awaitingApproval,
-          total: report.total,
-        },
-        await tailoredExclusions(CRON_MIN_FIT),
-        { dryRun, minFit: CRON_MIN_FIT, appliedToday: alreadyToday },
-      ),
+    const runDetail = buildAutoApplyRunDetail(
+      {
+        applied: report.applied,
+        needsReview: report.needsReview,
+        skipped: report.skipped,
+        failed: report.failed,
+        awaitingApproval: report.awaitingApproval,
+        total: report.total,
+      },
+      await tailoredExclusions(CRON_MIN_FIT),
+      { dryRun, minFit: CRON_MIN_FIT, appliedToday: alreadyToday },
     )
+    // If the run tried to submit and EVERY attempt failed, the browser service
+    // is likely down — flag the heartbeat so it shows red instead of green.
+    const allFailed = runAllFailed(report)
+    if (allFailed) {
+      runDetail.errored = true
+      runDetail.summary = `all ${report.failed} submit(s) failed — browser service may be down · ${runDetail.summary}`
+    }
+    await recordAutoApplyRun(runDetail)
 
     if (!dryRun) {
       const recap = buildAutoApplyRecap(report.results, alreadyToday + report.applied, DAILY_CAP)
       if (recap) await notifySlack(recap)
+      // A run where everything failed is worth a direct ping — Matthew shouldn't
+      // have to open the dashboard to learn the apply service is broken.
+      if (allFailed) {
+        await notifySlack(`⚠ Auto-apply: all ${report.failed} submission(s) failed this run — the browser apply service may be down.`)
+      }
     }
 
     return NextResponse.json({ ok: true, appliedToday: alreadyToday, cap: DAILY_CAP, ...report })

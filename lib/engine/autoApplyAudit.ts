@@ -36,6 +36,16 @@ export interface AutoApplyRunDetail extends RunCounts, TailoredExclusions {
   dryRun: boolean
   minFit: number
   appliedToday: number
+  /** True when the run tried to submit and EVERY attempt failed — read by the
+   *  cron heartbeat (assessCronHealth) so a browser-service outage shows red. */
+  errored?: boolean
+}
+
+/** PURE: did the run attempt submissions and have ALL of them fail? That's the
+ *  signature of a down browser service (vs. a healthy "nothing eligible" run,
+ *  where total === 0). Drives the errored heartbeat flag + the Slack ping. */
+export function runAllFailed(counts: { total: number; applied: number; failed: number }): boolean {
+  return counts.total > 0 && counts.applied === 0 && counts.failed === counts.total
 }
 
 /**

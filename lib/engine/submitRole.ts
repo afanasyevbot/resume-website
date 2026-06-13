@@ -8,16 +8,14 @@ import { questionsText } from './slack/blocks'
 import type { TailoredPackage } from './tailorTypes'
 import { put } from '@vercel/blob'
 
-function getBrowserUrl(): string {
-  const u = process.env.BROWSER_SERVICE_URL
-  if (!u) throw new Error('BROWSER_SERVICE_URL is not set. Add this env var pointing to your browser agent service.')
-  return u
-}
-
-function getBrowserSecret(): string {
-  const s = process.env.BROWSER_SERVICE_SECRET
-  if (!s) throw new Error('BROWSER_SERVICE_SECRET is not set')
-  return s
+/** Browser-service config, or null if either var is unset. Non-throwing so a
+ *  missing config becomes a clean 'failed' outcome (role stays tailored, retries
+ *  next run) instead of an exception that crashes the whole cron run. */
+function browserConfig(): { url: string; secret: string } | null {
+  const url = process.env.BROWSER_SERVICE_URL
+  const secret = process.env.BROWSER_SERVICE_SECRET
+  if (!url || !secret) return null
+  return { url, secret }
 }
 
 export interface EligibleRole {
@@ -93,9 +91,15 @@ export async function submitAndPersist(
   const ctx = professionalContext
   const facts = await loadScreeningFacts()
 
-  // Validate config before spending time on PDF generation
-  const browserUrl = getBrowserUrl()
-  const browserSecret = getBrowserSecret()
+  // Validate config before spending time on PDF generation. A missing browser
+  // service is an infra problem, not a role problem — fail cleanly so the role
+  // stays 'tailored' and retries next run, and the failure is counted/visible.
+  const cfg = browserConfig()
+  if (!cfg) {
+    return { outcome: 'failed', company: role.company, title: role.title, reason: 'browser service not configured (BROWSER_SERVICE_URL/SECRET unset)', unanswered: [], atsType: null }
+  }
+  const browserUrl = cfg.url
+  const browserSecret = cfg.secret
 
   let result: BrowserResult
   try {
