@@ -11,6 +11,7 @@ import { approvalBlocks } from '@/lib/engine/slack/blocks'
 import { checkApplyUrl } from '@/lib/engine/urlHealth'
 import { verifySessionToken, SESSION_COOKIE } from '@/lib/engine/auth'
 import { AUTO_FIT, TAILOR_FLOOR } from '@/lib/engine/thresholds'
+import { SUBMITTABLE_ATS_ARR } from '@/lib/engine/ats/capability'
 
 export const runtime = 'nodejs'
 // Browser submits run sequentially and can be slow; Vercel Pro allows up to 300s.
@@ -105,7 +106,7 @@ async function runAutoApply(opts: RunOpts) {
             where r.status = 'tailored'
               and r.route = 'tailor'
               and r.url is not null
-              and (r.url like '%greenhouse.io%' or r.url like '%ashbyhq.com%')
+              and r.ats_type = any(${SUBMITTABLE_ATS_ARR})
               and coalesce(r.fit_score, 0) >= ${minFit}
               and p.package_json is not null
             order by r.url, r.fit_score desc nulls last
@@ -260,6 +261,26 @@ async function releaseCronLock(name: string): Promise<void> {
 }
 
 /**
+ * Route tailored roles the engine CAN'T auto-submit (Lever/Workday/unknown ATS)
+ * into manual review, so they land in the Decision Deck instead of sitting
+ * 'tailored' forever, invisible. Returns how many were rerouted. Idempotent:
+ * once a role is needs_review it's no longer 'tailored', so it won't re-fire.
+ */
+async function routeUnsubmittableToReview(): Promise<number> {
+  const rows = await sql`
+    update roles set status = 'needs_review', updated_at = now()
+    where status = 'tailored' and route = 'tailor'
+      and (ats_type is null or ats_type <> all(${SUBMITTABLE_ATS_ARR}))
+    returning id, ats_type
+  `
+  for (const r of rows as Array<{ id: number; ats_type: string | null }>) {
+    const detail = JSON.stringify({ method: 'auto', reason: 'no_submitter', atsType: r.ats_type })
+    await sql`insert into events (role_id, kind, detail) values (${r.id}, 'needs_review', ${detail}::jsonb)`
+  }
+  return (rows as unknown[]).length
+}
+
+/**
  * POST /api/engine/auto-apply — manual trigger (dashboard button).
  * Body: { roleIds?: number[], maxApply?: number, dryRun?: boolean }
  */
@@ -320,6 +341,14 @@ export async function GET(req: Request) {
   }
 
   try {
+    // Before applying, sweep tailored roles the engine can't auto-submit (Lever,
+    // Workday, unknown ATS) into manual review so they reach the Decision Deck
+    // instead of leaking out of the funnel. Cheap, idempotent, runs every cron.
+    if (!dryRun) {
+      const rerouted = await routeUnsubmittableToReview()
+      if (rerouted > 0) console.log(`cron auto-apply: routed ${rerouted} no-submitter role(s) to manual review`)
+    }
+
     const alreadyToday = await autoAppliedToday()
     const remaining = Math.max(0, DAILY_CAP - alreadyToday)
     if (remaining === 0) {

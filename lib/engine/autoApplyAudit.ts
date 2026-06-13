@@ -1,4 +1,5 @@
 import { sql } from './db'
+import { SUBMITTABLE_ATS_ARR } from './ats/capability'
 
 /**
  * Visibility layer for the auto-apply cron. Every run writes an
@@ -11,7 +12,7 @@ import { sql } from './db'
 export interface TailoredExclusions {
   /** All roles currently at status=tailored, route=tailor. */
   tailoredTotal: number
-  /** Excluded because url is not Greenhouse/Ashby (cron-only safety whitelist). */
+  /** Excluded because the engine can't auto-submit this ats_type (no submitter). */
   blockedByUrlWhitelist: number
   /** Excluded because fit_score is below the cron floor. */
   belowFitFloor: number
@@ -46,7 +47,7 @@ export async function tailoredExclusions(minFit: number): Promise<TailoredExclus
     select
       count(*)::int as tailored_total,
       count(*) filter (
-        where url is null or (url not like '%greenhouse.io%' and url not like '%ashbyhq.com%')
+        where ats_type is null or ats_type <> all(${SUBMITTABLE_ATS_ARR})
       )::int as blocked_by_url,
       count(*) filter (where coalesce(fit_score, 0) < ${minFit})::int as below_fit,
       count(*) filter (
@@ -57,7 +58,7 @@ export async function tailoredExclusions(minFit: number): Promise<TailoredExclus
       )::int as no_package,
       count(*) filter (
         where url is not null
-          and (url like '%greenhouse.io%' or url like '%ashbyhq.com%')
+          and ats_type = any(${SUBMITTABLE_ATS_ARR})
           and coalesce(fit_score, 0) >= ${minFit}
           and exists (
             select 1 from application_packages p
