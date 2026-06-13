@@ -1,11 +1,15 @@
 /**
  * The engine's fit-score policy, in ONE place.
  *
- * Every threshold the engine acts on lives here so the matcher, the apply cron,
- * the router, the score-band labels, and the eval can never silently disagree.
- * Before this module, `75` / `70` / `60` were re-typed as literals across five
- * files — the eval graded agreement at a cutoff (60) the engine never used, so
- * "80% agreement" measured the wrong exam.
+ * Every threshold the engine ROUTES on lives here so the matcher, the apply
+ * cron, the router, the score-band labels, and the eval can never silently
+ * disagree. Before this module, `75` / `70` / `60` were re-typed as literals
+ * across files — the eval graded agreement at a cutoff (60) the engine never
+ * used, so "80% agreement" measured the wrong exam.
+ *
+ * AUTO_FIT / TAILOR_FLOOR / FLAG_FLOOR are routing edges the engine acts on.
+ * LOOK_FLOOR is display-only — it splits the flag band into two labels but
+ * changes no behavior (decideRoute knows only tailor / flag / discard).
  *
  * If Matthew's policy changes, change it HERE and everything follows.
  */

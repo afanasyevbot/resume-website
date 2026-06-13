@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { sql } from '@/lib/engine/db'
 import { runFeedbackEval, type FeedbackEvalRow } from '@/lib/engine/eval/runFeedbackEval'
+import { AUTO_FIT } from '@/lib/engine/thresholds'
 
 export const dynamic = 'force-dynamic'
 
@@ -44,7 +45,10 @@ async function loadEvalData() {
     const rating = Number(r.rating)
     if (rating !== 1 && rating !== -1) continue
     const fitScore = Number(r.fit_score)
-    const matcherSaidYes = fitScore >= 60
+    // Must match the report's bar (AUTO_FIT) — the per-role table and the
+    // report-level breakdown grade the SAME decision, so a role can't read as
+    // "agreed" in the table and "miss" in the headline.
+    const matcherSaidYes = fitScore >= AUTO_FIT
     const humanSaidYes = rating === 1
     evalRows.push({ matcherScore: fitScore, rating: rating as 1 | -1 })
     items.push({
