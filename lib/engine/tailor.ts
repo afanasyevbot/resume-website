@@ -111,7 +111,8 @@ async function callTailor(
     model: 'claude-sonnet-4-6',
     inputTokens: usage?.input_tokens ?? 0,
     outputTokens: usage?.output_tokens ?? 0,
-    cachedTokens: (usage as { cache_read_input_tokens?: number })?.cache_read_input_tokens ?? 0,
+    cacheReadTokens: (usage as { cache_read_input_tokens?: number })?.cache_read_input_tokens ?? 0,
+    cacheCreationTokens: (usage as { cache_creation_input_tokens?: number })?.cache_creation_input_tokens ?? 0,
   })
 
   const raw = response.content[0]?.type === 'text' ? response.content[0].text : ''
