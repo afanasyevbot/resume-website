@@ -7,6 +7,7 @@ import EngineHeader from '@/components/engine/EngineHeader'
 import DecisionDeck from '@/components/engine/DecisionDeck'
 import PipelineStrip from '@/components/engine/PipelineStrip'
 import AgentWire from '@/components/engine/AgentWire'
+import HealthLine from '@/components/engine/HealthLine'
 
 export const dynamic = 'force-dynamic'
 
@@ -18,12 +19,12 @@ export const dynamic = 'force-dynamic'
  */
 export default async function EngineDashboard() {
   const [data, digest] = await Promise.all([loadDashboard(), recordVisitAndGetDigest()])
-  const { counts, queue, activity, reminders } = data
+  const { counts, queue, activity, reminders, health } = data
   const deck = buildDeck(queue, reminders)
 
   const stats = await briefStatsSince(digest.since, deck.length)
   stats.sinceLabel = digest.sinceLabel
-  const brief = composeBrief(stats)
+  const brief = composeBrief(stats, health)
 
   return (
     <main
@@ -40,6 +41,11 @@ export default async function EngineDashboard() {
           </p>
         }
       />
+
+      {/* Cron heartbeat — always visible so a dead job can't hide. */}
+      <div className="mt-6">
+        <HealthLine health={health} />
+      </div>
 
       <div className="my-8" style={{ borderTop: '1px solid #e2e6ec' }} />
 

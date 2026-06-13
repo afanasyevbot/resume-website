@@ -1,5 +1,6 @@
 import { sql } from './db'
 import { listDueReminders, type Reminder } from './reminders'
+import { loadCronHealth, type EngineHealth } from './health'
 
 export interface KpiCounts {
   sourced: number
@@ -57,6 +58,8 @@ export interface DashboardData {
   queue: RoleRow[]
   activity: ActivityEvent[]
   reminders: Reminder[]
+  /** Cron heartbeat — is each scheduled job still running? */
+  health: EngineHealth
 }
 
 export async function getCounts(): Promise<KpiCounts> {
@@ -171,14 +174,15 @@ export async function listActivity(limit = 20): Promise<ActivityEvent[]> {
 }
 
 export async function loadDashboard(): Promise<DashboardData> {
-  const [counts, deltas, queue, activity, reminders] = await Promise.all([
+  const [counts, deltas, queue, activity, reminders, health] = await Promise.all([
     getCounts(),
     getDeltas(),
     listQueue(),
     listActivity(),
     listDueReminders(),
+    loadCronHealth(),
   ])
-  return { counts, deltas, queue, activity, reminders }
+  return { counts, deltas, queue, activity, reminders, health }
 }
 
 /** Compact "2m / 3h / 1d / Jun 4" relative time. PURE — testable. */
