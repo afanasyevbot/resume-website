@@ -8,6 +8,7 @@ import type { TailorInput } from './tailorTypes'
 import { extractJsonObject } from './jsonExtract'
 import { hasBudget, logUsage } from './costGuard'
 import { TAILOR_FLOOR } from './thresholds'
+import { passesTitleGate } from './titleGate'
 
 /**
  * Web Research Sourcing Agent
@@ -91,10 +92,8 @@ async function getKnownUrls(): Promise<Set<string>> {
   return set
 }
 
-// ── Title gate (same as ATS sourcing) ────────────────────────────────
-
-const RELEVANT_TITLE_RE =
-  /\b(account executive|\bAE\b|account manager|\bAM\b|mid[-\s]?market|strategic|enterprise|sales|GTM|go[-\s]?to[-\s]?market|founding sales|business development|\bBDR\b|\bSDR\b|revenue)\b/i
+// Title gate is the shared passesTitleGate() from ./titleGate — same allow +
+// block lists as ATS sourcing (no more BDR/SDR drift).
 
 // ── Types ────────────────────────────────────────────────────────────
 
@@ -167,7 +166,7 @@ export async function processWebResults(
     newUrls++
 
     // Title gate
-    if (!RELEVANT_TITLE_RE.test(result.title)) continue
+    if (!passesTitleGate(result.title)) continue
     relevant++
 
     // Get extracted JD text
