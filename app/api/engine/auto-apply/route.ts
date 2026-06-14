@@ -1,8 +1,11 @@
+import Anthropic from '@anthropic-ai/sdk'
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { sql } from '@/lib/engine/db'
 import type { TailoredPackage } from '@/lib/engine/tailorTypes'
 import { hasBudget } from '@/lib/engine/costGuard'
+import { anthropicKey } from '@/lib/env'
+import { retailorStranded } from '@/lib/engine/reconcileTailor'
 import { notifySlack, buildAutoApplyRecap } from '@/lib/engine/notify'
 import { submitAndPersist } from '@/lib/engine/submitRole'
 import { buildAutoApplyRunDetail, recordAutoApplyRun, tailoredExclusions, runAllFailed, shouldHoldForApproval } from '@/lib/engine/autoApplyAudit'
@@ -380,6 +383,14 @@ export async function GET(req: Request) {
     if (!dryRun) {
       const rerouted = await routeUnsubmittableToReview()
       if (rerouted > 0) console.log(`cron auto-apply: routed ${rerouted} no-submitter role(s) to manual review`)
+
+      // Recover high-value roles stranded at 'scored' (tailoring failed during
+      // sourcing). Re-tailoring here flips them to 'tailored' in time for THIS
+      // run's apply selection, so a transient blip doesn't cost a full cycle.
+      const recovered = await retailorStranded(new Anthropic({ apiKey: anthropicKey() }))
+      if (recovered.retailored > 0 || recovered.failed > 0) {
+        console.log(`cron auto-apply: re-tailored ${recovered.retailored} stranded role(s), ${recovered.failed} still failing`)
+      }
     }
 
     // Count ALL confirmed applies today (any method), not just cron ones — so
