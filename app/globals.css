@@ -150,55 +150,126 @@ input:focus-visible {
   background-color: rgba(34, 29, 20, 0.40);
 }
 
-/* ── Engine: "Day Light" — clean white workspace ───────────────────────
-   Light, airy canvas. Dark text ramp. Muted signal colors that read well
-   on white. Components reading var(--color-*) and var(--font-*) reskin
-   automatically — the public site stays untouched.
+/* ── Engine: "Atelier" — a warm, editorial command center ──────────────
+   Warm off-white canvas, charcoal text ramp, a single confident amber accent,
+   and soft depth. Fraunces (serif) for headings + figures; Archivo (sans) for
+   body. Components reading var(--color-*) / var(--font-*) reskin automatically;
+   the public site stays untouched.
 */
 .engine-ops {
-  --color-bg: #f8f9fb;
+  --color-bg: #faf8f5;
   --color-surface: #ffffff;
-  --color-surface-deep: #f1f3f6;
-  --color-border: #e2e6ec;
-  --color-border-inner: #eaecf0;
+  --color-surface-deep: #f5f1ea;
+  --color-border: #ece6dc;
+  --color-border-inner: #f2ede4;
   --color-gold: #b45309;
-  --color-gold-dim: rgba(180, 83, 9, 0.10);
-  --color-text-bright: #0f1117;
-  --color-text-primary: #1e2430;
-  --color-text-secondary: #3d4a5c;
-  --color-text-muted: #5a6a7e;
-  --color-text-dim: #7a8898;
-  --color-text-faint: #9aaab8;
-  --color-text-ghost: #bec9d4;
-  --color-text-whisper: #d8e0e8;
-  --font-display: var(--font-plex-mono), monospace;
+  --color-gold-dim: rgba(180, 83, 9, 0.09);
+  --color-text-bright: #1c1a17;
+  --color-text-primary: #2e2a24;
+  --color-text-secondary: #5b544a;
+  --color-text-muted: #847b6d;
+  --color-text-dim: #a0978a;
+  --color-text-faint: #b8af9f;
+  --color-text-ghost: #d3cabb;
+  --color-text-whisper: #ebe5da;
+  --font-display: var(--font-fraunces), Georgia, serif;
   --font-sans: var(--font-archivo), sans-serif;
+
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
 }
 
-/* Card panels: white with a clean shadow. */
+/* Card panels: white, soft warm depth, hairline warm border. */
 .engine-ops .vellum {
-  background: #ffffff;
+  background: var(--color-surface);
+  border-radius: 16px;
   box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.06),
-    0 4px 16px rgba(0, 0, 0, 0.06);
+    0 1px 2px rgba(60, 50, 35, 0.04),
+    0 8px 28px -12px rgba(60, 50, 35, 0.12);
 }
 
-/* Inputs inside panels: light fields. */
+/* Inputs inside panels: warm light fields. */
 .engine-ops .vellum input,
 .engine-ops .vellum textarea,
 .engine-ops .vellum select {
-  background-color: #f8f9fb !important;
-  border-color: #e2e6ec !important;
-  color: #1e2430 !important;
+  background-color: #faf8f5 !important;
+  border-color: #ece6dc !important;
+  color: #2e2a24 !important;
 }
 .engine-ops .vellum input::placeholder,
 .engine-ops .vellum textarea::placeholder {
-  color: #9aaab8 !important;
+  color: #b8af9f !important;
 }
 .engine-ops ::selection {
-  background: rgba(180, 83, 9, 0.12);
-  color: #0f1117;
+  background: rgba(180, 83, 9, 0.14);
+  color: #1c1a17;
 }
 .engine-ops .role-queue-row:hover {
-  background-color: rgba(226, 230, 236, 0.55);
+  background-color: rgba(245, 241, 234, 0.7);
 }
+
+/* ── Reusable engine UI primitives — replace the old mono/uppercase labels ── */
+
+/* Small section eyebrow: calm, lowercase-friendly, gentle tracking (NOT the old
+   wide-tracked uppercase mono). */
+.engine-ops .eng-eyebrow {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+}
+
+/* Display heading — Fraunces serif. */
+.engine-ops .eng-display {
+  font-family: var(--font-display);
+  color: var(--color-text-bright);
+  letter-spacing: -0.01em;
+  font-weight: 500;
+}
+
+/* Tabular figures for stats (Archivo has good lining numerals). */
+.engine-ops .eng-figure {
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  letter-spacing: -0.02em;
+}
+
+/* Soft pill (status chips, counts). */
+.engine-ops .eng-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 5px 10px;
+}
+
+/* Primary / ghost buttons. */
+.engine-ops .eng-btn {
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  border-radius: 10px;
+  padding: 9px 18px;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.06s ease;
+  cursor: pointer;
+}
+.engine-ops .eng-btn:active { transform: translateY(0.5px); }
+.engine-ops .eng-btn-primary {
+  background: var(--color-gold);
+  color: #fff;
+  border: 1px solid var(--color-gold);
+}
+.engine-ops .eng-btn-primary:hover { background: #9a4708; border-color: #9a4708; }
+.engine-ops .eng-btn-ghost {
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+.engine-ops .eng-btn-ghost:hover { background: var(--color-surface-deep); }

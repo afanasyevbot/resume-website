@@ -78,7 +78,7 @@ function DataRow({ label, value }: { label: string; value: React.ReactNode }) {
           color: 'var(--color-text-ghost)',
           fontFamily: 'var(--font-sans)',
           fontSize: 10,
-          letterSpacing: '0.10em',
+          letterSpacing: '0.04em',
         }}
       >
         {label}

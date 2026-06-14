@@ -96,7 +96,7 @@ export default function AgentTrail(props: AgentTrailProps) {
                     ? 'var(--color-text-secondary)'
                     : 'var(--color-text-ghost)',
                   fontFamily: 'var(--font-sans)',
-                  letterSpacing: '0.10em',
+                  letterSpacing: '0.04em',
                 }}
               >
                 {step.label}

@@ -20,25 +20,13 @@ export default async function RolesPage() {
       style={{ fontFamily: 'var(--font-sans)' }}
     >
       <div className="flex items-baseline justify-between mb-8">
-        <h1
-          className="text-[22px] font-semibold uppercase"
-          style={{
-            fontFamily: 'var(--font-display)',
-            color: 'var(--color-text-bright)',
-            letterSpacing: '0.12em',
-          }}
-        >
+        <h1 className="eng-display" style={{ fontSize: 30 }}>
           All roles
         </h1>
         <Link
           href="/engine"
-          className="text-[12px] uppercase"
-          style={{
-            color: 'var(--color-text-muted)',
-            fontFamily: 'var(--font-display)',
-            letterSpacing: '0.18em',
-            textDecoration: 'none',
-          }}
+          className="text-[13px]"
+          style={{ color: 'var(--color-text-muted)', fontFamily: 'var(--font-sans)', textDecoration: 'none' }}
         >
           ← Back to the brief
         </Link>

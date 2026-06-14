@@ -91,7 +91,7 @@ function StatBox({
         className="text-[10px] uppercase mb-1"
         style={{
           fontFamily: 'var(--font-display)',
-          letterSpacing: '0.16em',
+          letterSpacing: '0.04em',
           color: 'var(--color-text-secondary)',
         }}
       >
@@ -118,7 +118,7 @@ function StatBox({
 export default async function EvalPage() {
   const { report, items } = await loadEvalData()
 
-  const label = { fontFamily: 'var(--font-display)', letterSpacing: '0.14em' } as const
+  const label = { fontFamily: 'var(--font-display)', letterSpacing: '0.04em' } as const
   const pct = (n: number, d: number) => (d === 0 ? '—' : `${Math.round((n / d) * 100)}%`)
 
   return (
@@ -137,10 +137,7 @@ export default async function EvalPage() {
           </Link>{' '}
           / Eval
         </p>
-        <h1
-          className="text-[22px] font-semibold"
-          style={{ color: 'var(--color-text-bright)', fontFamily: 'var(--font-sans)' }}
-        >
+        <h1 className="eng-display" style={{ fontSize: 30 }}>
           Matcher calibration
         </h1>
         <p

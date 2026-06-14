@@ -96,7 +96,7 @@ export default function RoleDetailHeader({ role }: RoleDetailHeaderProps) {
         style={{
           fontFamily: 'var(--font-sans)',
           color: 'var(--color-text-faint)',
-          letterSpacing: '0.10em',
+          letterSpacing: '0.04em',
           textTransform: 'uppercase',
           textDecoration: 'none',
         }}
@@ -133,7 +133,7 @@ export default function RoleDetailHeader({ role }: RoleDetailHeaderProps) {
             style={{
               fontFamily: 'var(--font-sans)',
               color: 'var(--color-text-faint)',
-              letterSpacing: '0.14em',
+              letterSpacing: '0.04em',
             }}
           >
             {role.company}

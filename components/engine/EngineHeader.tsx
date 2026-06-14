@@ -31,88 +31,63 @@ export default function EngineHeader({ digestSlot }: EngineHeaderProps) {
   }
 
   return (
-    <header className="flex items-start justify-between gap-4">
-      {/* Left: greeting + title */}
-      <div>
-        <p
-          className="text-[11px] uppercase mb-3"
-          style={{
-            fontFamily: 'var(--font-display)',
-            color: 'var(--color-gold)',
-            letterSpacing: '0.3em',
-          }}
-        >
-          ▸ {greeting}, Matthew
-        </p>
-        <h1
-          className="text-[34px] lg:text-[42px] font-semibold leading-none uppercase"
-          style={{
-            fontFamily: 'var(--font-display)',
-            color: 'var(--color-text-bright)',
-            letterSpacing: '0.12em',
-          }}
-        >
-          Job&nbsp;Engine
-        </h1>
-        {digestSlot}
-        <div
-          className="flex items-center gap-2 mt-3"
-          style={{
-            color: 'var(--color-text-faint)',
-            fontSize: 12,
-            fontFamily: 'var(--font-display)',
-            letterSpacing: '0.06em',
-          }}
-        >
-          {/* Pulse dot */}
+    <header>
+      {/* Top row: wordmark + nav */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
           <span
-            className="inline-block w-2 h-2 rounded-full animate-pulse"
-            style={{ backgroundColor: '#16a34a', boxShadow: '0 0 6px rgba(22,163,74,0.4)' }}
-            aria-hidden="true"
-          />
-          <span>SYSTEM LIVE · sourcing 08:00 · auto-apply 09:00</span>
+            aria-hidden
+            className="inline-flex items-center justify-center rounded-lg"
+            style={{ width: 26, height: 26, background: 'var(--color-gold)', color: '#fff', fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600 }}
+          >
+            j
+          </span>
+          <span style={{ fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 500, color: 'var(--color-text-primary)', letterSpacing: '-0.01em' }}>
+            Job Engine
+          </span>
         </div>
+        <nav className="flex items-center gap-1">
+          <NavLink href="/engine" label="Overview" exact />
+          <NavLink href="/engine/roles" label="Roles" />
+          <NavLink href="/engine/eval" label="Eval" />
+          <button
+            onClick={handleSignOut}
+            className="ml-1 rounded-lg px-3 py-1.5 text-[13px] transition-colors"
+            style={{ fontFamily: 'var(--font-sans)', color: 'var(--color-text-muted)' }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-text-primary)' }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text-muted)' }}
+          >
+            Sign out
+          </button>
+        </nav>
       </div>
 
-      {/* Right: nav + sign out */}
-      <div className="flex items-center gap-4 mt-1">
-        <NavLink href="/engine/roles" label="Roles" />
-        <NavLink href="/engine/eval" label="Eval" />
-        <button
-          onClick={handleSignOut}
-        className="mt-1 text-xs font-medium transition-colors"
-        style={{
-          fontFamily: 'var(--font-sans)',
-          color: 'var(--color-text-faint)',
-          letterSpacing: '0.08em',
-          textTransform: 'uppercase',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.color = 'var(--color-text-muted)'
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.color = 'var(--color-text-faint)'
-        }}
-      >
-        Sign out
-      </button>
+      {/* Greeting */}
+      <div className="mt-10">
+        <h1
+          className="eng-display"
+          style={{ fontSize: 40, lineHeight: 1.05 }}
+        >
+          {greeting}, Matthew.
+        </h1>
+        {digestSlot}
       </div>
     </header>
   )
 }
 
-function NavLink({ href, label }: { href: string; label: string }) {
+function NavLink({ href, label, exact }: { href: string; label: string; exact?: boolean }) {
   const pathname = usePathname()
-  const active = pathname === href || pathname.startsWith(href + '/')
+  const active = exact ? pathname === href : pathname === href || pathname.startsWith(href + '/')
   return (
     <Link
       href={href}
-      className="text-xs font-medium transition-colors"
+      className="rounded-lg px-3 py-1.5 text-[13px] transition-colors"
       style={{
         fontFamily: 'var(--font-sans)',
-        color: active ? 'var(--color-text-primary)' : 'var(--color-text-faint)',
-        letterSpacing: '0.08em',
-        textTransform: 'uppercase',
+        fontWeight: active ? 600 : 400,
+        color: active ? 'var(--color-text-bright)' : 'var(--color-text-muted)',
+        background: active ? 'var(--color-surface-deep)' : 'transparent',
         textDecoration: 'none',
       }}
     >
