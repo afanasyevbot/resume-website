@@ -23,6 +23,7 @@ const KINDS: Record<string, { label: string; color: string }> = {
   source_run: { label: 'Sourcing run', color: '#2563eb' },
   research_run: { label: 'Research run', color: '#2563eb' },
   auto_apply_run: { label: 'Auto-apply run', color: '#2563eb' },
+  slug_healed: { label: 'Board auto-healed', color: '#16a34a' },
 }
 
 function failedBoards(e: ActivityEvent): string[] {

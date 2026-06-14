@@ -8,6 +8,7 @@ import type { AtsListing, TargetCompany } from './ats/types'
 import * as greenhouse from './ats/greenhouse'
 import * as ashby from './ats/ashby'
 import { passesTitleGate } from './titleGate'
+import { probeAtsForSlug } from './ats/probe'
 
 export interface SourcingReport {
   /** Per-company stats. */
@@ -225,9 +226,25 @@ export async function runSourcing(
       const listings = await fetchListings(company)
       fetched.push({ company, listings })
     } catch (err) {
-      statByName.get(company.name)!.errors.push(
-        `fetch failed: ${err instanceof Error ? err.message : String(err)}`,
-      )
+      const msg = err instanceof Error ? err.message : String(err)
+      // Auto-heal: the dominant fetch failure is a company that migrated ATS but
+      // kept its slug. Probe the OTHER hosts; if one serves the slug, repoint the
+      // DB (logged) and re-fetch from the correct host THIS run — so a migration
+      // self-corrects instead of silently starving the funnel (the incident that
+      // took out 60% of boards before migration 0012).
+      const healedAts = await probeAtsForSlug(company.slug, company.ats).catch(() => null)
+      if (healedAts) {
+        await sql`update target_companies set ats = ${healedAts} where name = ${company.name}`.catch(() => {})
+        await sql`insert into events (kind, detail) values ('slug_healed', ${JSON.stringify({ company: company.name, from: company.ats, to: healedAts, slug: company.slug })}::jsonb)`.catch(() => {})
+        try {
+          const healed: TargetCompany = { ...company, ats: healedAts }
+          fetched.push({ company: healed, listings: await fetchListings(healed) })
+          continue // recovered — don't count this as an error
+        } catch {
+          // healed host also failed — fall through to record the original error
+        }
+      }
+      statByName.get(company.name)!.errors.push(`fetch failed: ${msg}`)
       totalErrors += 1
     }
   }
