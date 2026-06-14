@@ -129,9 +129,12 @@ export async function GET(req: Request) {
   // crashing cron keeps the last SUCCESS row and looks healthy for up to 30h.
   try {
     // Broad daily sweep + dynamic lookalike queries. Sized to stay in 300s.
+    // Widened from 4→6 queries and 8→15 scores to source more of the open web
+    // (Matthew wants volume). Safe to widen now that spend is accurately tracked
+    // and the monthly cap fails closed.
     const signals = await gatherFitSignals()
-    const dynamic = await lookalikeQueries(client, signals, 2)
-    const queries = [...queriesForToday(4), ...dynamic]
+    const dynamic = await lookalikeQueries(client, signals, 3)
+    const queries = [...queriesForToday(6), ...dynamic]
     const allResults: WebSearchResult[] = []
 
     for (const q of queries) {
@@ -140,9 +143,9 @@ export async function GET(req: Request) {
     }
 
     const uniqueUrls = [...new Set(allResults.map((r) => r.url))]
-    const extracted = await tavilyExtract(uniqueUrls.slice(0, 20))
+    const extracted = await tavilyExtract(uniqueUrls.slice(0, 30))
 
-    const report = await processWebResults(client, allResults, extracted, { maxScores: 8, autoTailor: true, lookalikeCount: dynamic.length })
+    const report = await processWebResults(client, allResults, extracted, { maxScores: 15, autoTailor: true, lookalikeCount: dynamic.length })
     report.queriesRun = queries.length
 
     await recordResearchRun({
