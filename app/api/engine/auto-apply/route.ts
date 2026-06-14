@@ -234,18 +234,8 @@ const CRON_MIN_FIT = TAILOR_FLOOR
 
 /** How many roles were auto-applied (method=auto, i.e. by the cron — NOT the
  *  manual button) since midnight UTC today. */
-async function autoAppliedToday(): Promise<number> {
-  const rows = await sql`
-    select count(*)::int as n from events
-    where kind = 'applied'
-      and detail->>'method' = 'auto'
-      and created_at >= date_trunc('day', now())
-  `
-  return Number((rows as Array<{ n: number }>)[0]?.n ?? 0)
-}
-
 /** ALL confirmed submissions today, any method — backs the global daily cap so
- *  a runaway manual loop can't spray applications past it either. */
+ *  no path (cron, approval, or manual) can spray applications past it. */
 async function appliedTodayAnyMethod(): Promise<number> {
   const rows = await sql`
     select count(*)::int as n from events
@@ -317,14 +307,26 @@ export async function POST(req: Request) {
   if (remaining === 0 && !(body.dryRun ?? false)) {
     return NextResponse.json({ error: `Daily submission cap reached (${todayTotal}/${DAILY_CAP}).` }, { status: 429 })
   }
-  const report = await runAutoApply({
-    roleIds: body.roleIds,
-    maxApply: Math.min(body.maxApply ?? 5, remaining || 1),
-    dryRun: body.dryRun ?? false,
-    minFit: 0,
-    method: 'manual',
-  })
-  return NextResponse.json(report)
+
+  // Share the cron's lease lock so a manual run and the daily cron can't submit
+  // the same role at once (a double-application window). Dry runs don't submit,
+  // so they skip the lock.
+  const live = !(body.dryRun ?? false)
+  if (live && !(await claimCronLock('auto_apply'))) {
+    return NextResponse.json({ error: 'An apply run is already in progress — try again in a moment.' }, { status: 409 })
+  }
+  try {
+    const report = await runAutoApply({
+      roleIds: body.roleIds,
+      maxApply: Math.min(body.maxApply ?? 5, remaining || 1),
+      dryRun: body.dryRun ?? false,
+      minFit: 0,
+      method: 'manual',
+    })
+    return NextResponse.json(report)
+  } finally {
+    if (live) await releaseCronLock('auto_apply')
+  }
 }
 
 /** Leave a fresh, non-errored heartbeat when the cron ran but was GATED (spend
@@ -380,7 +382,10 @@ export async function GET(req: Request) {
       if (rerouted > 0) console.log(`cron auto-apply: routed ${rerouted} no-submitter role(s) to manual review`)
     }
 
-    const alreadyToday = await autoAppliedToday()
+    // Count ALL confirmed applies today (any method), not just cron ones — so
+    // approval/manual submissions also decrement the cron's budget. Otherwise
+    // the "≤ DAILY_CAP submissions/day" safety guarantee was false.
+    const alreadyToday = await appliedTodayAnyMethod()
     const remaining = Math.max(0, DAILY_CAP - alreadyToday)
     if (remaining === 0) {
       const detail = buildAutoApplyRunDetail(
