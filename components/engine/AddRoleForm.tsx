@@ -27,7 +27,7 @@ const INPUT_STYLE: React.CSSProperties = {
 const LABEL_STYLE: React.CSSProperties = {
   display: 'block',
   fontSize: 11,
-  letterSpacing: '0.12em',
+  letterSpacing: '0.04em',
   textTransform: 'uppercase',
   color: 'var(--color-text-faint)',
   fontFamily: 'var(--font-sans)',

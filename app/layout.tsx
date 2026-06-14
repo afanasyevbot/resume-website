@@ -1,7 +1,16 @@
 import type { Metadata } from 'next'
-import { Cormorant_Garamond, Inter, Archivo, IBM_Plex_Mono } from 'next/font/google'
+import { Cormorant_Garamond, Inter, Archivo, Fraunces } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
+
+// Engine display face — a warm, characterful serif for headings + figures.
+// Replaces the old monospace "terminal" display font.
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-fraunces',
+  display: 'swap',
+})
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
@@ -25,13 +34,6 @@ const archivo = Archivo({
   display: 'swap',
 })
 
-const plexMono = IBM_Plex_Mono({
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
-  variable: '--font-plex-mono',
-  display: 'swap',
-})
-
 export const metadata: Metadata = {
   metadataBase: new URL('https://matthew-afanasiev.vercel.app'),
   title: 'Matthew Afanasiev',
@@ -46,7 +48,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${inter.variable} ${archivo.variable} ${plexMono.variable} antialiased`}>
+    <html lang="en" className={`${cormorant.variable} ${inter.variable} ${archivo.variable} ${fraunces.variable} antialiased`}>
       <body>
         {/* Fixed gradient background */}
         <div

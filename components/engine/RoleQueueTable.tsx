@@ -61,8 +61,8 @@ export default function RoleQueueTable({
         style={{ borderBottom: '1px dashed rgba(138,109,59,0.18)' }}
       >
         <p
-          className="text-[11px] font-medium uppercase tracking-widest"
-          style={{ color: 'var(--color-text-faint)', fontFamily: 'var(--font-sans)', letterSpacing: '0.14em' }}
+          className="text-[11px] font-medium uppercase"
+          style={{ color: 'var(--color-text-faint)', fontFamily: 'var(--font-sans)', letterSpacing: '0.04em' }}
         >
           Role Queue
         </p>
@@ -82,7 +82,7 @@ export default function RoleQueueTable({
               padding: '4px 10px',
               borderRadius: 4,
               cursor: 'pointer',
-              letterSpacing: '0.10em',
+              letterSpacing: '0.04em',
               textTransform: 'uppercase',
             }}
             aria-expanded={addOpen}

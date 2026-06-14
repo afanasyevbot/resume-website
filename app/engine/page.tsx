@@ -34,8 +34,8 @@ export default async function EngineDashboard() {
       <EngineHeader
         digestSlot={
           <p
-            className="mt-5 text-[17px] leading-relaxed max-w-[640px]"
-            style={{ color: 'var(--color-text-primary)', fontFamily: 'var(--font-sans)' }}
+            className="mt-4 text-[17px] leading-relaxed max-w-[600px]"
+            style={{ color: 'var(--color-text-secondary)', fontFamily: 'var(--font-sans)' }}
           >
             {brief}
           </p>
@@ -47,36 +47,30 @@ export default async function EngineDashboard() {
         <HealthLine health={health} />
       </div>
 
-      <div className="my-8" style={{ borderTop: '1px solid #e2e6ec' }} />
-
       {/* The decisions only Matthew can make — one at a time. */}
-      <DecisionDeck items={deck} />
+      <div className="mt-10">
+        <DecisionDeck items={deck} />
+      </div>
 
-      {/* Pipeline in one line. */}
-      <div className="mt-10 mb-10">
+      {/* Pipeline at a glance. */}
+      <div className="mt-12">
+        <p className="eng-eyebrow mb-3">Pipeline</p>
         <PipelineStrip counts={counts} rows={queue} />
       </div>
 
-      {/* Everything the agent did, timestamped. */}
-      <div
-        className="vellum rounded-lg px-6 py-5"
-        style={{ border: '1px solid var(--color-border)' }}
-      >
+      {/* Everything the agent did. */}
+      <div className="vellum mt-6 px-7 py-6">
         <AgentWire events={activity} />
       </div>
 
       <div className="mt-8 text-center">
         <Link
           href="/engine/roles"
-          className="text-[12px] uppercase"
-          style={{
-            color: 'var(--color-text-muted)',
-            fontFamily: 'var(--font-display)',
-            letterSpacing: '0.18em',
-            textDecoration: 'none',
-          }}
+          className="text-[13px] inline-flex items-center gap-1.5 transition-colors"
+          style={{ color: 'var(--color-text-muted)', fontFamily: 'var(--font-sans)', textDecoration: 'none' }}
         >
-          Browse all roles →
+          Browse all roles
+          <span aria-hidden>→</span>
         </Link>
       </div>
     </main>

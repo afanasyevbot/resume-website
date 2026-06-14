@@ -182,36 +182,35 @@ export default function DecisionDeck({ items }: DecisionDeckProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [current, busy])
 
-  const label = { fontFamily: 'var(--font-display)', letterSpacing: '0.18em' } as const
+  const label = { fontFamily: 'var(--font-sans)', fontWeight: 600, letterSpacing: '0.03em' } as const
 
   if (!current) {
     return (
-      <div
-        className="vellum rounded-xl px-8 py-10 text-center"
-        style={{ border: '1px solid var(--color-border)' }}
-      >
-        <p className="text-[13px] uppercase mb-2" style={{ ...label, color: '#16a34a' }}>
-          ✓ Deck clear
-        </p>
-        <p className="text-[15px]" style={{ color: 'var(--color-text-secondary)', fontFamily: 'var(--font-sans)' }}>
-          {note || 'Nothing needs you. The engine keeps working — come back after the next run.'}
+      <div className="vellum px-8 py-12 text-center">
+        <div
+          aria-hidden
+          className="mx-auto mb-4 flex items-center justify-center rounded-full"
+          style={{ width: 44, height: 44, background: 'rgba(22,163,74,0.10)', color: '#16a34a', fontSize: 20 }}
+        >
+          ✓
+        </div>
+        <p className="eng-display text-[20px] mb-1">You&apos;re all caught up</p>
+        <p className="text-[14px]" style={{ color: 'var(--color-text-secondary)', fontFamily: 'var(--font-sans)' }}>
+          {note || 'Nothing needs you. The engine keeps working — check back after the next run.'}
         </p>
       </div>
     )
   }
 
   return (
-    <div
-      className="vellum rounded-xl px-8 py-8 text-center"
-      style={{ border: '1px solid rgba(180,83,9,0.30)' }}
-    >
-      <p className="text-[11px] uppercase mb-4" style={{ ...label, color: '#b45309' }}>
+    <div className="vellum px-8 py-8 text-center" style={{ boxShadow: '0 1px 2px rgba(60,50,35,0.04), 0 12px 40px -14px rgba(180,83,9,0.28)' }}>
+      <p className="text-[12px] mb-5" style={{ ...label, color: 'var(--color-gold)' }}>
         Decision {position} of {items.length}
       </p>
 
       {current.type === 'approval' ? (
         <>
-          <p className="text-[26px] font-semibold mb-1" style={{ color: 'var(--color-text-bright)', fontFamily: 'var(--font-sans)' }}>
+          <p className="eng-display text-[27px] mb-1" style={{ lineHeight: 1.1 }}>
             {current.company}
           </p>
           <p className="text-[14px] mb-5" style={{ color: 'var(--color-text-secondary)', fontFamily: 'var(--font-sans)' }}>
@@ -234,7 +233,7 @@ export default function DecisionDeck({ items }: DecisionDeckProps) {
             <button
               onClick={() => approve(current)}
               disabled={!!busy}
-              className="text-[13px] font-medium px-6 py-2.5 rounded"
+              className="text-[13px] font-medium px-6 py-2.5 rounded-lg"
               style={{
                 fontFamily: 'var(--font-sans)',
                 backgroundColor: 'rgba(22,163,74,0.08)',
@@ -248,7 +247,7 @@ export default function DecisionDeck({ items }: DecisionDeckProps) {
             <button
               onClick={() => pass(current)}
               disabled={!!busy}
-              className="text-[13px] font-medium px-5 py-2.5 rounded"
+              className="text-[13px] font-medium px-5 py-2.5 rounded-lg"
               style={{
                 fontFamily: 'var(--font-sans)',
                 backgroundColor: 'transparent',
@@ -261,7 +260,7 @@ export default function DecisionDeck({ items }: DecisionDeckProps) {
             </button>
             <Link
               href={`/engine/roles/${current.roleId}`}
-              className="text-[13px] font-medium px-5 py-2.5 rounded"
+              className="text-[13px] font-medium px-5 py-2.5 rounded-lg"
               style={{
                 fontFamily: 'var(--font-sans)',
                 color: 'var(--color-text-secondary)',
@@ -275,10 +274,10 @@ export default function DecisionDeck({ items }: DecisionDeckProps) {
         </>
       ) : current.type === 'manual' ? (
         <>
-          <p className="text-[11px] uppercase mb-1" style={{ ...label, color: '#2563eb', fontSize: 10 }}>
-            Engine couldn&apos;t auto-submit · apply manually
+          <p className="text-[11px] mb-1" style={{ ...label, color: '#2563eb' }}>
+            Apply manually — engine couldn&apos;t auto-submit
           </p>
-          <p className="text-[26px] font-semibold mb-1 mt-3" style={{ color: 'var(--color-text-bright)', fontFamily: 'var(--font-sans)' }}>
+          <p className="eng-display text-[27px] mb-1 mt-3" style={{ lineHeight: 1.1 }}>
             {current.company}
           </p>
           <p className="text-[14px] mb-5" style={{ color: 'var(--color-text-secondary)', fontFamily: 'var(--font-sans)' }}>
@@ -303,7 +302,7 @@ export default function DecisionDeck({ items }: DecisionDeckProps) {
             <button
               onClick={() => markApplied(current)}
               disabled={!!busy}
-              className="text-[13px] font-medium px-6 py-2.5 rounded"
+              className="text-[13px] font-medium px-6 py-2.5 rounded-lg"
               style={{
                 fontFamily: 'var(--font-sans)',
                 backgroundColor: 'rgba(37,99,235,0.08)',
@@ -317,7 +316,7 @@ export default function DecisionDeck({ items }: DecisionDeckProps) {
             <button
               onClick={() => passManual(current)}
               disabled={!!busy}
-              className="text-[13px] font-medium px-5 py-2.5 rounded"
+              className="text-[13px] font-medium px-5 py-2.5 rounded-lg"
               style={{
                 fontFamily: 'var(--font-sans)',
                 backgroundColor: 'transparent',
@@ -330,7 +329,7 @@ export default function DecisionDeck({ items }: DecisionDeckProps) {
             </button>
             <Link
               href={`/engine/roles/${current.roleId}`}
-              className="text-[13px] font-medium px-5 py-2.5 rounded"
+              className="text-[13px] font-medium px-5 py-2.5 rounded-lg"
               style={{
                 fontFamily: 'var(--font-sans)',
                 color: 'var(--color-text-secondary)',
@@ -344,7 +343,7 @@ export default function DecisionDeck({ items }: DecisionDeckProps) {
         </>
       ) : (
         <>
-          <p className="text-[26px] font-semibold mb-1" style={{ color: 'var(--color-text-bright)', fontFamily: 'var(--font-sans)' }}>
+          <p className="eng-display text-[27px] mb-1" style={{ lineHeight: 1.1 }}>
             {current.reminder.company ?? 'Follow up'}
           </p>
           <p className="text-[14px] mb-5" style={{ color: 'var(--color-text-secondary)', fontFamily: 'var(--font-sans)' }}>
@@ -368,7 +367,7 @@ export default function DecisionDeck({ items }: DecisionDeckProps) {
             <button
               onClick={() => copyAndComplete(current)}
               disabled={!!busy}
-              className="text-[13px] font-medium px-6 py-2.5 rounded"
+              className="text-[13px] font-medium px-6 py-2.5 rounded-lg"
               style={{
                 fontFamily: 'var(--font-sans)',
                 backgroundColor: 'rgba(22,163,74,0.08)',
@@ -382,7 +381,7 @@ export default function DecisionDeck({ items }: DecisionDeckProps) {
             <button
               onClick={() => snooze(current)}
               disabled={!!busy}
-              className="text-[13px] font-medium px-5 py-2.5 rounded"
+              className="text-[13px] font-medium px-5 py-2.5 rounded-lg"
               style={{
                 fontFamily: 'var(--font-sans)',
                 backgroundColor: 'transparent',
@@ -402,10 +401,10 @@ export default function DecisionDeck({ items }: DecisionDeckProps) {
           {note}
         </p>
       )}
-      <p className="text-[11px] mt-4" style={{ color: 'var(--color-text-ghost)', fontFamily: 'var(--font-display)', letterSpacing: '0.06em' }}>
-        {current.type === 'approval' && 'enter = apply · esc = pass'}
-        {current.type === 'manual' && 'enter = open & apply · esc = pass'}
-        {current.type === 'followup' && 'enter = copy & done · esc = snooze'}
+      <p className="text-[11px] mt-5" style={{ color: 'var(--color-text-faint)', fontFamily: 'var(--font-sans)' }}>
+        {current.type === 'approval' && 'Enter to apply · Esc to pass'}
+        {current.type === 'manual' && 'Enter to open & apply · Esc to pass'}
+        {current.type === 'followup' && 'Enter to copy & mark done · Esc to snooze'}
       </p>
     </div>
   )

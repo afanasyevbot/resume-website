@@ -100,7 +100,7 @@ export default function SourceAction() {
         padding: '4px 10px',
         borderRadius: 4,
         cursor: 'pointer',
-        letterSpacing: '0.10em',
+        letterSpacing: '0.04em',
         textTransform: 'uppercase',
         transition: 'color 0.15s, border-color 0.15s',
       }}

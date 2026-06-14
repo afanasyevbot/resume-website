@@ -96,7 +96,7 @@ export default function ResearchAction() {
         padding: '4px 10px',
         borderRadius: 4,
         cursor: 'pointer',
-        letterSpacing: '0.10em',
+        letterSpacing: '0.04em',
         textTransform: 'uppercase',
       }}
       title="Search the open web for new AI sales roles matching your profile."

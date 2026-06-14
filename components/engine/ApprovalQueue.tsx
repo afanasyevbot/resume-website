@@ -22,8 +22,8 @@ export default function ApprovalQueue({ rows }: ApprovalQueueProps) {
     >
       <div className="px-5 py-3" style={{ borderBottom: '1px dashed rgba(240,180,41,0.2)' }}>
         <p
-          className="text-[11px] font-medium uppercase tracking-widest"
-          style={{ color: '#f0b429', fontFamily: 'var(--font-sans)', letterSpacing: '0.14em' }}
+          className="text-[11px] font-medium uppercase"
+          style={{ color: '#f0b429', fontFamily: 'var(--font-sans)', letterSpacing: '0.04em' }}
         >
           Needs your OK — {waiting.length} role{waiting.length === 1 ? '' : 's'} held for approval
         </p>

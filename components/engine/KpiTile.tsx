@@ -85,11 +85,11 @@ export default function KpiTile({
     >
       {/* Label */}
       <p
-        className="text-[11px] font-medium uppercase tracking-widest"
+        className="text-[11px] font-medium uppercase"
         style={{
           color: actionable ? 'var(--color-gold)' : 'var(--color-text-faint)',
           fontFamily: 'var(--font-sans)',
-          letterSpacing: '0.12em',
+          letterSpacing: '0.04em',
         }}
       >
         {label}

@@ -65,11 +65,11 @@ export default function TodayBar({
     >
       <div className="flex items-center flex-wrap gap-x-4 gap-y-2">
         <span
-          className="text-[11px] font-semibold uppercase tracking-widest"
+          className="text-[11px] font-semibold uppercase"
           style={{
             color: 'var(--color-text-faint)',
             fontFamily: 'var(--font-sans)',
-            letterSpacing: '0.16em',
+            letterSpacing: '0.04em',
           }}
         >
           Today

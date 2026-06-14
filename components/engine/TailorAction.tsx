@@ -134,11 +134,11 @@ export function TailorPackagePanel({
       {packageId !== null && (
         <div className="lg:col-span-2 flex items-center gap-3 flex-wrap">
           <span
-            className="text-[11px] uppercase tracking-widest"
+            className="text-[11px] uppercase"
             style={{
               color: 'var(--color-text-faint)',
               fontFamily: 'var(--font-sans)',
-              letterSpacing: '0.14em',
+              letterSpacing: '0.04em',
             }}
           >
             Download
@@ -171,11 +171,11 @@ export function TailorPackagePanel({
       {(pkg.notes?.length ?? 0) > 0 && (
         <div className="lg:col-span-2">
           <p
-            className="text-[11px] uppercase tracking-widest"
+            className="text-[11px] uppercase"
             style={{
               color: 'var(--color-text-faint)',
               fontFamily: 'var(--font-sans)',
-              letterSpacing: '0.14em',
+              letterSpacing: '0.04em',
             }}
           >
             Honest gaps
@@ -193,8 +193,8 @@ export function TailorPackagePanel({
       {(pkg.lintIssues?.length ?? 0) > 0 && (
         <div className="lg:col-span-2">
           <p
-            className="text-[11px] uppercase tracking-widest"
-            style={{ color: '#fca5a5', fontFamily: 'var(--font-sans)', letterSpacing: '0.14em' }}
+            className="text-[11px] uppercase"
+            style={{ color: '#fca5a5', fontFamily: 'var(--font-sans)', letterSpacing: '0.04em' }}
           >
             Lint issues still present
           </p>
@@ -223,11 +223,11 @@ function Artifact({ title, content }: { title: string; content: string }) {
     <div>
       <div className="flex items-center justify-between">
         <p
-          className="text-[11px] uppercase tracking-widest"
+          className="text-[11px] uppercase"
           style={{
             color: 'var(--color-text-faint)',
             fontFamily: 'var(--font-sans)',
-            letterSpacing: '0.14em',
+            letterSpacing: '0.04em',
           }}
         >
           {title}

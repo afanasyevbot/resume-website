@@ -28,11 +28,11 @@ function Panel({
         style={{ borderBottom: '1px dashed rgba(148,163,184,0.10)' }}
       >
         <p
-          className="text-[11px] font-medium uppercase tracking-widest"
+          className="text-[11px] font-medium uppercase"
           style={{
             color: 'var(--color-text-faint)',
             fontFamily: 'var(--font-sans)',
-            letterSpacing: '0.14em',
+            letterSpacing: '0.04em',
           }}
         >
           {title}
@@ -163,11 +163,11 @@ export default async function RoleDetailPage({
               style={{ borderBottom: '1px dashed rgba(148,163,184,0.10)' }}
             >
               <p
-                className="text-[11px] font-medium uppercase tracking-widest"
+                className="text-[11px] font-medium uppercase"
                 style={{
                   color: 'var(--color-text-faint)',
                   fontFamily: 'var(--font-sans)',
-                  letterSpacing: '0.14em',
+                  letterSpacing: '0.04em',
                 }}
               >
                 Application package
