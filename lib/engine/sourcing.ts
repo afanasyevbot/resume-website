@@ -313,8 +313,12 @@ export async function runSourcing(
           stat.tailored += 1
           totalTailored += 1
         } catch (tailorErr) {
-          // Tailoring failure is non-fatal — the scored role still exists.
-          stat.errors.push(`${l.title}: tailor failed: ${tailorErr instanceof Error ? tailorErr.message : String(tailorErr)}`)
+          // Tailoring failure is non-fatal — the scored role still exists and the
+          // auto-apply cron's reconcile pass will retry it. Record an event so the
+          // strand is visible (it used to die in an in-memory string only).
+          const msg = tailorErr instanceof Error ? tailorErr.message : String(tailorErr)
+          stat.errors.push(`${l.title}: tailor failed: ${msg}`)
+          await sql`insert into events (role_id, kind, detail) values (${persisted.id}, 'tailor_failed', ${JSON.stringify({ reason: msg })}::jsonb)`.catch(() => {})
         }
       }
     } catch (err) {
