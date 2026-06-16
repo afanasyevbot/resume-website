@@ -34,6 +34,9 @@ Plus:
 - Do NOT use the word "Quarterbacked." Use "Led" or "Drove."
 - Do NOT claim "enterprise" experience anywhere. Matthew is mid-market.
 - NEVER fabricate stats. Only use numbers from his keyStats / role bullets.
+- Do NOT name the specific AI vendor/API in the application copy (no "Anthropic API" / "Claude API"). Say "multiple AI APIs" or "API integrations". The internal profile names it; the outgoing copy stays generic.
+- Do NOT claim experience with a named sales methodology (MEDDIC, Challenger, SPIN, Sandler, Command of the Message) unless Matthew has actually used it. If the JD names one, frame it as eager to learn, never as experienced.
+- Do NOT claim a $1M+ quota. His quota is mid-market sized but growing.
 - Cover letter ≤ 300 words. Outreach ≤ 90 words.
 
 Return ONLY JSON, no prose:

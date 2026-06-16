@@ -33,6 +33,27 @@ const FORBIDDEN_PHRASES = [
     re: /\b(sold|sell|selling|closed|carried|managed|owned|worked)\s+(to|with|across|in)?\s*(the\s+)?enterprise\b/i,
     reason: 'Do not position Matthew as having sold to enterprise.',
   },
+  // Skill rule: never name the specific AI vendor/API in outgoing copy.
+  // Internal profile data may say "Anthropic API"; the application copy stays
+  // generic ("multiple AI APIs" / "API integrations").
+  {
+    re: /\b(anthropic|claude)\s+(api|agent\s*sdk|sdk)\b/i,
+    reason:
+      'Do not name the specific AI vendor/API in outgoing copy (no "Anthropic API" / "Claude API"). Say "multiple AI APIs" or "API integrations".',
+  },
+  // Skill rule: do not CLAIM experience with a named sales methodology Matthew
+  // has not used. Catches the claim shape ("experienced in MEDDIC"), not a
+  // neutral mention ("eager to learn MEDDIC").
+  {
+    re: /\b(experienced|proficient|expert|skilled|trained|certified|fluent|versed|\d+\+?\s*years?)\s+(in|with|using|at|on)?\s*(the\s+)?(meddic|meddpicc|challenger|sandler|command of the message|spin selling|gap selling|bant)\b/i,
+    reason:
+      'Do not claim experience with a named sales methodology Matthew has not used. Frame as eager to learn, or remove. (methodology rule)',
+  },
+  // Skill rule: do not claim a $1M+ quota — his quota is mid-market sized.
+  {
+    re: /(\$\s?1\s?m(illion)?\+?|million[\s-]?dollar|seven[\s-]?figure)\s*(quota|target|number|book of business)\b/i,
+    reason: "Do not claim a $1M+ quota. Matthew's quota is mid-market sized but growing.",
+  },
 ] as const
 
 const EM_DASH = /[—]/g
