@@ -1,5 +1,6 @@
 import type { MatchAssessment, RouteDecision } from './types'
 import { TAILOR_FLOOR, FLAG_FLOOR } from './thresholds'
+import { passesLocationGate } from './locationGate'
 
 export interface RouteThresholds {
   tailor: number // score >= this → tailor
@@ -14,16 +15,21 @@ export interface RouteThresholds {
 export const DEFAULT_THRESHOLDS: RouteThresholds = { tailor: TAILOR_FLOOR, flag: FLAG_FLOOR }
 
 /**
- * Deterministic routing. The LLM produces the judgment (score/segment);
+ * Deterministic routing. The LLM produces the judgment (score/segment/location);
  * this code makes the decision — never the model.
- * Enterprise-only roles are capped at 'flag' because Matthew is mid-market;
- * they never auto-route to 'tailor' regardless of score.
+ * - Off-target locations (onsite/hybrid outside Matthew's metros) are HARD-
+ *   discarded before anything else, regardless of fit — a great-on-paper role
+ *   in the wrong city must never tailor or auto-submit. (This is what let the
+ *   onsite-SF Brex role through before the gate existed.)
+ * - Enterprise-only roles are capped at 'flag' because Matthew is mid-market;
+ *   they never auto-route to 'tailor' regardless of score.
  */
 export function decideRoute(
   assessment: MatchAssessment,
   thresholds: RouteThresholds = DEFAULT_THRESHOLDS,
 ): RouteDecision {
-  const { score, segment } = assessment
+  const { score, segment, workplace, locations } = assessment
+  if (!passesLocationGate(workplace, locations)) return 'discard'
   let route: RouteDecision =
     score >= thresholds.tailor ? 'tailor' : score >= thresholds.flag ? 'flag' : 'discard'
   if (segment === 'enterprise' && route === 'tailor') route = 'flag'

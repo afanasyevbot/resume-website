@@ -28,7 +28,11 @@ export type LabeledRoleWithId = LabeledRole & { id: number }
  */
 
 function r(score: number, segment: Segment, aiNative: boolean) {
-  return { score, segment, aiNative, reasons: [], summary: null, route: decideRoute({ score, segment, aiNative, reasons: [], summary: null }) }
+  // Location defaults to remote/[] here: this set measures score/route CALIBRATION,
+  // not the location gate (that's covered by locationGate + decideRoute tests).
+  // Permissive defaults keep every labeled route unchanged by the new gate.
+  const a = { score, segment, aiNative, reasons: [], summary: null, workplace: 'remote' as const, locations: [] }
+  return { ...a, route: decideRoute(a) }
 }
 
 export const LABELED_SET: LabeledRoleWithId[] = [
