@@ -48,6 +48,20 @@ describe('isMatchAssessment', () => {
   it('rejects a non-integer score', () => {
     expect(isMatchAssessment({ ...goodAssessment, score: 82.5 })).toBe(false)
   })
+
+  it('normalizes a missing workplace/locations to unknown/[] (back-compat)', () => {
+    const a: Record<string, unknown> = { ...goodAssessment }
+    expect(isMatchAssessment(a)).toBe(true)
+    expect(a.workplace).toBe('unknown')
+    expect(a.locations).toEqual([])
+  })
+
+  it('keeps a valid workplace + locations', () => {
+    const a: Record<string, unknown> = { ...goodAssessment, workplace: 'onsite', locations: ['CA'] }
+    expect(isMatchAssessment(a)).toBe(true)
+    expect(a.workplace).toBe('onsite')
+    expect(a.locations).toEqual(['CA'])
+  })
 })
 
 describe('assessRole', () => {
@@ -84,5 +98,17 @@ describe('scoreRole', () => {
     const ent = { ...goodAssessment, score: 95, segment: 'enterprise' }
     const result = await scoreRole(fakeClient(JSON.stringify(ent)), role)
     expect(result.route).toBe('flag')
+  })
+
+  it('discards an off-target onsite role and explains why in reasons', async () => {
+    const offsite = { ...goodAssessment, score: 88, workplace: 'onsite', locations: ['CA'] }
+    const result = await scoreRole(fakeClient(JSON.stringify(offsite)), role)
+    expect(result.route).toBe('discard')
+    expect(result.reasons[0]).toMatch(/location/i)
+  })
+
+  it('does not add a location reason to a passing remote role', async () => {
+    const result = await scoreRole(fakeClient(JSON.stringify(goodAssessment)), role)
+    expect(result.reasons[0]).not.toMatch(/location/i)
   })
 })

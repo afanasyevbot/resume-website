@@ -1,3 +1,5 @@
+import type { Workplace } from './locationGate'
+
 export type RouteDecision = 'tailor' | 'flag' | 'discard'
 
 export type Segment = 'mid-market' | 'enterprise' | 'unknown'
@@ -9,6 +11,8 @@ export interface MatchAssessment {
   aiNative: boolean // is the company's core product building/selling AI?
   segment: Segment // the role's sales segment
   summary: string | null // 2-3 sentence plain-English summary of the role
+  workplace: Workplace // remote / onsite / hybrid / unknown — feeds the location gate
+  locations: string[] // US state codes the role requires presence in ([] if remote/unstated)
 }
 
 /** A job posting to evaluate. */
