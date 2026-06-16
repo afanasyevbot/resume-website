@@ -18,6 +18,7 @@ function makeRole(overrides: Partial<RoleRow> & { id: number; company: string; t
     package_id: null,
     user_rating: null,
     jd_summary: null,
+    apply_method: null,
     ...overrides,
   }
 }

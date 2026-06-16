@@ -129,7 +129,19 @@ export async function loadRoleDetail(id: number): Promise<RoleDetail | null> {
     }
   }
 
+  // Latest 'applied' event's method drives the auto-vs-manual badge. Derived from
+  // the events we already loaded — no extra query.
+  let applyMethod: string | null = null
+  for (let i = events.length - 1; i >= 0; i--) {
+    const e = events[i]
+    if (e.kind !== 'applied') continue
+    const raw = e.detail && typeof e.detail === 'object' ? (e.detail as { method?: unknown }).method : null
+    applyMethod = typeof raw === 'string' ? raw : null
+    break
+  }
+
   return {
+    apply_method: applyMethod,
     id: Number(row.id),
     company: row.company,
     title: row.title,
