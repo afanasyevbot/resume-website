@@ -403,23 +403,41 @@ app.post('/apply', auth, async (req, res) => {
       })
     }
 
-    // Click submit
+    // Click submit. Three things made this miss buttons that were plainly there
+    // (e.g. Brex's orange "Submit application"):
+    //  1. Greenhouse forms are frequently embedded in an <iframe> (brex.com/careers
+    //     embeds boards.greenhouse.io). page.$ only sees the MAIN frame, so the
+    //     button inside the iframe was invisible to us → search EVERY frame.
+    //  2. We only tried the FIRST element a selector matched; a hidden lookalike
+    //     (e.g. a nav search button[type=submit]) blocked the real one → try ALL
+    //     matches and skip any that aren't clickable.
+    //  3. We checked isVisible but not isEnabled. Require both.
+    // Selectors run most-specific → most-generic so we never click a stray button.
     const urlBeforeSubmit = page.url()
     let submitClicked = false
     const submitSelectors = [
+      '#submit_app',                            // Greenhouse's classic submit-button id
       'button[type="submit"]',
       'input[type="submit"]',
+      'button:has-text("Submit application")',
+      'button:has-text("Submit Application")',
       'button:has-text("Submit")',
       'button:has-text("Apply")',
-      'button:has-text("Submit Application")',
-      'button:has-text("Submit application")',
+      'input[value*="submit" i]',
     ]
-    for (const sel of submitSelectors) {
-      const btn = await page.$(sel)
-      if (btn && await btn.isVisible()) {
-        await btn.click()
-        submitClicked = true
-        break
+    findSubmit:
+    for (const frame of page.frames()) {         // main frame + every iframe
+      for (const sel of submitSelectors) {
+        const candidates = await frame.$$(sel).catch(() => [])
+        for (const btn of candidates) {
+          const clickable =
+            (await btn.isVisible().catch(() => false)) && (await btn.isEnabled().catch(() => false))
+          if (!clickable) continue
+          await btn.scrollIntoViewIfNeeded().catch(() => {})
+          await btn.click().catch(() => {})
+          submitClicked = true
+          break findSubmit
+        }
       }
     }
 
