@@ -150,7 +150,13 @@ export default function DecisionDeck({ items }: DecisionDeckProps) {
   async function snooze(item: FollowUpItem) {
     setBusy('snooze')
     try {
-      const res = await fetch(`/api/engine/reminders/${item.reminder.id}/snooze`, { method: 'POST' })
+      // The route requires { days: 1 | 3 | 7 }; an empty POST 400s. The deck's
+      // snooze is the quick "come back tomorrow" action → 1 day.
+      const res = await fetch(`/api/engine/reminders/${item.reminder.id}/snooze`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ days: 1 }),
+      })
       if (!res.ok) throw new Error(`Request failed (${res.status})`)
       advance(currentIdx, 'Snoozed — it will come back tomorrow.')
     } catch (err) {
