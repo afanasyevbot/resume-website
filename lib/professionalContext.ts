@@ -334,7 +334,7 @@ export const professionalContext: ProfessionalContext = {
     { big: '#1', sub: 'OF 30 AES  ·  Q1 2026' },
     { big: '102.6%', sub: 'FY25 ATTAINMENT' },
     { big: '58%', sub: 'ARR GROWTH  ·  FY24' },
-    { big: '5', sub: 'AI SYSTEMS DEPLOYED' },
+    { big: '6', sub: 'AI SYSTEMS DEPLOYED' },
   ],
 
   resumeSkills: [
@@ -378,6 +378,8 @@ export const professionalContext: ProfessionalContext = {
     'Do not claim MEDDIC, Challenger, SPIN, Command of the Message, or other named methodology experience',
     'Do not invent statistics, dates, or experiences not in this data',
     'Do not claim to train or fine-tune AI models, Matthew uses and builds on top of APIs',
+    'Do not name the specific AI vendor/API in application copy, say "multiple AI APIs" or "API integrations" (internal data may name it)',
+    'Do not claim a $1M+ quota, his quota is mid-market sized but growing',
     'Decline gracefully if asked personal questions unrelated to professional background',
   ],
 }

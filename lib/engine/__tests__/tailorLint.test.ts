@@ -101,6 +101,43 @@ describe('lintPackage', () => {
     expect(r.issues.some((s) => s.includes('Summary is empty'))).toBe(true)
   })
 
+  // ── Skill-parity rules ported from Matthew's job-application skill ──
+
+  it('genericizes a named AI vendor/API ("Anthropic API")', () => {
+    const r = lintPackage(pkg({ coverLetter: 'I built six systems on the Anthropic API.' }))
+    expect(r.ok).toBe(false)
+    expect(r.issues.some((s) => s.toLowerCase().includes('api'))).toBe(true)
+  })
+
+  it('genericizes "Claude API" and "Claude Agent SDK" in outgoing copy', () => {
+    expect(lintPackage(pkg({ emphasizedBullets: ['Shipped on the Claude API', 'b', 'c', 'd'] })).ok).toBe(false)
+    expect(lintPackage(pkg({ summary: 'Built multi-agent systems with the Claude Agent SDK for clients.' })).ok).toBe(false)
+  })
+
+  it('allows the generic phrasing the rule prefers ("multiple AI APIs")', () => {
+    expect(lintPackage(pkg({ coverLetter: 'I built six production systems on multiple AI APIs.' })).ok).toBe(true)
+  })
+
+  it('flags claiming experience with a named sales methodology (MEDDIC)', () => {
+    const r = lintPackage(pkg({ coverLetter: 'Experienced in MEDDIC and Challenger across full cycles.' }))
+    expect(r.ok).toBe(false)
+    expect(r.issues.some((s) => s.toLowerCase().includes('methodology'))).toBe(true)
+  })
+
+  it('allows framing a methodology as eager-to-learn (not a claim)', () => {
+    expect(lintPackage(pkg({ coverLetter: 'Eager to learn your MEDDIC process if it is part of the role.' })).ok).toBe(true)
+  })
+
+  it('flags claiming a $1M+ quota', () => {
+    expect(lintPackage(pkg({ summary: 'Carried a $1M+ quota in a mid-market book of business.' })).ok).toBe(false)
+    expect(lintPackage(pkg({ coverLetter: 'Managed a $1 million quota target last year.' })).ok).toBe(false)
+  })
+
+  it('does not flag normal dollar figures ($99K, $1.2M ARR)', () => {
+    expect(lintPackage(pkg({ summary: 'Closed $99K in two months and grew ARR by 58%.' })).ok).toBe(true)
+    expect(lintPackage(pkg({ coverLetter: 'Drove a deal reaching $1.2M in ARR impact.' })).ok).toBe(true)
+  })
+
   it('accumulates multiple issues', () => {
     const r = lintPackage(
       pkg({
