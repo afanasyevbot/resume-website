@@ -1,11 +1,14 @@
 import { sql } from './db'
 import { listDueReminders, type Reminder } from './reminders'
 import { loadCronHealth, type EngineHealth } from './health'
+import { applyMethodBucket, type ApplyBucket } from './applyMethod'
 
 export interface KpiCounts {
   sourced: number
   inQueue: number
   applied: number
+  /** The `applied` total split by how it was submitted (autonomous / approved / self). */
+  appliedBreakdown: Record<ApplyBucket, number>
   responded: number
   draftsToSend: number
 }
@@ -50,6 +53,9 @@ export interface RoleRow {
   user_rating: 1 | -1 | null
   /** Short AI-generated summary of the role (2-3 sentences). */
   jd_summary: string | null
+  /** Raw method from the latest 'applied' event (null if not applied). Bucket it
+   *  with applyMethodBucket() for the auto-vs-manual badge. */
+  apply_method: string | null
 }
 
 export interface DashboardData {
@@ -79,12 +85,35 @@ export async function getCounts(): Promise<KpiCounts> {
       and p.status = 'draft'
       and r.status not in ('archived', 'discarded')
   `
+  // Split the applied total by submission method. Each applied role's method is
+  // on its latest 'applied' event; bucket it in JS so the labels stay in one
+  // place (applyMethod.ts). Same `status = 'applied'` filter as the total above,
+  // so the three buckets always sum to `applied`.
+  const b = await sql`
+    select coalesce(ae.method, 'unknown') as method, count(*)::int as n
+    from roles r
+    left join lateral (
+      select detail->>'method' as method
+      from events
+      where role_id = r.id and kind = 'applied'
+      order by created_at desc
+      limit 1
+    ) ae on true
+    where r.status = 'applied'
+    group by coalesce(ae.method, 'unknown')
+  `
+  const appliedBreakdown: Record<ApplyBucket, number> = { autonomous: 0, approved: 0, self: 0, unknown: 0 }
+  for (const m of b as Array<{ method: string; n: number }>) {
+    appliedBreakdown[applyMethodBucket(m.method)] += Number(m.n)
+  }
+
   const row = r[0] as Record<string, string | number>
   const dr = d[0] as Record<string, string | number>
   return {
     sourced: Number(row.sourced ?? 0),
     inQueue: Number(row.in_queue ?? 0),
     applied: Number(row.applied ?? 0),
+    appliedBreakdown,
     responded: Number(row.responded ?? 0),
     draftsToSend: Number(dr.n ?? 0),
   }
@@ -114,7 +143,8 @@ export async function listQueue(limit = 200): Promise<RoleRow[]> {
       r.id, r.company, r.title, r.location, r.url, r.source, r.fit_score, r.fit_reasons, r.segment,
       r.ai_native, r.route, r.status, r.created_at, r.jd_summary,
       p.package_json, p.id as package_id,
-      fb.rating as user_rating
+      fb.rating as user_rating,
+      am.method as apply_method
     from roles r
     left join lateral (
       select id, package_json
@@ -130,6 +160,13 @@ export async function listQueue(limit = 200): Promise<RoleRow[]> {
       order by created_at desc
       limit 1
     ) fb on true
+    left join lateral (
+      select detail->>'method' as method
+      from events
+      where role_id = r.id and kind = 'applied'
+      order by created_at desc
+      limit 1
+    ) am on true
     where r.status not in ('discarded', 'archived')
     order by
       case r.route when 'tailor' then 1 when 'flag' then 2 else 3 end,

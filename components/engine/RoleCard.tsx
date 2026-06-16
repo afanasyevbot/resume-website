@@ -8,6 +8,7 @@ import ApplyAction from './ApplyAction'
 import PerRoleAutoApply from './PerRoleAutoApply'
 import ApprovalAction from './ApprovalAction'
 import { scoreBand } from '@/lib/engine/scoreBands'
+import ApplyBadge from './ApplyBadge'
 import OutcomeMenu from './OutcomeMenu'
 import AgentTrail from './AgentTrail'
 import FeedbackButtons from './FeedbackButtons'
@@ -246,6 +247,11 @@ export default function RoleCard({ row, expanded, onToggleExpanded }: RoleCardPr
         {/* Agent trail */}
         <div className="mt-5 pt-4" style={{ borderTop: '1px dashed rgba(148,163,184,0.08)' }}>
           <AgentTrail status={row.status} hasPackage={hasPackage} source={row.source} />
+          {row.apply_method && (
+            <div className="mt-2">
+              <ApplyBadge method={row.apply_method} />
+            </div>
+          )}
         </div>
         </Link>
 

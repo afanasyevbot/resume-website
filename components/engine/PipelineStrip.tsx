@@ -12,12 +12,22 @@ export default function PipelineStrip({ counts, rows }: PipelineStripProps) {
   const ready = rows.filter((r) => r.status === 'tailored' || r.status === 'awaiting_approval').length
   const interviews = rows.filter((r) => ['interviewing', 'offer'].includes(r.status)).length
 
+  // Split the Applied tile by how each was submitted (autonomous / approved / self).
+  const ab = counts.appliedBreakdown
+  const appliedSub = [
+    ab.autonomous ? `${ab.autonomous} auto` : null,
+    ab.approved ? `${ab.approved} approved` : null,
+    ab.self ? `${ab.self} by you` : null,
+  ]
+    .filter(Boolean)
+    .join(' · ')
+
   const stages = [
-    { label: 'In pipeline', n: counts.sourced, color: '#64748b' },
-    { label: 'Strong fit', n: strong, color: '#2563eb' },
-    { label: 'Ready', n: ready, color: '#b45309' },
-    { label: 'Applied', n: counts.applied, color: '#16a34a' },
-    { label: 'Interviews', n: interviews, color: '#7c3aed' },
+    { label: 'In pipeline', n: counts.sourced, color: '#64748b', sub: '' },
+    { label: 'Strong fit', n: strong, color: '#2563eb', sub: '' },
+    { label: 'Ready', n: ready, color: '#b45309', sub: '' },
+    { label: 'Applied', n: counts.applied, color: '#16a34a', sub: appliedSub },
+    { label: 'Interviews', n: interviews, color: '#7c3aed', sub: '' },
   ]
 
   return (
@@ -36,6 +46,11 @@ export default function PipelineStrip({ counts, rows }: PipelineStripProps) {
           <span className="eng-display block mt-2" style={{ fontSize: 30, lineHeight: 1 }}>
             {s.n}
           </span>
+          {s.sub && (
+            <span className="block mt-1.5 text-[10px]" style={{ color: 'var(--color-text-faint)', fontFamily: 'var(--font-sans)' }}>
+              {s.sub}
+            </span>
+          )}
         </Link>
       ))}
     </div>
