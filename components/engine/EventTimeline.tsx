@@ -27,9 +27,10 @@ interface EventTimelineProps {
   events: TimelineEvent[]
 }
 
-/** Capitalize a kind string for display. */
+/** Capitalize a kind string for display. Underscores become spaces. */
 function kindLabel(kind: string): string {
-  return kind.charAt(0).toUpperCase() + kind.slice(1).toLowerCase()
+  const spaced = kind.replace(/_/g, ' ')
+  return spaced.charAt(0).toUpperCase() + spaced.slice(1).toLowerCase()
 }
 
 /** One-line summary pulled from the event detail JSON, if useful. */
