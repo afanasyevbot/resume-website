@@ -6,7 +6,9 @@ import { TailorPackagePanel } from '@/components/engine/TailorAction'
 import TailorButtonStandalone from '@/components/engine/TailorButtonStandalone'
 import ApplyAction from '@/components/engine/ApplyAction'
 import FeedbackButtons from '@/components/engine/FeedbackButtons'
+import InterviewPrep from '@/components/engine/InterviewPrep'
 import { scoreBand } from '@/lib/engine/scoreBands'
+import { isInterviewPrep, type InterviewPrep as Prep } from '@/lib/engine/interviewPrep'
 
 export const dynamic = 'force-dynamic'
 
@@ -56,6 +58,11 @@ export default async function RoleDetailPage({
   if (!role) notFound()
 
   const hasPackage = !!role.package_json
+
+  // Latest 'interview_prep' event drives the prep panel (events are ascending).
+  const prepEvent = [...role.events].reverse().find((e) => e.kind === 'interview_prep')
+  const initialPrep: Prep | null =
+    prepEvent && isInterviewPrep(prepEvent.detail) ? (prepEvent.detail as Prep) : null
 
   return (
     <main
@@ -233,6 +240,13 @@ export default async function RoleDetailPage({
         <div style={{ marginLeft: 'auto' }}>
           <FeedbackButtons roleId={role.id} currentRating={role.user_rating} />
         </div>
+      </div>
+
+      {/* Interview prep — on demand, generated from the profile + this JD */}
+      <div className="mt-6">
+        <Panel title="Interview prep">
+          <InterviewPrep roleId={role.id} initialPrep={initialPrep} />
+        </Panel>
       </div>
     </main>
   )
