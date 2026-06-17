@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
+import { verifySessionToken, SESSION_COOKIE } from '@/lib/engine/auth'
 import { snoozeReminder } from '@/lib/engine/reminders'
 
 export const runtime = 'nodejs'
@@ -14,6 +16,10 @@ export async function POST(
   req: Request,
   ctx: { params: Promise<{ id: string }> },
 ) {
+  const token = (await cookies()).get(SESSION_COOKIE)?.value
+  if (!(await verifySessionToken(token))) {
+    return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  }
   const { id } = await ctx.params
   const reminderId = Number(id)
   if (!Number.isFinite(reminderId) || Number.isNaN(reminderId) || reminderId <= 0) {

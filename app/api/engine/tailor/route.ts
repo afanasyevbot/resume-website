@@ -1,5 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
+import { verifySessionToken, SESSION_COOKIE } from '@/lib/engine/auth'
 import { sql, tx } from '@/lib/engine/db'
 import { tailorRole } from '@/lib/engine/tailor'
 import type { TailorInput } from '@/lib/engine/tailorTypes'
@@ -22,6 +24,11 @@ interface RoleRecord {
 }
 
 export async function POST(req: Request) {
+  const token = (await cookies()).get(SESSION_COOKIE)?.value
+  if (!(await verifySessionToken(token))) {
+    return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  }
+
   const body = await req.json().catch(() => null)
   const roleId = body && typeof (body as { roleId?: unknown }).roleId === 'number'
     ? (body as { roleId: number }).roleId

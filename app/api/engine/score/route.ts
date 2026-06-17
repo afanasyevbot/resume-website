@@ -1,5 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
+import { verifySessionToken, SESSION_COOKIE } from '@/lib/engine/auth'
 import { scoreRole } from '@/lib/engine/matcher'
 import { persistScoredRole, type PersistableRole } from '@/lib/engine/persistRole'
 import { anthropicKey } from '@/lib/env'
@@ -30,6 +32,11 @@ function validate(body: unknown): Validated {
 }
 
 export async function POST(req: Request) {
+  const token = (await cookies()).get(SESSION_COOKIE)?.value
+  if (!(await verifySessionToken(token))) {
+    return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  }
+
   const body = await req.json().catch(() => null)
   const v = validate(body)
   if (!v.ok) return NextResponse.json({ error: v.error }, { status: 400 })
