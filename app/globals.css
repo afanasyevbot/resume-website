@@ -1,26 +1,31 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-bg: #1a1510;
-  --color-surface: #221d14;
-  --color-surface-deep: #191510;
-  --color-border: #352c1e;
-  --color-border-inner: #2c2419;
-  --color-gold: #d4b278;
-  --color-gold-dim: rgba(212, 178, 120, 0.25);
-  --color-text-bright: #f8f4ee;
-  --color-text-primary: #e2d5c0;
-  --color-text-secondary: #c8ae90;
-  --color-text-muted: #b09a80;
-  --color-text-dim: #9a8468;
-  --color-text-faint: #7e6e58;
-  --color-text-ghost: #5e5040;
-  --color-text-whisper: #4a3e30;
+  --color-paper: #f6e7c8;
+  --color-bg: #f6e7c8;
+  --color-surface: #fbf1dc;
+  --color-surface-deep: #f3e2c0;
+  --color-border: #e5d0aa;
+  --color-border-inner: #edd9b6;
+  --color-ink: #1c1a16;
+  --color-muted: #3f3a32;
+  --color-ghost: #8a8478;
+  --color-gold: #b7c49a;
+  --color-gold-dim: rgba(183, 196, 154, 0.28);
+  --color-text-bright: #1c1a16;
+  --color-text-primary: #1c1a16;
+  --color-text-secondary: #3f3a32;
+  --color-text-muted: #3f3a32;
+  --color-text-dim: #8a8478;
+  --color-text-faint: #8a8478;
+  --color-text-ghost: #8a8478;
+  --color-text-whisper: #b8b0a4;
 
   --font-display: var(--font-cormorant), serif;
   --font-sans: var(--font-inter), sans-serif;
 
-  --max-w-page: 960px;
+  --max-w-page: 1080px;
+  --radius-card: 8px;
 }
 
 * {
@@ -29,17 +34,18 @@
 
 html {
   scroll-behavior: smooth;
+  background-color: var(--color-paper);
 }
 
 body {
-  background-color: #1a1510;
-  color: #e2d5c0;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
   font-family: var(--font-inter), sans-serif;
 }
 
 ::selection {
-  background: rgba(212, 178, 120, 0.2);
-  color: #f8f4ee;
+  background: rgba(183, 196, 154, 0.35);
+  color: #1c1a16;
 }
 
 textarea:focus,
@@ -51,6 +57,39 @@ textarea:focus-visible,
 input:focus-visible {
   outline: 2px solid var(--color-gold);
   outline-offset: 1px;
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+.signature-card {
+  border-color: color-mix(in srgb, var(--color-gold) 55%, var(--color-border));
+}
+
+.section-divider {
+  border-top: 1px solid var(--color-border);
+  margin-top: 1.5rem;
+  padding-top: 4.5rem;
+  scroll-margin-top: 88px;
+}
+
+.section-band {
+  margin-top: 2.5rem;
+  padding-top: 4rem;
+  scroll-margin-top: 88px;
+}
+
+.hero-portrait-arch {
+  -webkit-mask-image: radial-gradient(78% 92% at 58% 48%, #000 0% 48%, #0000008c 62%, #0000 76%);
+  mask-image: radial-gradient(78% 92% at 58% 48%, #000 0% 48%, #0000008c 62%, #0000 76%);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  opacity: 0.92;
 }
 
 /* ── Résumé route ───────────────────────────────────────── */

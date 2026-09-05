@@ -2,7 +2,7 @@ import type { ProfessionalContext } from './types'
 
 export const professionalContext: ProfessionalContext = {
   summary:
-    'Top-performing SaaS account executive and AI systems builder with 5 years closing new business and expansion revenue across mid-market buyers. Drove 58% ARR growth in a single fiscal year through consultative, value-based sales cycles with C-level decision-makers. Currently ranked #1 in net-new production on a 9-person strategic initiative. Concurrently founded Fidelis Strategy and built 6 production AI systems on the Claude API and LLM platforms, including a live monetized SaaS product, multi-agent platforms, and automated lead generation pipelines. Most reps know how to sell AI. Few have actually built with it.',
+    'Top-performing B2B SaaS account executive with 5 years closing new business and expansion revenue across mid-market buyers. Prescriptive selling: diagnose pain, guide the buying process, and teach how the solution solves it. Drove 58% ARR growth in a single fiscal year through consultative, value-based sales cycles with C-level decision-makers. Currently ranked #1 in net-new production on a 9-person strategic initiative. Concurrently founded Fidelis Strategy and built 7 production systems, including a live monetized SaaS product, two lead-generation platforms, multi-agent buyer intelligence, a valuation workspace, a consumer PWA, and a full church technology buildout.',
 
   identity: {
     name: 'Matthew Afanasiev',
@@ -46,10 +46,10 @@ export const professionalContext: ProfessionalContext = {
       company: 'Fidelis Strategy LLC',
       dates: 'Jan 2026 – Present (concurrent with SPS Commerce)',
       preview:
-        'Built 6 production AI systems while carrying full quota. Growth consultancy serving $1M–$10M businesses. Built and launched a monetized SaaS product from scratch.',
+        'Built 7 production systems while carrying full quota, including 2 lead-generation platforms. Growth consultancy serving $1M–$10M businesses. Built and launched a monetized SaaS product from scratch.',
       bullets: [
         'Founded a growth strategy consultancy serving early- and growth-stage businesses ($1M–$10M) on strategic planning, revenue operations, and AI enablement',
-        'Built 6 production AI systems using Anthropic API and LLM platforms — not demos, working products in production',
+        'Built 7 production systems using modern APIs and LLM platforms — not demos, working products in production, including 2 lead-generation systems',
         'Developed proprietary 4D Growth Engine framework (Diagnose, Design, Deliver, Drive); first engagement projected $2M in revenue impact',
         'Fidelis Pulse: live SaaS platform for financial advisors and owners — three billing tiers, Claude for Financial Services-powered Close add-on, QuickBooks + Xero + Plaid integrations, multi-tenant architecture',
       ],
@@ -59,7 +59,7 @@ export const professionalContext: ProfessionalContext = {
         approach:
           'Build production systems, not prototypes. Every tool built has real users, real infrastructure (Next.js, Supabase, Railway, Stripe), and real constraints. Used Anthropic API across all projects, chat advisors, agent pipelines, scoring engines, and lead generation workflows.',
         results:
-          '6 production AI systems delivered. Fidelis Pulse launched with three billing tiers (Pulse $249/mo, Advisor Starter $499/mo, Advisor Growth $1,299/mo) and a $5,000/engagement Close add-on powered by Claude for Financial Services. M&A client engagement projected $2M revenue impact. Multiple client lead generation and buyer intelligence platforms delivered.',
+          '7 production systems delivered. Two lead-generation platforms for M&A advisory and real estate tech. Fidelis Pulse launched with three billing tiers (Pulse $249/mo, Advisor Starter $499/mo, Advisor Growth $1,299/mo) and a $5,000/engagement Close add-on. M&A client engagement projected $2M revenue impact. Buyer intelligence, valuation, Glow Routine, and Grace Church technology buildout also in production.',
         lessons:
           'Execution beats planning. Real users expose problems that specs never anticipate. Building AI systems while selling AI taught me what buyers actually fear vs. what they say they want. The deeper lesson: AI advancements — especially what Anthropic is building toward — have fundamentally changed what is possible for any business. Off-the-shelf software forces a company to reshape its operations around someone else\'s workflows. That is backwards. Every business has specific processes that create their edge, and those processes should not be sacrificed to fit a generic system. With modern AI, you can build systems that conform to how a business actually works, not the other way around. That belief is the foundation of everything I build at Fidelis Strategy.',
       },
@@ -177,7 +177,7 @@ export const professionalContext: ProfessionalContext = {
     'Selected for elite 9-person net-new strategic initiative',
     '500+ account portfolio at peak (Mid-Market)',
     '4.5 years full-cycle B2B SaaS sales at SPS Commerce; 5 years total sales experience',
-    '6 production AI systems built and deployed while carrying full sales quota',
+    '7 production systems built and deployed while carrying full sales quota, including 2 lead-generation platforms',
   ],
 
   starStories: [
@@ -334,7 +334,7 @@ export const professionalContext: ProfessionalContext = {
     { big: '#1', sub: 'OF 30 AES  ·  Q1 2026' },
     { big: '102.6%', sub: 'FY25 ATTAINMENT' },
     { big: '58%', sub: 'ARR GROWTH  ·  FY24' },
-    { big: '6', sub: 'AI SYSTEMS DEPLOYED' },
+    { big: '7', sub: 'SYSTEMS BUILT' },
   ],
 
   resumeSkills: [

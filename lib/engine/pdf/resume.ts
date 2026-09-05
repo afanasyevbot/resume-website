@@ -126,10 +126,10 @@ export async function buildResumePdf(
 
   // ── Headline + Summary ──────────────────────────────────────────────
 
-  drawTextCentered('I close deals. I build AI systems.', { font: fontBold, size: 14, color: DARK })
+  drawTextCentered('I sell by guiding the buyer.', { font: fontBold, size: 14, color: DARK })
   gap(1)
   drawTextCentered(
-    "Most reps can't build. Most builders can't sell. I've been on both sides, and I do both well.",
+    'Prescriptive B2B SaaS selling. Guide the buyer through the process.',
     { font: fontItalic, size: 8.5, color: MID },
   )
   gap(6)
