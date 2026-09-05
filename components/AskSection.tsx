@@ -191,7 +191,7 @@ export default function AskSection() {
               </div>
             )}
 
-            <div className="flex gap-2 items-end">
+            <div className="flex flex-col sm:flex-row gap-2 sm:items-end">
               <textarea
                 ref={inputRef}
                 value={input}
@@ -201,13 +201,13 @@ export default function AskSection() {
                 aria-label="Your question"
                 rows={2}
                 disabled={loading}
-                className="flex-1 min-h-[44px] bg-paper border border-border rounded-[4px] text-[14px] text-ink placeholder:text-ghost px-4 py-3 resize-y disabled:opacity-50"
+                className="w-full sm:flex-1 min-h-[88px] sm:min-h-[44px] bg-paper border border-border rounded-[4px] text-[16px] sm:text-[14px] text-ink placeholder:text-ghost px-4 py-3 resize-y disabled:opacity-50"
               />
               <button
                 type="button"
                 onClick={() => sendMessage(input)}
                 disabled={loading || !input.trim()}
-                className="min-h-[44px] min-w-[44px] px-4 rounded-[4px] border border-border bg-paper text-[14px] font-medium text-ink hover:border-ink/30 transition-colors disabled:opacity-40"
+                className="min-h-[48px] sm:min-h-[44px] w-full sm:w-auto sm:min-w-[44px] px-4 rounded-[4px] border border-border bg-paper text-[14px] font-medium text-ink hover:border-ink/30 transition-colors disabled:opacity-40"
               >
                 Send
               </button>

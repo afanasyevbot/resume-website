@@ -11,7 +11,7 @@ export default function Page() {
   return (
     <>
       <SiteHeader />
-      <main className="max-w-page mx-auto px-5 sm:px-10 lg:px-12 pb-4">
+      <main className="max-w-page mx-auto px-4 sm:px-10 lg:px-12 pb-4">
         <Hero />
         <SalesMethodology />
         <AskSection />

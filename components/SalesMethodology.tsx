@@ -14,7 +14,7 @@ export default function SalesMethodology() {
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
-          className="font-display text-[28px] sm:text-[36px] font-semibold text-ink tracking-[-0.02em] underline underline-offset-4 decoration-border hover:decoration-ink/40"
+          className="font-display text-[24px] sm:text-[36px] font-semibold text-ink tracking-[-0.02em] underline underline-offset-4 decoration-border hover:decoration-ink/40 px-2"
         >
           Sales methodology
           <span className={`inline-flex transition-transform duration-200 ${open ? 'rotate-180' : ''}`}>

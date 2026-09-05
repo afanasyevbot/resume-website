@@ -6,7 +6,7 @@ export default function Footer() {
     <footer id="contact" className="section-divider pb-16 sm:pb-20">
       <div className="text-center mx-auto max-w-[40rem]">
         <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-ghost mb-3">Contact</p>
-        <h2 className="font-display text-[32px] sm:text-[44px] font-medium text-ink leading-[1.12] tracking-[-0.02em] mb-4">
+        <h2 className="font-display text-[28px] sm:text-[44px] font-medium text-ink leading-[1.12] tracking-[-0.02em] mb-4 text-balance">
           Open to account executive and go-to-market roles
         </h2>
         <p className="text-[15px] text-muted leading-[1.65] mb-8">
@@ -30,7 +30,7 @@ export default function Footer() {
           </a>
           <a
             href={`mailto:${publicEmail}`}
-            className="inline-flex items-center justify-center min-h-[48px] px-4 text-[14px] font-semibold text-ink hover:underline underline-offset-4 decoration-border"
+            className="inline-flex items-center justify-center min-h-[48px] px-4 text-[14px] font-semibold text-ink hover:underline underline-offset-4 decoration-border break-all"
           >
             {publicEmail}
           </a>

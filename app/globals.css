@@ -35,12 +35,41 @@
 html {
   scroll-behavior: smooth;
   background-color: var(--color-paper);
+  overflow-x: hidden;
 }
 
 body {
   background-color: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-inter), sans-serif;
+  overflow-x: hidden;
+}
+
+.section-divider {
+  border-top: 1px solid var(--color-border);
+  margin-top: 1.25rem;
+  padding-top: 3rem;
+  scroll-margin-top: 88px;
+}
+
+@media (min-width: 640px) {
+  .section-divider {
+    margin-top: 1.5rem;
+    padding-top: 4.5rem;
+  }
+}
+
+.section-band {
+  margin-top: 1.75rem;
+  padding-top: 2.75rem;
+  scroll-margin-top: 88px;
+}
+
+@media (min-width: 640px) {
+  .section-band {
+    margin-top: 2.5rem;
+    padding-top: 4rem;
+  }
 }
 
 ::selection {
@@ -67,19 +96,6 @@ input:focus-visible {
 
 .signature-card {
   border-color: color-mix(in srgb, var(--color-gold) 55%, var(--color-border));
-}
-
-.section-divider {
-  border-top: 1px solid var(--color-border);
-  margin-top: 1.5rem;
-  padding-top: 4.5rem;
-  scroll-margin-top: 88px;
-}
-
-.section-band {
-  margin-top: 2.5rem;
-  padding-top: 4rem;
-  scroll-margin-top: 88px;
 }
 
 .hero-portrait-arch {

@@ -24,7 +24,7 @@ export default function ExperienceSection() {
               >
                 {role.title}
               </h3>
-              <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ghost sm:text-right sm:shrink-0">
+              <p className="text-[11px] font-medium uppercase tracking-[0.06em] sm:tracking-[0.12em] text-ghost sm:text-right sm:shrink-0 sm:whitespace-nowrap">
                 {role.dates}
               </p>
             </div>

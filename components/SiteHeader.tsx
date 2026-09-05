@@ -35,7 +35,17 @@ export default function SiteHeader() {
         scrolled ? 'bg-paper/92 border-b border-border/70 backdrop-blur-md' : 'bg-transparent'
       }`}
     >
-      <div className="max-w-page mx-auto px-5 sm:px-10 lg:px-12 h-[68px] relative flex items-center">
+      <div className="max-w-page mx-auto px-4 sm:px-10 lg:px-12 h-[64px] sm:h-[68px] relative flex items-center gap-2">
+        <button
+          type="button"
+          className="lg:hidden shrink-0 min-h-[44px] min-w-[44px] px-3 rounded-full border border-border bg-surface/80 text-[12px] font-medium text-ink"
+          aria-expanded={open}
+          aria-label={open ? 'Close menu' : 'Open menu'}
+          onClick={() => setOpen((v) => !v)}
+        >
+          Menu
+        </button>
+
         <nav className="hidden lg:flex items-center gap-7 flex-1" aria-label="Sections">
           {links.map((l) => (
             <a
@@ -48,32 +58,23 @@ export default function SiteHeader() {
           ))}
         </nav>
 
-        <button
-          type="button"
-          className="lg:hidden min-h-[40px] px-3 rounded-full border border-border bg-surface/80 text-[12px] font-medium text-ink"
-          aria-expanded={open}
-          aria-label={open ? 'Close menu' : 'Open menu'}
-          onClick={() => setOpen((v) => !v)}
-        >
-          Menu
-        </button>
-
-        <h1 className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 m-0 pointer-events-none">
+        <h1 className="m-0 min-w-0 flex-1 lg:flex-none lg:absolute lg:left-1/2 lg:top-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2 text-center">
           <a
-            className="font-display text-[19px] sm:text-[23px] font-bold text-ink tracking-[0.01em] whitespace-nowrap pointer-events-auto"
+            className="font-display text-[16px] xs:text-[18px] sm:text-[23px] font-bold text-ink tracking-[0.01em] leading-tight"
             href="/"
           >
             Matthew Afanasiev
           </a>
         </h1>
 
-        <div className="flex items-center justify-end flex-1 min-w-[40px]">
+        <div className="flex items-center justify-end shrink-0 lg:flex-1">
           <button
             type="button"
             onClick={openAsk}
-            className="inline-flex items-center gap-1.5 min-h-[40px] px-4 sm:px-5 rounded-full border border-border bg-surface/80 text-[11px] sm:text-[12px] font-medium text-ink hover:bg-surface transition-colors"
+            className="inline-flex items-center justify-center min-h-[44px] px-3 sm:px-5 rounded-full border border-border bg-surface/80 text-[12px] font-medium text-ink hover:bg-surface transition-colors"
           >
-            Ask a question
+            <span className="sm:hidden">Ask</span>
+            <span className="hidden sm:inline">Ask a question</span>
           </button>
         </div>
       </div>

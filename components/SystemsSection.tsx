@@ -120,7 +120,7 @@ export default function SystemsSection() {
               </div>
             </div>
             {glowOpen && (
-              <div className="border-t border-border bg-[#faf8f6] px-4 py-6 sm:px-6 sm:py-8">
+              <div className="border-t border-border bg-[#faf8f6] px-3 py-5 sm:px-6 sm:py-8">
                 <GlowRoutineApp />
               </div>
             )}

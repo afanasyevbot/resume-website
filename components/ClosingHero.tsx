@@ -1,9 +1,9 @@
 export default function ClosingHero() {
   return (
     <section id="skills" className="section-divider py-20 sm:py-28">
-      <div className="text-center mx-auto max-w-[20ch] sm:max-w-none">
+      <div className="text-center mx-auto px-1">
         <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-ghost mb-6">The close</p>
-        <h2 className="font-display font-medium text-ink leading-[0.95] tracking-[-0.04em] text-[48px] sm:text-[72px] lg:text-[88px]">
+        <h2 className="font-display font-medium text-ink leading-[0.95] tracking-[-0.04em] text-[40px] sm:text-[72px] lg:text-[88px]">
           Sales.
           <br />
           Depth.

@@ -37,7 +37,7 @@ const tabs: { id: Tab; label: string }[] = [
 function PhoneShell({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="relative overflow-hidden rounded-[32px] border border-[rgba(60,60,67,0.12)] bg-[#faf8f6] shadow-[0_16px_48px_rgba(60,40,70,0.12)] min-h-[680px] flex flex-col"
+      className="relative overflow-hidden rounded-[28px] sm:rounded-[32px] border border-[rgba(60,60,67,0.12)] bg-[#faf8f6] shadow-[0_16px_48px_rgba(60,40,70,0.12)] min-h-[560px] sm:min-h-[680px] flex flex-col"
       style={{
         backgroundImage:
           'radial-gradient(120% 80% at 100% 0, rgba(200,132,168,0.1) 0, rgba(200,132,168,0) 55%), radial-gradient(120% 80% at 0 0, rgba(160,102,160,0.08) 0, rgba(160,102,160,0) 50%)',
