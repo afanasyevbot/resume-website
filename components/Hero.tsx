@@ -13,7 +13,7 @@ export default function Hero() {
     <section className="relative pt-[88px] pb-8 sm:pb-12 overflow-hidden">
       <div className="relative">
         <div
-          className="pointer-events-none hidden lg:block absolute top-10 right-6 lg:right-10 w-[220px] lg:w-[252px] aspect-[7/9] hero-portrait-arch"
+          className="pointer-events-none relative mx-auto mb-5 w-[140px] sm:w-[168px] aspect-[7/9] hero-portrait-arch lg:absolute lg:mx-0 lg:mb-0 lg:top-10 lg:right-6 lg:right-10 lg:w-[220px] xl:w-[252px]"
           aria-hidden="true"
         >
           <div className="relative overflow-hidden bg-transparent w-full h-full">
@@ -21,7 +21,7 @@ export default function Hero() {
               src="/images/headshot-sm.webp"
               alt="Matthew Afanasiev"
               fill
-              sizes="(max-width: 1024px) 42vw, 420px"
+              sizes="(max-width: 640px) 140px, (max-width: 1024px) 168px, 420px"
               className="object-contain object-center"
               priority
             />
@@ -29,18 +29,6 @@ export default function Hero() {
         </div>
 
         <div className="relative z-10 mx-auto max-w-[36rem] lg:max-w-[40rem] text-center pt-2 lg:pt-6">
-          <div className="md:hidden flex justify-center mb-5">
-            <div className="relative overflow-hidden border border-border bg-surface shrink-0 rounded-full !w-[72px] !h-[72px]">
-              <Image
-                src="/images/headshot-sm.webp"
-                alt="Matthew Afanasiev"
-                fill
-                sizes="72px"
-                className="object-cover object-[center_18%]"
-                priority
-              />
-            </div>
-          </div>
 
           <p className="text-[11px] font-medium uppercase tracking-[0.12em] sm:tracking-[0.18em] text-ghost px-1">
             Open to AE &amp; GTM roles · B2B SaaS
