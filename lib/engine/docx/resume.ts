@@ -71,13 +71,13 @@ export async function buildResumeDocx(
   children.push(
     new Paragraph({
       alignment: AlignmentType.CENTER,
-      children: [new TextRun({ text: 'I close deals. I build AI systems.', bold: true, size: 28 })],
+      children: [new TextRun({ text: 'I sell by guiding the buyer.', bold: true, size: 28 })],
     }),
   )
   children.push(
     new Paragraph({
       alignment: AlignmentType.CENTER,
-      children: [new TextRun({ text: "Most reps can't build. Most builders can't sell. I've been on both sides, and I do both well.", italics: true, size: 18 })],
+      children: [new TextRun({ text: "Prescriptive B2B SaaS selling. I've been on both sides, and I do both well.", italics: true, size: 18 })],
     }),
   )
 

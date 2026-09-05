@@ -37,7 +37,7 @@ export default function ResumePage() {
             {identity.name}
           </h1>
           <p className="resume-subtitle text-[14px] tracking-[1px] uppercase font-medium mt-2">
-            Account Executive · SaaS Sales &amp; AI Systems Builder
+            Account Executive · B2B SaaS Sales
           </p>
           <div className="resume-contact flex flex-wrap gap-x-4 gap-y-1 text-[12.5px] mt-3">
             <span>Minneapolis, MN</span>
@@ -84,7 +84,7 @@ export default function ResumePage() {
 
         {/* AI Systems Built */}
         <section className="mb-7">
-          <SectionHeading>AI Systems Built — {projects.length} in Production</SectionHeading>
+          <SectionHeading>Systems Built — {projects.length + proBono.length} in Production</SectionHeading>
           <div className="space-y-2.5">
             {projects.map((p) => (
               <div key={p.name} className="resume-body text-[12.5px] leading-[1.55]">
