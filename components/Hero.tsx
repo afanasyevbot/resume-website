@@ -37,7 +37,7 @@ export default function Hero() {
             I sell by guiding the buyer.
           </h2>
           <p className="text-[15px] sm:text-[16px] text-muted leading-[1.65] mt-5 mx-auto max-w-[42ch] px-1">
-            Five years in B2B SaaS. Prescriptive selling: find the pain, walk the buying process, and teach how the solution solves it.
+            Five years selling complex B2B SaaS. Prescriptive selling: find the pain, walk the buying process, and teach how the platform solves it.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5">
             <a
@@ -70,7 +70,7 @@ export default function Hero() {
           ))}
         </div>
         <p className="text-[14px] sm:text-[15px] text-muted leading-[1.65] mt-8 max-w-[52ch] mx-auto text-center">
-          Current role: Net New AE at SPS Commerce. Full-cycle mid-market deals with operators who need a guide, not a pitch deck. Based in Minneapolis.
+          Current role: Net New AE at SPS Commerce — full-cycle sales rep for complex B2B SaaS, including AI go-to-market with VPs and directors. Five years in B2B SaaS. Based in Minneapolis.
         </p>
       </div>
     </section>

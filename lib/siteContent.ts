@@ -1,6 +1,6 @@
 export const OPEN_ASK_EVENT = 'open-ask-ai'
 
-export const publicEmail = 'mafanasiev@fidelisstrategy.net'
+export const publicEmail = 'mafanasiev@outlook.com'
 export const calendlyUrl = 'https://calendly.com/mafanasiev-fidelisstrategy/30min'
 export const pulseUrl = 'https://fidelispulse.com'
 export const glowUrl = 'https://glow-routine-seven.vercel.app'
@@ -14,7 +14,8 @@ export const experience = [
     title: 'Net New AE · Supply Chain Performance',
     fullTitle: 'Net New Subscriber Account Executive, Supply Chain Performance',
     bullets: [
-      'Full-cycle deals across retail, food, manufacturing, and fashion',
+      'Full-cycle sales of complex B2B SaaS across retail, food, manufacturing, and fashion',
+      'AI go-to-market with VPs and directors alongside core supply chain solutions',
       '#1 in net-new production on a 9-person strategic initiative · Q1 2026',
       '102.6% FY25 quota · highest close rate in the division',
       'Consultative discovery with C-suite buyers: workflow mapping and ROI cases',
@@ -28,8 +29,8 @@ export const experience = [
     title: 'Founder & Growth Strategy Consultant',
     fullTitle: 'Founder & Growth Strategy Consultant',
     bullets: [
-      'Built production systems for clients while carrying full quota at SPS Commerce',
-      'Owns GTM for a growth consultancy serving $1M–$10M businesses',
+      'Runs Fidelis Strategy end to end while carrying full quota at SPS — client work, delivery, GTM, and the builds behind it',
+      'Growth consultancy serving $1M–$10M businesses on strategy, revenue operations, and AI enablement',
       'Built Fidelis Pulse, a live SaaS platform with billing and accounting integrations',
     ],
   },
@@ -54,7 +55,7 @@ export const experience = [
     fullTitle: 'Associate Account Executive, Community Sales',
     bullets: [
       '#1 of 40 AEs · 151% quota · highest close rate',
-      'Designed supplier onboarding campaigns with major retailers',
+      'Partnered with major retailers on supplier onboarding campaigns — sold the solutions to mandated trading partners',
       'Trained hundreds of trading partners on EDI and order-to-cash',
     ],
   },
@@ -74,21 +75,21 @@ export const methodology = [
   {
     step: '01',
     title: 'Find the pain',
-    body: 'Discovery with operators and executives: map how they buy and work today, quantify the cost of the current state, and isolate the pain that actually moves a deal.',
+    body: 'Discovery with operators and executives on a SaaS deal: map how they buy and work today, quantify the cost of the current state, and isolate the workflow pain that actually moves budget.',
   },
   {
     step: '02',
     title: 'Guide the buying process',
-    body: 'Prescriptive selling. Most buyers do not know what good looks like yet. I walk them through the decision: who needs to be in the room, what questions to ask, and what a real solution has to cover.',
+    body: 'Prescriptive selling. Most buyers do not know what good looks like in a software evaluation yet. I walk them through the decision: who needs to be in the room, what questions to ask, and what a real platform has to cover.',
   },
   {
     step: '03',
     title: 'Teach the solution',
-    body: 'Translate the product into their workflow. Show how it removes the pain we already named, with an ROI case before anyone asks for a demo or a timeline.',
+    body: 'Translate the platform into their workflow. Demo against the pain we already named, with an ROI case before anyone asks for pricing, legal, or a timeline.',
   },
   {
     step: '04',
     title: 'Close with conviction',
-    body: 'Multithread across IT, finance, and operations. Keep the buying committee aligned, remove scheduling bottlenecks, and close when the path is obvious.',
+    body: 'Multithread across IT, finance, and operations. Keep the buying committee aligned through security review and procurement, remove scheduling bottlenecks, and close when the path is obvious.',
   },
 ]
