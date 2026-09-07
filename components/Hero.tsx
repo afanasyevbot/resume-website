@@ -2,7 +2,7 @@ import Image from 'next/image'
 import { calendlyUrl } from '@/lib/siteContent'
 
 const stats = [
-  { number: '#1', label: 'of 30 AEs · Q1 2026' },
+  { number: '#1', label: 'net-new production · Q1 2026' },
   { number: '102.6%', label: 'FY25 attainment' },
   { number: '58%', label: 'ARR growth · FY24' },
   { number: '7', label: 'systems built' },
@@ -44,7 +44,7 @@ export default function Hero() {
               href={calendlyUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 min-h-[48px] px-6 py-3 rounded-[8px] text-[14px] font-semibold transition-all bg-gold text-ink border border-gold hover:opacity-90"
+              className="inline-flex items-center justify-center gap-2 min-h-[48px] px-6 py-3 rounded-[8px] text-[14px] font-semibold transition-all bg-gold text-white border border-gold hover:opacity-90"
             >
               Book 20 minutes
             </a>

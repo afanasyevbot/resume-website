@@ -11,7 +11,7 @@ export default function ClosingHero() {
           Builder fluency.
         </h2>
         <p className="text-[15px] sm:text-[16px] text-muted leading-[1.65] mt-8 mx-auto max-w-[36ch]">
-          Five years guiding B2B SaaS buyers. Seven systems shipped while carrying quota.
+          Five years selling complex B2B SaaS. Seven systems shipped while carrying quota.
         </p>
       </div>
     </section>

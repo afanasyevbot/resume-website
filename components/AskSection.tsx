@@ -127,7 +127,7 @@ export default function AskSection() {
               href={calendlyUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center min-h-[48px] px-7 py-3 rounded-[8px] text-[14px] font-semibold bg-gold text-ink border border-gold hover:opacity-90"
+              className="inline-flex items-center justify-center min-h-[48px] px-7 py-3 rounded-[8px] text-[14px] font-semibold bg-gold text-white border border-gold hover:opacity-90"
             >
               Schedule 20 minutes →
             </a>

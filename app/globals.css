@@ -10,8 +10,8 @@
   --color-ink: #1c1a16;
   --color-muted: #3f3a32;
   --color-ghost: #8a8478;
-  --color-gold: #b7c49a;
-  --color-gold-dim: rgba(183, 196, 154, 0.28);
+  --color-gold: #1e4d32;
+  --color-gold-dim: rgba(30, 77, 50, 0.18);
   --color-text-bright: #1c1a16;
   --color-text-primary: #1c1a16;
   --color-text-secondary: #3f3a32;
@@ -73,7 +73,7 @@ body {
 }
 
 ::selection {
-  background: rgba(183, 196, 154, 0.35);
+  background: rgba(30, 77, 50, 0.22);
   color: #1c1a16;
 }
 
@@ -124,7 +124,7 @@ input:focus-visible {
 }
 
 .resume-subtitle {
-  color: #8a6d3b;
+  color: #1e4d32;
 }
 
 .resume-contact {
@@ -132,7 +132,7 @@ input:focus-visible {
 }
 
 .resume-contact a {
-  color: #8a6d3b;
+  color: #1e4d32;
   text-decoration: none;
 }
 
@@ -141,7 +141,7 @@ input:focus-visible {
 }
 
 .resume-heading {
-  color: #8a6d3b;
+  color: #1e4d32;
   border-bottom: 1px solid #d8cdb6;
 }
 
@@ -154,7 +154,7 @@ input:focus-visible {
 }
 
 .resume-company {
-  color: #6b5d40;
+  color: #3d5c47;
 }
 
 .resume-dates {
@@ -162,11 +162,11 @@ input:focus-visible {
 }
 
 .resume-bullet {
-  color: #b89a5e;
+  color: #3d5c47;
 }
 
 .resume-link {
-  color: #8a6d3b;
+  color: #1e4d32;
   text-decoration: none;
 }
 
