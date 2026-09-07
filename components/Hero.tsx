@@ -34,7 +34,7 @@ export default function Hero() {
             Open to AE &amp; GTM roles · B2B SaaS
           </p>
           <h2 className="font-display text-[34px] sm:text-[54px] lg:text-[64px] font-medium text-ink leading-[1.06] tracking-[-0.03em] mt-7 sm:mt-8 text-balance">
-            Sales &amp; go-to-market.
+            Sales &amp; go-to-market
           </h2>
           <p className="font-display text-[22px] sm:text-[28px] lg:text-[32px] font-medium text-gold leading-[1.2] tracking-[-0.02em] mt-3 sm:mt-4 text-balance">
             &amp; the custom AI systems I build.

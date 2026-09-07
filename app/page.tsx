@@ -15,8 +15,8 @@ export default function Page() {
       <SiteHeader />
       <main className="relative z-10 max-w-page mx-auto px-4 sm:px-10 lg:px-12 pb-4">
         <Hero />
-        <SalesMethodology />
         <AskSection />
+        <SalesMethodology />
         <ExperienceSection />
         <SystemsSection />
         <ClosingHero />
