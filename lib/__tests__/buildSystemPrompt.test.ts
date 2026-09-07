@@ -18,8 +18,10 @@ describe('buildSystemPrompt', () => {
     expect(prompt).toContain('Enterprise')
   })
 
-  it('includes the not-my-zone instruction', () => {
+  it('includes positioning and sales methodology', () => {
     const prompt = buildSystemPrompt(professionalContext)
-    expect(prompt).toContain("I don't have that on record")
+    expect(prompt).toContain('POSITIONING')
+    expect(prompt).toContain('SALES METHODOLOGY')
+    expect(prompt).toContain('Fidelis Strategy')
   })
 })

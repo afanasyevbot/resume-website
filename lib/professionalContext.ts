@@ -2,7 +2,7 @@ import type { ProfessionalContext } from './types'
 
 export const professionalContext: ProfessionalContext = {
   summary:
-    'Top-performing B2B SaaS account executive with 5 years closing new business and expansion revenue across mid-market buyers. Prescriptive selling: diagnose pain, guide the buying process, and teach how the solution solves it. Drove 58% ARR growth in a single fiscal year through consultative, value-based sales cycles with C-level decision-makers. Currently ranked #1 in net-new production on a 9-person strategic initiative. Concurrently founded Fidelis Strategy and built 7 production systems, including a live monetized SaaS product, two lead-generation platforms, multi-agent buyer intelligence, a valuation workspace, a consumer PWA, and a full church technology buildout.',
+    'Full-cycle B2B SaaS account executive with five years selling complex solutions across mid-market buyers. Prescriptive selling: find the pain, guide the buying process, and teach how the platform solves it. Currently Net New AE at SPS Commerce, including AI go-to-market with VPs and directors alongside core supply chain sales. Ranked #1 in net-new production on a 9-person strategic initiative (Q1 2026), 102.6% FY25 quota, and highest close rate in the division. Runs Fidelis Strategy end to end while carrying full quota: client work, delivery, GTM, and production builds for $1M-$10M businesses. Seven production systems deployed, including a live monetized SaaS product (Fidelis Pulse), M&A buyer intelligence, two lead-gen platforms, a valuation workspace, a consumer PWA, and a custom church portal on Azure SQL.',
 
   identity: {
     name: 'Matthew Afanasiev',
@@ -10,7 +10,7 @@ export const professionalContext: ProfessionalContext = {
     phone: '651-468-1408',
     linkedin: 'linkedin.com/in/matthewafanasiev',
     calendly: 'calendly.com/mafanasiev-fidelisstrategy/30min',
-    websites: ['fidelisstrategy.net', 'fidelispulse.com'],
+    websites: ['mafanasiev.me', 'fidelisstrategy.net', 'fidelispulse.com'],
     education: 'BBA, Marketing Management, University of St. Thomas, 2017–2021',
     firstGenGrad: true,
   },
@@ -104,7 +104,7 @@ export const professionalContext: ProfessionalContext = {
       ],
       aiContext: {
         situation:
-          'Entry-level AE role, high volume, retailer-mandated deadlines, non-technical buyers. Had to close quickly and translate technical compliance requirements into business language.',
+          'Entry-level AE role, high volume, retailer-driven onboarding deadlines, non-technical buyers. Had to close quickly and translate technical compliance requirements into business language. Partnered with major retailers on supplier onboarding campaigns as the seller of the solutions.',
         approach:
           'Disciplined cadence. Simplified the value message, focused on what happens if they miss the deadline (chargebacks, lost retail relationships) rather than features. Built rapport fast, moved quickly.',
         results: '#1 of 40 AEs. 151% quota attainment. Consistent top performer from day one.',
@@ -137,7 +137,7 @@ export const professionalContext: ProfessionalContext = {
   ],
 
   salesContext: {
-    inboundExperience: 'Has worked both outbound and inbound motions. At UnitedHealth Group, converted high-volume inbound calls into enrolled health plan members — pure inbound qualification and conversion. At SPS Commerce Community Sales, worked retailer-driven inbound campaigns where suppliers were mandated to onboard, requiring fast qualification and closing under deadline pressure. Primary outbound experience across the SPS Commerce mid-market and net-new roles.',
+    inboundExperience: 'Has worked both outbound and inbound motions. At UnitedHealth Group, converted high-volume inbound calls into enrolled health plan members. At SPS Commerce Community Sales, worked retailer-driven inbound campaigns where suppliers needed to onboard on deadline, requiring fast qualification and closing under pressure. As the seller on those campaigns, partnered with major retailers on supplier onboarding programs. Primary outbound experience across the SPS Commerce mid-market and net-new roles.',
     dealSizeRange: 'Deal sizes varied significantly based on product and scope. Simple compliance and portal solutions were smaller transactional deals. Complex engagements involving full system integrations, multi-product combinations (analytics, POS data, revenue recovery, chargeback), and ERP connectivity with multiple stakeholders across IT, finance, and operations were considerably larger. The range reflected the breadth of what was being sold, not a fixed deal motion.',
     largestDeal: 'The more complex deals involving full integrations and multiple products across multiple stakeholders represented the higher end of the range.',
     products: [
@@ -163,9 +163,10 @@ export const professionalContext: ProfessionalContext = {
   },
 
   headlineMetrics: [
-    { value: '#1', label: 'Net New Performer · Q1 2026' },
+    { value: '#1', label: 'Net-New Production · Q1 2026' },
+    { value: '102.6%', label: 'FY25 Attainment' },
     { value: '58%', label: 'ARR Growth · FY24' },
-    { value: '5yr', label: 'Sales Experience' },
+    { value: '7', label: 'Production Systems Built' },
   ],
 
   keyStats: [
@@ -335,15 +336,58 @@ export const professionalContext: ProfessionalContext = {
   ],
 
   resumeStats: [
-    { big: '#1', sub: 'OF 30 AES  ·  Q1 2026' },
+    { big: '#1', sub: 'NET-NEW PRODUCTION · Q1 2026' },
     { big: '102.6%', sub: 'FY25 ATTAINMENT' },
-    { big: '58%', sub: 'ARR GROWTH  ·  FY24' },
-    { big: '7', sub: 'SYSTEMS BUILT' },
+    { big: '58%', sub: 'ARR GROWTH · FY24' },
+    { big: '7', sub: 'PRODUCTION SYSTEMS' },
   ],
 
   resumeSkills: [
-    { category: 'SALES', items: 'Full-Cycle SaaS Sales, Consultative Discovery, Multithreading, Value & ROI Selling, New Business Acquisition, Account Expansion & Upsell, Pipeline Building from Zero, Contract Negotiation' },
-    { category: 'AI & TECH', items: 'Claude API & Agent SDK, RAG / pgvector, Next.js, Supabase / Postgres, Stripe, Playwright, Apollo, Salesforce, Power BI' },
+    {
+      category: 'SALES',
+      items:
+        'Full-Cycle Mid-Market Hunter, Consultative Discovery, Technical Discovery, Product Demonstration, Pipeline Building from Zero, Self-Sourced Outbound, Multithreading, Value & ROI Selling, New Business Acquisition, Account Expansion',
+    },
+    {
+      category: 'AI & TECH',
+      items:
+        'Claude Code, Cursor, Claude API & Agent SDK, RAG / pgvector, Next.js, Supabase / Postgres, Stripe, Playwright, Apollo, Salesforce, Power BI',
+    },
+  ],
+
+  positioning: {
+    openTo: 'Account executive and go-to-market (AE & GTM) roles in B2B SaaS',
+    currentRole:
+      'Net New AE at SPS Commerce. Full-cycle sales rep for complex B2B SaaS, including AI go-to-market with VPs and directors. Based in Minneapolis.',
+    salesHeadline: 'I close deals. I build AI systems.',
+    gtmHeadline: 'I build AI systems. I drive go-to-market strategy.',
+    fidelisValue:
+      'Fidelis Strategy runs end to end alongside SPS, not just GTM. Matthew owns client work, delivery, scoping, sourcing, closing, and the production builds. Serves $1M-$10M businesses on strategy, revenue operations, and AI enablement. First engagement projected $2M revenue impact. Built Fidelis Pulse (live SaaS with Stripe, QuickBooks, Xero, Plaid), M&A buyer intelligence, lead-gen platforms, valuation workspace, Glow Routine PWA, and Grace Church custom portal on Azure SQL.',
+    prescriptiveSelling:
+      'Find the pain, guide the buying process, teach how the platform solves it. Discovery with operators and executives on SaaS deals, prescriptive evaluation guidance, demos mapped to named pain, ROI before pricing, multithreading through security and procurement.',
+  },
+
+  salesMethodology: [
+    {
+      step: '01',
+      title: 'Find the pain',
+      body: 'Discovery with operators and executives on a SaaS deal: map how they buy and work today, quantify the cost of the current state, and isolate the workflow pain that actually moves budget.',
+    },
+    {
+      step: '02',
+      title: 'Guide the buying process',
+      body: 'Prescriptive selling. Most buyers do not know what good looks like in a software evaluation yet. Walk them through who needs to be in the room, what questions to ask, and what a real platform has to cover.',
+    },
+    {
+      step: '03',
+      title: 'Teach the solution',
+      body: 'Translate the platform into their workflow. Demo against the pain already named, with an ROI case before anyone asks for pricing, legal, or a timeline.',
+    },
+    {
+      step: '04',
+      title: 'Close with conviction',
+      body: 'Multithread across IT, finance, and operations. Keep the buying committee aligned through security review and procurement, remove scheduling bottlenecks, and close when the path is obvious.',
+    },
   ],
 
   skills: {

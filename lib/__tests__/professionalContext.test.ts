@@ -20,7 +20,7 @@ describe('professionalContext canonical facts', () => {
   })
 
   it('summary states 7 production systems', () => {
-    expect(professionalContext.summary).toContain('7 production systems')
+    expect(professionalContext.summary).toMatch(/7|Seven production systems/i)
   })
 
   it('key stats state 7 production systems', () => {

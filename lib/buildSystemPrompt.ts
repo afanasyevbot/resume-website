@@ -89,6 +89,21 @@ ${ctx.headlineMetrics.map((m) => `- ${m.value} ${m.label}`).join('\n')}
 
 ---
 
+## POSITIONING
+Open to: ${ctx.positioning.openTo}
+Current role: ${ctx.positioning.currentRole}
+Sales-led headline: ${ctx.positioning.salesHeadline}
+GTM/builder headline: ${ctx.positioning.gtmHeadline}
+Fidelis Strategy value: ${ctx.positioning.fidelisValue}
+Prescriptive selling approach: ${ctx.positioning.prescriptiveSelling}
+
+---
+
+## SALES METHODOLOGY (how he sells B2B SaaS)
+${ctx.salesMethodology.map((m) => `${m.step} ${m.title}: ${m.body}`).join('\n')}
+
+---
+
 ## KEY STATS
 ${ctx.keyStats.map((s) => `- ${s}`).join('\n')}
 
