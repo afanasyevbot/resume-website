@@ -55,7 +55,7 @@ export const experience = [
     fullTitle: 'Associate Account Executive, Community Sales',
     bullets: [
       '#1 of 40 AEs · 151% quota · highest close rate',
-      'Partnered with major retailers on supplier onboarding campaigns — sold the solutions to mandated trading partners',
+      'Partnered with major retailers on supplier onboarding campaigns — sold the solutions to trading partners',
       'Trained hundreds of trading partners on EDI and order-to-cash',
     ],
   },

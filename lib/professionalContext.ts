@@ -99,7 +99,7 @@ export const professionalContext: ProfessionalContext = {
         'Ranked #1 of 40 AEs with the highest close rate at 151% quota attainment. High-volume new business territory.',
       bullets: [
         'Ranked #1 of 40 AEs with the highest close rate at 151% quota attainment',
-        'Partnered with major retailers on supplier onboarding campaigns — sold the solutions to mandated trading partners',
+        'Partnered with major retailers on supplier onboarding campaigns — sold the solutions to trading partners',
         'Educated hundreds of trading partners on EDI compliance and order-to-cash optimization',
       ],
       aiContext: {
