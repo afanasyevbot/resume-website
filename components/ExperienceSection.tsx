@@ -10,7 +10,7 @@ export default function ExperienceSection() {
           Experience
         </h2>
         <p className="text-[15px] sm:text-[16px] leading-[1.65] mt-4 max-w-[52ch] text-muted">
-          Current role at SPS Commerce first. Fidelis Strategy runs alongside that job.
+          Current role at SPS Commerce first. Fidelis Strategy runs alongside that job — end to end, not just GTM.
         </p>
       </div>
 

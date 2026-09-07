@@ -6,7 +6,7 @@ export const professionalContext: ProfessionalContext = {
 
   identity: {
     name: 'Matthew Afanasiev',
-    email: 'Afanasyev27@live.com',
+    email: 'mafanasiev@outlook.com',
     phone: '651-468-1408',
     linkedin: 'linkedin.com/in/matthewafanasiev',
     calendly: 'calendly.com/mafanasiev-fidelisstrategy/30min',
@@ -26,7 +26,8 @@ export const professionalContext: ProfessionalContext = {
       bullets: [
         'Selected for a 9-person net-new strategic initiative; led the division in new subscriber sales, ranking #1 in individual net-new production',
         'Ranked 5th of 30 AEs (FY25, 102.6% quota attainment) with the highest close rate in the division; recognized as top-performing rep in Q1 2026',
-        'Full-cycle deals across retail, food, manufacturing, and fashion verticals',
+        'Full-cycle sales of complex B2B SaaS across retail, food, manufacturing, and fashion verticals',
+        'AI go-to-market with VPs and directors alongside core supply chain solutions',
         'Consultative discovery with C-suite decision-makers, mapping workflows end-to-end to build ROI cases',
       ],
       aiContext: {
@@ -48,7 +49,8 @@ export const professionalContext: ProfessionalContext = {
       preview:
         'Built 7 production systems while carrying full quota, including 2 lead-generation platforms. Growth consultancy serving $1M–$10M businesses. Built and launched a monetized SaaS product from scratch.',
       bullets: [
-        'Founded a growth strategy consultancy serving early- and growth-stage businesses ($1M–$10M) on strategic planning, revenue operations, and AI enablement',
+        'Runs Fidelis Strategy end to end while carrying full quota at SPS — client work, delivery, GTM, and the builds behind it',
+        'Growth consultancy serving early- and growth-stage businesses ($1M–$10M) on strategic planning, revenue operations, and AI enablement',
         'Built 7 production systems using modern APIs and LLM platforms — not demos, working products in production, including 2 lead-generation systems',
         'Developed proprietary 4D Growth Engine framework (Diagnose, Design, Deliver, Drive); first engagement projected $2M in revenue impact',
         'Fidelis Pulse: live SaaS platform for financial advisors and owners — three billing tiers, Claude for Financial Services-powered Close add-on, QuickBooks + Xero + Plaid integrations, multi-tenant architecture',
@@ -97,7 +99,7 @@ export const professionalContext: ProfessionalContext = {
         'Ranked #1 of 40 AEs with the highest close rate at 151% quota attainment. High-volume new business territory.',
       bullets: [
         'Ranked #1 of 40 AEs with the highest close rate at 151% quota attainment',
-        'Partnered with major retailers to design supplier onboarding campaigns',
+        'Partnered with major retailers on supplier onboarding campaigns — sold the solutions to trading partners',
         'Educated hundreds of trading partners on EDI compliance and order-to-cash optimization',
       ],
       aiContext: {
@@ -317,8 +319,10 @@ export const professionalContext: ProfessionalContext = {
       name: 'Grace Church, Full Technology Buildout',
       badge: 'Pro Bono',
       description:
-        'Pro bono technology consulting for Grace Evangelical Church. Complete tech stack modernization: Microsoft 365 business tenant setup, staff email accounts, donation platform integration, spend management workflow, full site redesign with new brand system, and content tooling for a non-technical team. Phase 2: QuickBooks Online implementation.',
+        'Pro bono technology consulting for Grace Evangelical Church. Built a custom member portal and back end on Azure SQL, plus Microsoft 365 business tenant setup, staff email accounts, donation platform integration, spend management workflow, full site redesign with new brand system, and content tooling for a non-technical team. Phase 2: QuickBooks Online implementation.',
       stack: [
+        'Custom member portal',
+        'Azure SQL database',
         'Microsoft 365 tenant',
         'Staff email accounts',
         'Donation platform',

@@ -17,7 +17,7 @@ export default function Footer() {
             href={calendlyUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 min-h-[48px] px-6 py-3 rounded-[8px] text-[14px] font-semibold transition-all bg-gold text-ink border border-gold hover:opacity-90"
+            className="inline-flex items-center justify-center gap-2 min-h-[48px] px-6 py-3 rounded-[8px] text-[14px] font-semibold transition-all bg-gold text-white border border-gold hover:opacity-90"
           >
             Book 20 minutes
           </a>

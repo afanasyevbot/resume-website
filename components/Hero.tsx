@@ -2,7 +2,7 @@ import Image from 'next/image'
 import { calendlyUrl } from '@/lib/siteContent'
 
 const stats = [
-  { number: '#1', label: 'of 30 AEs · Q1 2026' },
+  { number: '#1', label: 'net-new production · Q1 2026' },
   { number: '102.6%', label: 'FY25 attainment' },
   { number: '58%', label: 'ARR growth · FY24' },
   { number: '7', label: 'systems built' },
@@ -37,14 +37,14 @@ export default function Hero() {
             I sell by guiding the buyer.
           </h2>
           <p className="text-[15px] sm:text-[16px] text-muted leading-[1.65] mt-5 mx-auto max-w-[42ch] px-1">
-            Five years in B2B SaaS. Prescriptive selling: find the pain, walk the buying process, and teach how the solution solves it.
+            Five years selling complex B2B SaaS. Prescriptive selling: find the pain, walk the buying process, and teach how the platform solves it.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5">
             <a
               href={calendlyUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 min-h-[48px] px-6 py-3 rounded-[8px] text-[14px] font-semibold transition-all bg-gold text-ink border border-gold hover:opacity-90"
+              className="inline-flex items-center justify-center gap-2 min-h-[48px] px-6 py-3 rounded-[8px] text-[14px] font-semibold transition-all bg-gold text-white border border-gold hover:opacity-90"
             >
               Book 20 minutes
             </a>
@@ -70,7 +70,7 @@ export default function Hero() {
           ))}
         </div>
         <p className="text-[14px] sm:text-[15px] text-muted leading-[1.65] mt-8 max-w-[52ch] mx-auto text-center">
-          Current role: Net New AE at SPS Commerce. Full-cycle mid-market deals with operators who need a guide, not a pitch deck. Based in Minneapolis.
+          Current role: Net New AE at SPS Commerce — full-cycle sales rep for complex B2B SaaS, including AI go-to-market with VPs and directors. Five years in B2B SaaS. Based in Minneapolis.
         </p>
       </div>
     </section>

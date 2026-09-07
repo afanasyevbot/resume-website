@@ -97,7 +97,7 @@ export default function SystemsSection() {
                 Glow Routine
               </h3>
               <p className="text-[15px] text-muted leading-[1.7]">
-                Skincare tracking PWA with AM/PM checklists, streak tracking, and an advisor. Side project. Expand the app to tap through it.
+                Skincare tracking PWA with AM/PM checklists, streak tracking, and an advisor. Side project — expand below to tap through a preview.
               </p>
               <div className="mt-5 flex flex-wrap items-center gap-3">
                 <button
@@ -120,7 +120,7 @@ export default function SystemsSection() {
               </div>
             </div>
             {glowOpen && (
-              <div className="border-t border-border bg-[#faf8f6] px-3 py-5 sm:px-6 sm:py-8">
+              <div className="border-t border-border bg-[#faf8f6] px-3 py-5 sm:px-6 sm:py-6 max-h-[min(70vh,560px)] overflow-y-auto">
                 <GlowRoutineApp />
               </div>
             )}
@@ -146,8 +146,9 @@ export default function SystemsSection() {
                 Grace Church
               </h3>
               <p className="text-[15px] text-muted leading-[1.7]">
-                Full digital transformation: website rebrand, online giving, Microsoft 365 for staff email, and a member portal for announcements, groups, and volunteer coordination.
+                Built a custom member portal and back end on Azure SQL — website rebrand, online giving, Microsoft 365 for staff email, and tools for announcements, groups, and volunteer coordination.
               </p>
+              <p className="text-[12px] text-ghost mt-5 pt-5 border-t border-border">Next.js · Azure SQL · Microsoft 365 · Donation platform</p>
               <a
                 href="https://eagangrace.com"
                 target="_blank"
