@@ -4,27 +4,19 @@ import { calendlyUrl, publicEmail } from '@/lib/siteContent'
 export default function Footer() {
   return (
     <footer id="contact" className="section-divider pb-16 sm:pb-20">
-      <div className="text-center mx-auto max-w-[40rem]">
+      <div className="glass-panel text-center mx-auto max-w-[40rem] px-6 py-12 sm:px-10 sm:py-14">
         <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-ghost mb-3">Contact</p>
         <h2 className="font-display text-[28px] sm:text-[44px] font-medium text-ink leading-[1.12] tracking-[-0.02em] mb-4 text-balance">
           Open to account executive and go-to-market roles
         </h2>
         <p className="text-[15px] text-muted leading-[1.65] mb-8">
-          B2B SaaS: full-cycle sales, prescriptive discovery, and the systems behind the pitch. Book 20 minutes or share a JD.
+          B2B SaaS: full-cycle sales, prescriptive discovery, and the systems behind the pitch. Book 30 minutes or share a JD.
         </p>
         <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center justify-center gap-2.5">
-          <a
-            href={calendlyUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 min-h-[48px] px-6 py-3 rounded-[8px] text-[14px] font-semibold transition-all bg-gold text-white border border-gold hover:opacity-90"
-          >
-            Book 20 minutes
+          <a href={calendlyUrl} target="_blank" rel="noopener noreferrer" className="btn-primary">
+            Book 30 minutes
           </a>
-          <a
-            href="/resume"
-            className="inline-flex items-center justify-center gap-2 min-h-[48px] px-6 py-3 rounded-[8px] text-[14px] font-semibold transition-all bg-surface text-ink border border-border hover:bg-paper hover:border-ink/20"
-          >
+          <a href="/resume" className="btn-ghost">
             <Image src="/icons/document.svg" alt="" aria-hidden width={16} height={16} />
             Résumé
           </a>

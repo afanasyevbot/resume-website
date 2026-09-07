@@ -1,17 +1,17 @@
 export default function ClosingHero() {
   return (
-    <section id="skills" className="section-divider py-20 sm:py-28">
-      <div className="text-center mx-auto px-1">
+    <section id="skills" className="section-divider py-16 sm:py-24">
+      <div className="glass-panel text-center mx-auto px-6 py-14 sm:px-12 sm:py-20 max-w-[44rem] reveal-up">
         <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-ghost mb-6">The close</p>
-        <h2 className="font-display font-medium text-ink leading-[0.95] tracking-[-0.04em] text-[40px] sm:text-[72px] lg:text-[88px]">
+        <h2 className="font-display font-medium text-ink leading-[0.95] tracking-[-0.04em] text-[40px] sm:text-[72px] lg:text-[80px]">
           Sales.
           <br />
           Depth.
           <br />
-          Builder fluency.
+          <span className="text-gold">Builder fluency.</span>
         </h2>
         <p className="text-[15px] sm:text-[16px] text-muted leading-[1.65] mt-8 mx-auto max-w-[36ch]">
-          Five years selling complex B2B SaaS. Seven systems shipped while carrying quota.
+          Five years selling complex B2B SaaS. 7 production systems built while carrying quota.
         </p>
       </div>
     </section>

@@ -40,7 +40,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Matthew Afanasiev · AE & GTM',
     description:
-      'B2B SaaS account executive. Prescriptive selling, five years closing, seven systems built.',
+      'B2B SaaS account executive. Prescriptive selling, five years closing, 7 production systems built.',
     url: 'https://mafanasiev.me',
     type: 'website',
   },

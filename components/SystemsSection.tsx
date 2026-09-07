@@ -13,7 +13,7 @@ export default function SystemsSection() {
       <div className="mb-10 sm:mb-14">
         <p className="text-[11px] font-medium uppercase tracking-[0.18em] mb-3 text-ghost">Selected work</p>
         <h2 className="font-display text-[30px] sm:text-[40px] lg:text-[44px] font-medium leading-[1.12] tracking-[-0.02em] max-w-[22ch] text-ink">
-          Seven systems built in production
+          7 production systems built
         </h2>
         <p className="text-[15px] sm:text-[16px] leading-[1.65] mt-4 max-w-[52ch] text-muted">
           Signature work built while carrying quota: live product, two lead-gen systems, client platforms, and one expandable app.
@@ -21,7 +21,7 @@ export default function SystemsSection() {
       </div>
 
       <div className="space-y-6">
-        <article className="card overflow-hidden signature-card">
+        <article className="card card-lift overflow-hidden signature-card">
           <div className="p-6 sm:p-8">
             <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Signature build · M&amp;A advisory</p>
             <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-3 text-[26px] sm:text-[32px]">
@@ -37,7 +37,7 @@ export default function SystemsSection() {
         </article>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <article className="card overflow-hidden">
+          <article className="card card-lift overflow-hidden">
             <div className="p-6 sm:p-7">
               <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Own product · Live SaaS</p>
               <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-3 text-[22px] sm:text-[26px]">
@@ -59,7 +59,7 @@ export default function SystemsSection() {
             </div>
           </article>
 
-          <article className="card overflow-hidden">
+          <article className="card card-lift overflow-hidden">
             <div className="p-6 sm:p-7">
               <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Lead gen · M&amp;A advisory</p>
               <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-3 text-[22px] sm:text-[26px]">
@@ -72,7 +72,7 @@ export default function SystemsSection() {
             </div>
           </article>
 
-          <article className="card overflow-hidden lg:col-span-2">
+          <article className="card card-lift overflow-hidden lg:col-span-2">
             <div className="p-6 sm:p-7">
               <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Lead gen · Real estate tech</p>
               <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-3 text-[22px] sm:text-[26px]">
@@ -90,7 +90,7 @@ export default function SystemsSection() {
       <div className="mt-12">
         <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-ghost mb-4">Other</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <article className="card overflow-hidden md:col-span-2">
+          <article className="card card-lift overflow-hidden md:col-span-2">
             <div className="p-6 sm:p-7">
               <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Consumer PWA · expandable app</p>
               <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-3 text-[20px] sm:text-[22px]">
@@ -126,7 +126,7 @@ export default function SystemsSection() {
             )}
           </article>
 
-          <article className="card overflow-hidden">
+          <article className="card card-lift overflow-hidden">
             <div className="p-6 sm:p-7">
               <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Client build · Advisory</p>
               <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-3 text-[20px] sm:text-[22px]">
@@ -139,7 +139,7 @@ export default function SystemsSection() {
             </div>
           </article>
 
-          <article className="card overflow-hidden">
+          <article className="card card-lift overflow-hidden">
             <div className="p-6 sm:p-7">
               <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Pro bono</p>
               <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-3 text-[20px] sm:text-[22px]">
