@@ -14,9 +14,13 @@ export default function ExperienceSection() {
         </p>
       </div>
 
-      <ul className="space-y-0 mt-4">
-        {experience.map((role) => (
-          <li key={role.fullTitle} className="py-10 sm:py-12 border-b border-border/50">
+      <ul className="space-y-4 mt-4">
+        {experience.map((role, i) => (
+          <li
+            key={role.fullTitle}
+            className="glass-tile glass-tile-lift p-6 sm:p-8 reveal-up"
+            style={{ animationDelay: `${i * 70}ms` }}
+          >
             <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 sm:gap-6">
               <h3
                 className="font-display text-[22px] sm:text-[28px] font-semibold text-ink leading-[1.15] tracking-[-0.02em]"

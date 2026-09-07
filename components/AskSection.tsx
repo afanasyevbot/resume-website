@@ -119,7 +119,7 @@ export default function AskSection() {
         </p>
       </div>
 
-      <div className="card overflow-hidden p-5 sm:p-8">
+      <div className="glass-panel overflow-hidden p-5 sm:p-8">
         {limitReached ? (
           <div className="text-center py-4">
             <p className="font-display text-[22px] text-ink mb-5">&ldquo;That&apos;s enough, just set the call with Matthew.&rdquo;</p>
@@ -127,7 +127,7 @@ export default function AskSection() {
               href={calendlyUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center min-h-[48px] px-7 py-3 rounded-[8px] text-[14px] font-semibold bg-gold text-white border border-gold hover:opacity-90"
+              className="btn-primary"
             >
               Schedule 20 minutes →
             </a>
@@ -143,7 +143,7 @@ export default function AskSection() {
                     type="button"
                     onClick={() => sendMessage(chip)}
                     disabled={loading}
-                    className="min-h-[48px] text-[13px] text-muted border border-border rounded-[8px] px-4 py-2.5 bg-paper hover:border-gold/70 hover:bg-gold/15 transition-colors disabled:opacity-50"
+                    className="min-h-[48px] text-[13px] text-muted border border-glass-border rounded-[12px] px-4 py-2.5 glass-tile hover:border-gold/50 transition-colors disabled:opacity-50"
                   >
                     {chip}
                   </button>

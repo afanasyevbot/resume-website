@@ -1,4 +1,5 @@
 import SiteHeader from '@/components/SiteHeader'
+import SiteBackdrop from '@/components/SiteBackdrop'
 import Hero from '@/components/Hero'
 import SalesMethodology from '@/components/SalesMethodology'
 import AskSection from '@/components/AskSection'
@@ -9,9 +10,10 @@ import Footer from '@/components/Footer'
 
 export default function Page() {
   return (
-    <>
+    <div className="site-canvas">
+      <SiteBackdrop />
       <SiteHeader />
-      <main className="max-w-page mx-auto px-4 sm:px-10 lg:px-12 pb-4">
+      <main className="relative z-10 max-w-page mx-auto px-4 sm:px-10 lg:px-12 pb-4">
         <Hero />
         <SalesMethodology />
         <AskSection />
@@ -20,6 +22,6 @@ export default function Page() {
         <ClosingHero />
         <Footer />
       </main>
-    </>
+    </div>
   )
 }

@@ -31,14 +31,16 @@ export default function SiteHeader() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
-        scrolled ? 'bg-paper/92 border-b border-border/70 backdrop-blur-md' : 'bg-transparent'
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? 'bg-[rgba(246,231,200,0.72)] border-b border-white/50 backdrop-blur-xl shadow-[0_8px_32px_-12px_rgba(30,77,50,0.12)]'
+          : 'bg-transparent'
       }`}
     >
       <div className="max-w-page mx-auto px-4 sm:px-10 lg:px-12 h-[64px] sm:h-[68px] relative flex items-center gap-2">
         <button
           type="button"
-          className="lg:hidden shrink-0 min-h-[44px] min-w-[44px] px-3 rounded-full border border-border bg-surface/80 text-[12px] font-medium text-ink"
+          className="lg:hidden shrink-0 min-h-[44px] min-w-[44px] px-3 rounded-full glass-tile text-[12px] font-medium text-ink"
           aria-expanded={open}
           aria-label={open ? 'Close menu' : 'Open menu'}
           onClick={() => setOpen((v) => !v)}
@@ -71,7 +73,7 @@ export default function SiteHeader() {
           <button
             type="button"
             onClick={openAsk}
-            className="inline-flex items-center justify-center min-h-[44px] px-3 sm:px-5 rounded-full border border-border bg-surface/80 text-[12px] font-medium text-ink hover:bg-surface transition-colors"
+            className="inline-flex items-center justify-center min-h-[44px] px-3 sm:px-5 rounded-full glass-tile glass-tile-lift text-[12px] font-medium text-ink"
           >
             <span className="sm:hidden">Ask</span>
             <span className="hidden sm:inline">Ask a question</span>
@@ -80,7 +82,7 @@ export default function SiteHeader() {
       </div>
 
       {open && (
-        <div className="lg:hidden border-t border-border bg-paper px-5 py-4 flex flex-col gap-2">
+        <div className="lg:hidden border-t border-white/40 glass-panel mx-3 mb-3 px-5 py-4 flex flex-col gap-2">
           {links.map((l) => (
             <a
               key={l.href}

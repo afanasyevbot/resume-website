@@ -12,6 +12,7 @@
   --color-ghost: #8a8478;
   --color-gold: #1e4d32;
   --color-gold-dim: rgba(30, 77, 50, 0.18);
+  --color-glass-border: rgba(255, 255, 255, 0.65);
   --color-text-bright: #1c1a16;
   --color-text-primary: #1c1a16;
   --color-text-secondary: #3f3a32;
@@ -25,7 +26,22 @@
   --font-sans: var(--font-inter), sans-serif;
 
   --max-w-page: 1080px;
-  --radius-card: 8px;
+  --radius-card: 16px;
+  --radius-glass: 20px;
+  --glass-bg: rgba(255, 252, 245, 0.52);
+  --glass-bg-strong: rgba(255, 252, 245, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.65);
+  --glass-border-outer: rgba(30, 77, 50, 0.14);
+  --glass-shadow:
+    0 1px 1px rgba(255, 255, 255, 0.8) inset,
+    0 -1px 1px rgba(30, 77, 50, 0.04) inset,
+    0 4px 24px -6px rgba(30, 77, 50, 0.12),
+    0 18px 48px -20px rgba(28, 26, 22, 0.14);
+  --glass-shadow-lift:
+    0 1px 1px rgba(255, 255, 255, 0.9) inset,
+    0 -1px 1px rgba(30, 77, 50, 0.05) inset,
+    0 8px 32px -8px rgba(30, 77, 50, 0.18),
+    0 28px 64px -24px rgba(28, 26, 22, 0.2);
 }
 
 * {
@@ -88,14 +104,212 @@ input:focus-visible {
   outline-offset: 1px;
 }
 
+/* ── Public site: ambient canvas + glass tiles ───────────────── */
+.site-canvas {
+  position: relative;
+  isolation: isolate;
+}
+
+.site-backdrop {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.ambient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(72px);
+  opacity: 0.55;
+  will-change: transform;
+}
+
+.ambient-orb--gold {
+  width: min(52vw, 520px);
+  height: min(52vw, 520px);
+  background: radial-gradient(circle, rgba(30, 77, 50, 0.22) 0%, transparent 68%);
+  top: -8%;
+  right: -12%;
+  animation: ambient-drift 22s ease-in-out infinite alternate;
+}
+
+.ambient-orb--warm {
+  width: min(44vw, 440px);
+  height: min(44vw, 440px);
+  background: radial-gradient(circle, rgba(212, 168, 83, 0.28) 0%, transparent 70%);
+  bottom: 18%;
+  left: -14%;
+  animation: ambient-drift 28s ease-in-out infinite alternate-reverse;
+}
+
+.ambient-orb--soft {
+  width: min(36vw, 360px);
+  height: min(36vw, 360px);
+  background: radial-gradient(circle, rgba(255, 248, 235, 0.9) 0%, transparent 72%);
+  top: 42%;
+  left: 38%;
+  opacity: 0.35;
+  animation: ambient-drift 18s ease-in-out infinite alternate;
+}
+
+@keyframes ambient-drift {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(24px, -18px) scale(1.06); }
+}
+
+.glass-tile {
+  background: var(--glass-bg);
+  backdrop-filter: blur(18px) saturate(1.35);
+  -webkit-backdrop-filter: blur(18px) saturate(1.35);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-glass);
+  box-shadow: var(--glass-shadow);
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.25s ease;
+}
+
+.glass-tile-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--glass-shadow-lift);
+  border-color: color-mix(in srgb, var(--color-gold) 28%, var(--glass-border));
+}
+
+.glass-tile-strong {
+  background: var(--glass-bg-strong);
+}
+
+.glass-panel {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(22px) saturate(1.4);
+  -webkit-backdrop-filter: blur(22px) saturate(1.4);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-glass);
+  box-shadow: var(--glass-shadow);
+}
+
 .card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-card);
+  background: var(--glass-bg);
+  backdrop-filter: blur(18px) saturate(1.35);
+  -webkit-backdrop-filter: blur(18px) saturate(1.35);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-glass);
+  box-shadow: var(--glass-shadow);
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--glass-shadow-lift);
 }
 
 .signature-card {
-  border-color: color-mix(in srgb, var(--color-gold) 55%, var(--color-border));
+  border-color: color-mix(in srgb, var(--color-gold) 42%, var(--glass-border));
+  box-shadow:
+    var(--glass-shadow),
+    0 0 0 1px color-mix(in srgb, var(--color-gold) 12%, transparent);
+}
+
+.stat-tile {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px) saturate(1.3);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--glass-shadow);
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.stat-tile:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: var(--glass-shadow-lift);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 48px;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  background: linear-gradient(145deg, #245a3c 0%, var(--color-gold) 55%, #1a3d28 100%);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.25) inset,
+    0 8px 24px -6px rgba(30, 77, 50, 0.45);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.3) inset,
+    0 12px 32px -8px rgba(30, 77, 50, 0.5);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 48px;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--color-ink);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 16px -8px rgba(28, 26, 22, 0.12);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-ghost:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--color-gold) 35%, var(--glass-border));
+  box-shadow: var(--glass-shadow);
+}
+
+.reveal-up {
+  animation: reveal-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient-orb,
+  .reveal-up {
+    animation: none !important;
+  }
+  .glass-tile-lift:hover,
+  .card-lift:hover,
+  .stat-tile:hover,
+  .btn-primary:hover,
+  .btn-ghost:hover {
+    transform: none;
+  }
 }
 
 .hero-portrait-arch {
