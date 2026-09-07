@@ -129,7 +129,7 @@ export default function AskSection() {
               rel="noopener noreferrer"
               className="btn-primary"
             >
-              Schedule 20 minutes →
+              Schedule 30 minutes →
             </a>
           </div>
         ) : (

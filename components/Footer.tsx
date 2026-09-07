@@ -10,11 +10,11 @@ export default function Footer() {
           Open to account executive and go-to-market roles
         </h2>
         <p className="text-[15px] text-muted leading-[1.65] mb-8">
-          B2B SaaS: full-cycle sales, prescriptive discovery, and the systems behind the pitch. Book 20 minutes or share a JD.
+          B2B SaaS: full-cycle sales, prescriptive discovery, and the systems behind the pitch. Book 30 minutes or share a JD.
         </p>
         <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center justify-center gap-2.5">
           <a href={calendlyUrl} target="_blank" rel="noopener noreferrer" className="btn-primary">
-            Book 20 minutes
+            Book 30 minutes
           </a>
           <a href="/resume" className="btn-ghost">
             <Image src="/icons/document.svg" alt="" aria-hidden width={16} height={16} />
