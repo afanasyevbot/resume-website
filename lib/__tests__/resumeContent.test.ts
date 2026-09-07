@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { resumeVariants, archetypeToVariant, contactLine } from '../resumeContent'
+import { resumeVariants, archetypeToVariant, contactLine, formatAllResumeVariantsForPrompt, formatResumeVariantForPrompt } from '../resumeContent'
 
 describe('resumeContent', () => {
   it('maps classic-ats to sales and AI archetypes to gtm', () => {
@@ -22,5 +22,13 @@ describe('resumeContent', () => {
     expect(resumeVariants.gtm.headline).toContain('go-to-market')
     expect(resumeVariants.gtm.gtmExpertise?.length).toBeGreaterThan(0)
     expect(resumeVariants.gtm.signatureBuild?.name).toContain('Buyer Intelligence')
+  })
+
+  it('formats both variants for AI prompt', () => {
+    const sales = formatResumeVariantForPrompt('sales')
+    const all = formatAllResumeVariantsForPrompt()
+    expect(sales).toContain('Sales-led')
+    expect(all).toContain('AI GTM')
+    expect(all).toContain('Signature build')
   })
 })

@@ -256,3 +256,64 @@ export function contactLine(): string {
   const c = RESUME_CONTACT
   return `${c.phone} · ${c.email} · ${c.linkedin} · ${c.fidelis} · ${c.site}`
 }
+
+function formatRoleBlock(role: ResumeRoleBlock): string {
+  const header = `${role.title}, ${role.company} (${role.dates}${role.concurrent ? ', concurrent' : ''})`
+  const bullets = role.bullets.map((b) => `  - ${b}`).join('\n')
+  return `${header}\n${bullets}`
+}
+
+function formatProjectBlock(proj: ResumeProjectBlock): string {
+  return `- **${proj.name}** (${proj.badge}): ${proj.description} Stack: ${proj.stack}.`
+}
+
+/** Curated resume copy for AI chat, matcher, and tailor — same source as PDF/DOCX. */
+export function formatResumeVariantForPrompt(variant: ResumeVariant): string {
+  const v = resumeVariants[variant]
+  const label = variant === 'sales' ? 'Sales-led (Commercial AE)' : 'AI GTM (Builder-forward)'
+  const lines = [
+    `### ${label}`,
+    `Subtitle: ${v.subtitle}`,
+    `Headline: ${v.headline}`,
+    `Tagline: ${v.tagline}`,
+    `Summary: ${v.summary}`,
+    `Stats: ${v.stats.map((s) => `${s.big} ${s.sub}`).join(' | ')}`,
+    '',
+    'Experience (curated resume bullets):',
+    ...v.roles.map((r) => formatRoleBlock(r)),
+  ]
+
+  if (variant === 'gtm') {
+    if (v.gtmExpertise?.length) {
+      lines.push('', 'GTM expertise:', ...v.gtmExpertise.map((item) => `  - ${item}`))
+    }
+    if (v.toolsStack?.length) {
+      lines.push('', 'Tools & stack:', ...v.toolsStack.map((item) => `  - ${item}`))
+    }
+    if (v.whatDrivesMe) lines.push('', `What drives him: ${v.whatDrivesMe}`)
+    if (v.signatureBuild) {
+      lines.push('', 'Signature build:', formatProjectBlock(v.signatureBuild))
+    }
+    if (v.additionalBuilds?.length) {
+      lines.push('', 'Additional builds:', ...v.additionalBuilds.map((p) => formatProjectBlock(p)))
+    }
+  } else {
+    lines.push('', 'AI systems built (resume highlights):', ...v.projects.map((p) => formatProjectBlock(p)))
+    if (v.skills.length) {
+      lines.push('', 'Core skills:')
+      for (const skill of v.skills) lines.push(`  ${skill.category}: ${skill.items}`)
+    }
+  }
+
+  return lines.join('\n')
+}
+
+export function formatAllResumeVariantsForPrompt(): string {
+  return [
+    'Matthew maintains two curated resume variants. Use the sales-led variant for commercial AE / hunter roles. Use the AI GTM variant for GTM, founding AE, or AI-native builder-forward roles.',
+    '',
+    formatResumeVariantForPrompt('sales'),
+    '',
+    formatResumeVariantForPrompt('gtm'),
+  ].join('\n')
+}
