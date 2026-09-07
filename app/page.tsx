@@ -5,7 +5,6 @@ import SalesMethodology from '@/components/SalesMethodology'
 import AskSection from '@/components/AskSection'
 import ExperienceSection from '@/components/ExperienceSection'
 import SystemsSection from '@/components/SystemsSection'
-import ClosingHero from '@/components/ClosingHero'
 import Footer from '@/components/Footer'
 
 export default function Page() {
@@ -19,7 +18,6 @@ export default function Page() {
         <SalesMethodology />
         <ExperienceSection />
         <SystemsSection />
-        <ClosingHero />
         <Footer />
       </main>
     </div>
