@@ -12,7 +12,7 @@ import {
 } from '@/lib/engine/webResearch'
 
 export const runtime = 'nodejs'
-export const maxDuration = 300
+export const maxDuration = 60
 
 const TAVILY_API_KEY = process.env.TAVILY_API_KEY
 

@@ -5,7 +5,7 @@ import { loadRoleForApply, submitAndPersist } from '@/lib/engine/submitRole'
 import { updateSlackMessage } from '@/lib/engine/slack/client'
 
 export const runtime = 'nodejs'
-export const maxDuration = 300
+export const maxDuration = 60
 
 /**
  * Slack Interactivity callback — [✅ Approve] / [✗ Skip] buttons.

@@ -8,7 +8,7 @@ import { verifySessionToken, SESSION_COOKIE } from '@/lib/engine/auth'
 
 export const runtime = 'nodejs'
 // Browser submits are slow; same ceiling as the Slack interactions route.
-export const maxDuration = 300
+export const maxDuration = 60
 
 /**
  * POST /api/engine/approval/[roleId] — dashboard approve/skip for roles parked

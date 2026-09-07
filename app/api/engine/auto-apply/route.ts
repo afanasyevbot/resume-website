@@ -18,7 +18,7 @@ import { SUBMITTABLE_ATS_ARR } from '@/lib/engine/ats/capability'
 
 export const runtime = 'nodejs'
 // Browser submits run sequentially and can be slow; Vercel Pro allows up to 300s.
-export const maxDuration = 300
+export const maxDuration = 60
 
 interface AutoApplyResult {
   roleId: number

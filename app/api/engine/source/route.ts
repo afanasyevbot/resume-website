@@ -6,7 +6,7 @@ import { anthropicKey } from '@/lib/env'
 
 export const runtime = 'nodejs'
 // Sourcing can take a while: 12 companies × several scoring calls × ~2-15s each
-export const maxDuration = 300
+export const maxDuration = 60
 
 export async function POST(req: Request) {
   // Parse optional caps from body

@@ -9,7 +9,7 @@ import { anthropicKey } from '@/lib/env'
 import { learnFromAnswers } from '@/lib/engine/slack/learnFacts'
 
 export const runtime = 'nodejs'
-export const maxDuration = 300
+export const maxDuration = 60
 
 const CHANNEL_ID = process.env.SLACK_CHANNEL_ID
 
