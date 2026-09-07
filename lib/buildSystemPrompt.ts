@@ -1,4 +1,5 @@
 import type { ProfessionalContext } from './types'
+import { formatAllResumeVariantsForPrompt, contactLine, RESUME_CONTACT } from './resumeContent'
 
 export function buildSystemPrompt(ctx: ProfessionalContext): string {
   const rolesText = ctx.roles
@@ -45,7 +46,8 @@ RULES:
 - Decline gracefully if asked personal questions unrelated to professional background.
 - Do not use em dashes.
 - Use clean markdown formatting: bold for key terms, bullet points for lists, a short header (##) when the answer covers multiple distinct topics. Keep structure minimal — only add formatting when it genuinely aids readability.
-- When referencing deal sizes, frame the upper range naturally (e.g. "deals reaching into the $40K-$50K range") rather than stating a maximum as a hard claim.
+- When asked how Matthew would position for a role, which resume to use, or what his résumé says: use the CURATED RESUME VARIANTS section. Sales-led for commercial AE roles; AI GTM for GTM or builder-forward roles.
+- Prefer curated resume bullets over raw role bullets when answering résumé or application questions.
 
 ---
 
@@ -57,11 +59,13 @@ ${ctx.summary}
 ## IDENTITY
 Name: ${ctx.identity.name}
 Email: ${ctx.identity.email}
+Phone: ${RESUME_CONTACT.phone}
 LinkedIn: ${ctx.identity.linkedin}
 Education: ${ctx.identity.education}
 First-generation college graduate: ${ctx.identity.firstGenGrad ? 'yes' : 'no'}
 Calendly: https://${ctx.identity.calendly}
 Websites: ${ctx.identity.websites.join(', ')}
+Résumé contact line: ${contactLine()}
 
 ---
 
@@ -86,6 +90,26 @@ ${ctx.salesContext.industries.map((i) => `- ${i}`).join('\n')}
 
 ## HEADLINE METRICS (the numbers shown on his site)
 ${ctx.headlineMetrics.map((m) => `- ${m.value} ${m.label}`).join('\n')}
+
+---
+
+## POSITIONING
+Open to: ${ctx.positioning.openTo}
+Current role: ${ctx.positioning.currentRole}
+Sales-led headline: ${ctx.positioning.salesHeadline}
+GTM/builder headline: ${ctx.positioning.gtmHeadline}
+Fidelis Strategy value: ${ctx.positioning.fidelisValue}
+Prescriptive selling approach: ${ctx.positioning.prescriptiveSelling}
+
+---
+
+## SALES METHODOLOGY (how he sells B2B SaaS)
+${ctx.salesMethodology.map((m) => `${m.step} ${m.title}: ${m.body}`).join('\n')}
+
+---
+
+## CURATED RESUME VARIANTS (same copy as downloadable résumés and engine PDFs)
+${formatAllResumeVariantsForPrompt()}
 
 ---
 

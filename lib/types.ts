@@ -48,6 +48,15 @@ export interface ProfessionalContext {
   proBono: Project[]
   resumeStats: { big: string; sub: string }[]
   resumeSkills: { category: string; items: string }[]
+  positioning: {
+    openTo: string
+    currentRole: string
+    salesHeadline: string
+    gtmHeadline: string
+    fidelisValue: string
+    prescriptiveSelling: string
+  }
+  salesMethodology: { step: string; title: string; body: string }[]
   skills: {
     deep: string[]
     conversant: string[]
