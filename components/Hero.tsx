@@ -37,7 +37,7 @@ export default function Hero() {
             Sales &amp; go-to-market.
           </h2>
           <p className="font-display text-[22px] sm:text-[28px] lg:text-[32px] font-medium text-gold leading-[1.2] tracking-[-0.02em] mt-3 sm:mt-4 text-balance">
-            Plus the AI systems I build.
+            &amp; the custom AI systems I build.
           </p>
           <p className="text-[15px] sm:text-[17px] text-muted leading-[1.7] mt-7 sm:mt-8 mx-auto max-w-[46ch] px-1">
             Five years closing complex B2B SaaS — prescriptive discovery on the deal side, production systems leveraging AI on the build side. Both while carrying quota.
