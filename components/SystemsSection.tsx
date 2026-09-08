@@ -49,16 +49,16 @@ export default function SystemsSection() {
               <Image
                 src="/images/logos/fidelis-pulse.png"
                 alt="Fidelis Pulse"
-                width={200}
-                height={48}
-                className="h-8 sm:h-9 w-auto mb-5"
+                width={226}
+                height={61}
+                className="h-14 sm:h-16 w-auto mb-6"
               />
               <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Own product · For business owners</p>
               <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-3 text-[22px] sm:text-[26px]">
                 Fidelis Pulse
               </h3>
               <p className="text-[15px] text-muted leading-[1.7]">
-                Live financial command center for owner-operators. Pulse Score, cash, margin, AR, anomaly detection, and a weekly priority card. QuickBooks, Xero, Plaid, and Stripe sync.
+                The dashboard that gives you a pulse on your business by consolidating all of your data in one place.
               </p>
               <a
                 href={pulseProductUrl}
@@ -78,16 +78,16 @@ export default function SystemsSection() {
               <Image
                 src="/images/logos/fidelis-advisor.png"
                 alt="Fidelis Advisor"
-                width={220}
-                height={48}
-                className="h-8 sm:h-9 w-auto mb-5"
+                width={234}
+                height={61}
+                className="h-14 sm:h-16 w-auto mb-6"
               />
-              <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Own product · For M&amp;A advisors</p>
+              <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Own product · For M&amp;A firms</p>
               <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-3 text-[22px] sm:text-[26px]">
                 Fidelis Advisor
               </h3>
               <p className="text-[15px] text-muted leading-[1.7]">
-                Advisor workspace for exit planners and M&amp;A firms. Buyer-Ready Score per client, 9-module diligence questionnaire, document room, and quarterly review PDFs. Fidelis Close for active deals.
+                A workspace for M&amp;A firms to onboard clients, keep them ready for a buyer, share documents, and send notes and reminders.
               </p>
               <a
                 href={advisorUrl}
