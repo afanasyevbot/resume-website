@@ -12,17 +12,18 @@ export default function Hero() {
   return (
     <section className="relative pt-[104px] sm:pt-[116px] pb-14 sm:pb-20 overflow-hidden">
       <div
-        className="pointer-events-none hidden md:block absolute top-[88px] sm:top-[96px] right-0 lg:-right-2 xl:right-0 w-[200px] lg:w-[260px] xl:w-[300px] aspect-[7/9] hero-portrait-arch z-0"
+        className="pointer-events-none hidden md:block absolute top-[88px] sm:top-[96px] right-[10%] lg:right-[16%] xl:right-[20%] w-[200px] lg:w-[260px] xl:w-[300px] aspect-[7/9] hero-portrait-arch z-0"
         aria-hidden="true"
       >
-        <div className="absolute -inset-8 rounded-full bg-gradient-to-br from-gold/20 via-transparent to-transparent blur-2xl opacity-70" />
+        <div className="absolute -inset-12 rounded-full bg-gradient-to-l from-[#f6e7c8]/50 via-gold/15 to-transparent blur-3xl opacity-90" />
+        <div className="absolute inset-y-0 -left-16 w-24 bg-gradient-to-r from-[#f6e7c8] to-transparent opacity-80" />
         <div className="relative overflow-hidden bg-transparent w-full h-full">
           <Image
             src="/images/headshot-sm.webp"
             alt=""
             fill
             sizes="(max-width: 1024px) 200px, 300px"
-            className="object-contain object-center drop-shadow-[0_12px_32px_rgba(30,77,50,0.18)]"
+            className="object-contain object-center"
             priority
           />
         </div>
