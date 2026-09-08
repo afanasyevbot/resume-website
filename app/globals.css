@@ -482,31 +482,13 @@ input:focus-visible {
 }
 
 .hero-portrait-arch {
-  -webkit-mask-image: radial-gradient(
-    108% 118% at 54% 52%,
-    #000 0%,
-    #000 36%,
-    #000000d9 48%,
-    #000000a6 58%,
-    #00000073 68%,
-    #00000040 78%,
-    #0000 94%
-  );
-  mask-image: radial-gradient(
-    108% 118% at 54% 52%,
-    #000 0%,
-    #000 36%,
-    #000000d9 48%,
-    #000000a6 58%,
-    #00000073 68%,
-    #00000040 78%,
-    #0000 94%
-  );
+  -webkit-mask-image: radial-gradient(96% 108% at 62% 50%, #000 0% 42%, #000000b3 56%, #00000066 70%, #0000 88%);
+  mask-image: radial-gradient(96% 108% at 62% 50%, #000 0% 42%, #000000b3 56%, #00000066 70%, #0000 88%);
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
-  opacity: 0.8;
+  opacity: 0.92;
 }
 
 /* ── Résumé route ───────────────────────────────────────── */

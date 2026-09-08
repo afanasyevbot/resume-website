@@ -13,20 +13,17 @@ export default function Hero() {
     <section className="relative pt-[104px] sm:pt-[116px] pb-14 sm:pb-20 overflow-hidden">
       <div className="relative reveal-up">
         <div
-          className="pointer-events-none hidden md:block absolute top-1/2 -translate-y-[46%] right-[6%] lg:right-[12%] xl:right-[16%] w-[240px] lg:w-[320px] xl:w-[380px] aspect-[7/9] hero-portrait-arch z-0"
+          className="pointer-events-none hidden md:block absolute top-1/2 -translate-y-1/2 right-0 lg:-right-6 xl:-right-4 w-[min(46vw,280px)] lg:w-[400px] xl:w-[460px] aspect-[7/9] hero-portrait-arch z-0"
           aria-hidden="true"
         >
-          <div className="absolute -inset-16 rounded-full bg-[radial-gradient(circle_at_40%_50%,rgba(246,231,200,0.75)_0%,rgba(246,231,200,0.35)_42%,transparent_72%)] blur-3xl" />
-          <div className="absolute inset-y-[-8%] -left-28 w-36 bg-gradient-to-r from-[#f6e7c8] via-[#f6e7c8]/55 to-transparent" />
-          <div className="absolute -top-10 inset-x-[-12%] h-20 bg-gradient-to-b from-[#f6e7c8] to-transparent opacity-70" />
-          <div className="absolute -bottom-10 inset-x-[-12%] h-20 bg-gradient-to-t from-[#f6e7c8] to-transparent opacity-70" />
+          <div className="absolute -inset-10 rounded-full bg-gradient-to-br from-gold/20 via-transparent to-transparent blur-2xl opacity-70" />
           <div className="relative overflow-hidden bg-transparent w-full h-full">
             <Image
               src="/images/headshot-sm.webp"
               alt=""
               fill
-              sizes="(max-width: 1024px) 280px, 380px"
-              className="object-contain object-center"
+              sizes="(max-width: 1024px) 280px, 460px"
+              className="object-contain object-center drop-shadow-[0_12px_32px_rgba(30,77,50,0.18)]"
               priority
             />
           </div>
