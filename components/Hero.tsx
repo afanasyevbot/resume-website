@@ -11,7 +11,7 @@ const stats = [
 export default function Hero() {
   return (
     <section className="relative pt-[104px] sm:pt-[116px] pb-14 sm:pb-20 overflow-hidden">
-      <div className="mx-auto max-w-[44rem] px-2 sm:px-4 text-center reveal-up">
+      <div className="w-full text-center reveal-up">
         <div
           className="pointer-events-none relative mx-auto mb-10 sm:mb-12 w-[min(62vw,260px)] sm:w-[280px] lg:w-[320px] xl:w-[360px] aspect-[7/9] hero-portrait-arch"
           aria-hidden="true"
