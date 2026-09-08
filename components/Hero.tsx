@@ -16,13 +16,13 @@ export default function Hero() {
           className="pointer-events-none hidden md:block absolute top-1/2 -translate-y-1/2 right-0 lg:-right-6 xl:-right-4 w-[min(46vw,280px)] lg:w-[400px] xl:w-[460px] aspect-[7/9] hero-portrait-arch z-0"
           aria-hidden="true"
         >
-          <div className="relative overflow-hidden bg-transparent w-full h-full">
+          <div className="relative w-full h-full">
             <Image
               src="/images/headshot-sm.webp"
               alt=""
               fill
               sizes="(max-width: 1024px) 280px, 460px"
-              className="object-contain object-center drop-shadow-[0_12px_32px_rgba(30,77,50,0.16)]"
+              className="object-cover object-[center_18%]"
               priority
               quality={92}
             />

@@ -45,23 +45,14 @@ export default function SystemsSection() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <article className="card card-lift overflow-hidden">
-            <div className="border-b border-border bg-[#faf8f4] px-6 pt-5 pb-4">
+            <div className="p-7 sm:p-7">
               <Image
                 src="/images/logos/fidelis-pulse.png"
                 alt="Fidelis Pulse"
                 width={200}
                 height={48}
-                className="h-8 w-auto"
+                className="h-8 sm:h-9 w-auto mb-5"
               />
-              <Image
-                src="/images/systems/fidelis-pulse-og.png"
-                alt="Fidelis Pulse dashboard preview"
-                width={640}
-                height={360}
-                className="mt-4 w-full rounded-lg border border-border/60 shadow-sm"
-              />
-            </div>
-            <div className="p-7 sm:p-7">
               <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Own product · For business owners</p>
               <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-3 text-[22px] sm:text-[26px]">
                 Fidelis Pulse
@@ -83,23 +74,14 @@ export default function SystemsSection() {
           </article>
 
           <article className="card card-lift overflow-hidden">
-            <div className="border-b border-border bg-[#faf8f4] px-6 pt-5 pb-4">
+            <div className="p-7 sm:p-7">
               <Image
                 src="/images/logos/fidelis-advisor.png"
                 alt="Fidelis Advisor"
                 width={220}
                 height={48}
-                className="h-8 w-auto"
+                className="h-8 sm:h-9 w-auto mb-5"
               />
-              <Image
-                src="/images/systems/fidelis-advisor-og.png"
-                alt="Fidelis Advisor workspace preview"
-                width={640}
-                height={360}
-                className="mt-4 w-full rounded-lg border border-border/60 shadow-sm"
-              />
-            </div>
-            <div className="p-7 sm:p-7">
               <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Own product · For M&amp;A advisors</p>
               <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-3 text-[22px] sm:text-[26px]">
                 Fidelis Advisor
