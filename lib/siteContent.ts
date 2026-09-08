@@ -3,6 +3,8 @@ export const OPEN_ASK_EVENT = 'open-ask-ai'
 export const publicEmail = 'mafanasiev@outlook.com'
 export const calendlyUrl = 'https://calendly.com/mafanasiev-fidelisstrategy/30min'
 export const pulseUrl = 'https://fidelispulse.com'
+export const pulseProductUrl = 'https://fidelispulse.com/pulse'
+export const advisorUrl = 'https://fidelispulse.com/advisor'
 export const glowUrl = 'https://glow-routine-seven.vercel.app'
 export const fidelisUrl = 'https://fidelisstrategy.net'
 

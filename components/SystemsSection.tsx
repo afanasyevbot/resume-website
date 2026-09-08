@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import GlowRoutineApp from '@/components/GlowRoutineApp'
-import { glowUrl, pulseUrl } from '@/lib/siteContent'
+import { advisorUrl, glowUrl, pulseProductUrl } from '@/lib/siteContent'
 
 export default function SystemsSection() {
   const [glowOpen, setGlowOpen] = useState(false)
@@ -16,7 +16,7 @@ export default function SystemsSection() {
           7 production systems built
         </h2>
         <p className="text-[15px] sm:text-[16px] leading-[1.65] mt-4 max-w-[52ch] text-muted">
-          Signature work built while carrying quota: live product, two lead-gen systems, client platforms, and one expandable app.
+          Signature work built while carrying quota: live SaaS products, two lead-gen systems, client platforms, and one expandable app.
         </p>
       </div>
 
@@ -45,21 +45,37 @@ export default function SystemsSection() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <article className="card card-lift overflow-hidden">
+            <div className="border-b border-border bg-[#faf8f4] px-6 pt-5 pb-4">
+              <Image
+                src="/images/logos/fidelis-pulse.png"
+                alt="Fidelis Pulse"
+                width={200}
+                height={48}
+                className="h-8 w-auto"
+              />
+              <Image
+                src="/images/systems/fidelis-pulse-og.png"
+                alt="Fidelis Pulse dashboard preview"
+                width={640}
+                height={360}
+                className="mt-4 w-full rounded-lg border border-border/60 shadow-sm"
+              />
+            </div>
             <div className="p-6 sm:p-7">
-              <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Own product · Live SaaS</p>
+              <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Own product · For business owners</p>
               <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-3 text-[22px] sm:text-[26px]">
-                Pulse
+                Fidelis Pulse
               </h3>
               <p className="text-[15px] text-muted leading-[1.7]">
-                Live SaaS platform for financial advisors and owner-operators. Multi-tenant architecture, Stripe billing, QuickBooks + Xero + Plaid integrations, and an advisor workspace. Own product, built while carrying full quota.
+                Live financial command center for owner-operators. Pulse Score, cash, margin, AR, anomaly detection, and a weekly priority card. QuickBooks, Xero, Plaid, and Stripe sync.
               </p>
               <a
-                href={pulseUrl}
+                href={pulseProductUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 text-[14px] text-ink font-semibold mt-5 hover:underline underline-offset-4"
               >
-                View live product
+                View Pulse
                 <Image src="/icons/external-link.svg" alt="" aria-hidden width={14} height={14} />
               </a>
               <p className="text-[12px] text-ghost mt-5 pt-5 border-t border-border">Next.js · Railway Postgres · Stripe · LLM APIs</p>
@@ -67,6 +83,44 @@ export default function SystemsSection() {
           </article>
 
           <article className="card card-lift overflow-hidden">
+            <div className="border-b border-border bg-[#faf8f4] px-6 pt-5 pb-4">
+              <Image
+                src="/images/logos/fidelis-advisor.png"
+                alt="Fidelis Advisor"
+                width={220}
+                height={48}
+                className="h-8 w-auto"
+              />
+              <Image
+                src="/images/systems/fidelis-advisor-og.png"
+                alt="Fidelis Advisor workspace preview"
+                width={640}
+                height={360}
+                className="mt-4 w-full rounded-lg border border-border/60 shadow-sm"
+              />
+            </div>
+            <div className="p-6 sm:p-7">
+              <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Own product · For M&amp;A advisors</p>
+              <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-3 text-[22px] sm:text-[26px]">
+                Fidelis Advisor
+              </h3>
+              <p className="text-[15px] text-muted leading-[1.7]">
+                Advisor workspace for exit planners and M&amp;A firms. Buyer-Ready Score per client, 9-module diligence questionnaire, document room, and quarterly review PDFs. Fidelis Close for active deals.
+              </p>
+              <a
+                href={advisorUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-[14px] text-ink font-semibold mt-5 hover:underline underline-offset-4"
+              >
+                View Advisor
+                <Image src="/icons/external-link.svg" alt="" aria-hidden width={14} height={14} />
+              </a>
+              <p className="text-[12px] text-ghost mt-5 pt-5 border-t border-border">Next.js · Railway Postgres · Stripe · Claude for Finance</p>
+            </div>
+          </article>
+
+          <article className="card card-lift overflow-hidden lg:col-span-2">
             <div className="p-6 sm:p-7 h-full flex flex-col">
               <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Lead gen · Client builds</p>
               <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-4 text-[22px] sm:text-[26px]">
