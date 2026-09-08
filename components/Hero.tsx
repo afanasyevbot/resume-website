@@ -10,10 +10,10 @@ const stats = [
 
 export default function Hero() {
   return (
-    <section className="relative pt-[104px] sm:pt-[116px] pb-14 sm:pb-20 overflow-hidden">
-      <div className="relative lg:min-h-[340px]">
+    <section className="relative pt-[108px] sm:pt-[116px] pb-20 sm:pb-24 overflow-hidden">
+      <div className="relative mx-auto flex flex-col items-center text-center">
         <div
-          className="pointer-events-none relative mx-auto mb-8 sm:mb-10 w-[140px] sm:w-[168px] aspect-[7/9] hero-portrait-arch lg:absolute lg:mx-0 lg:mb-0 lg:top-4 lg:right-4 xl:right-8 lg:w-[220px] xl:w-[252px] reveal-up"
+          className="pointer-events-none relative mb-10 sm:mb-10 w-[136px] sm:w-[148px] aspect-[7/9] hero-portrait-arch reveal-up"
           aria-hidden="true"
         >
           <div className="absolute -inset-6 rounded-full bg-gradient-to-br from-gold/20 via-transparent to-transparent blur-2xl opacity-70" />
@@ -22,55 +22,66 @@ export default function Hero() {
               src="/images/headshot-sm.webp"
               alt="Matthew Afanasiev"
               fill
-              sizes="(max-width: 640px) 140px, (max-width: 1024px) 168px, 420px"
+              sizes="(max-width: 640px) 136px, 148px"
               className="object-contain object-center drop-shadow-[0_12px_32px_rgba(30,77,50,0.18)]"
               priority
             />
           </div>
         </div>
 
-        <div className="relative z-10 mx-auto max-w-[38rem] lg:max-w-[44rem] xl:max-w-[48rem] text-center pt-4 lg:pt-10 lg:pr-[200px] xl:pr-[240px] reveal-up">
-          <p className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.12em] sm:tracking-[0.18em] text-ghost px-3 py-1.5 rounded-full glass-tile">
-            Open to AE &amp; GTM roles · B2B SaaS
+        <div className="glass-panel w-full max-w-[44rem] mx-auto px-6 py-16 sm:px-12 sm:py-20 reveal-up">
+          <p className="text-[12px] font-medium uppercase tracking-[0.2em] text-ghost mb-8 sm:mb-6">
+            The close
           </p>
-          <h2 className="font-display text-[34px] sm:text-[54px] lg:text-[64px] font-medium text-ink leading-[1.06] tracking-[-0.03em] mt-7 sm:mt-8 text-balance">
+          <div className="flex justify-center">
+            <h2 className="hero-close-title font-display font-medium text-ink tracking-[-0.04em] text-center sm:text-left">
+              Sales.
+              <br />
+              Depth.
+              <br />
+              <span className="text-gold">
+                Builder
+                <span className="hidden sm:inline"> </span>
+                <br className="sm:hidden" />
+                fluency.
+              </span>
+            </h2>
+          </div>
+          <p className="font-display text-[24px] sm:text-[28px] lg:text-[32px] font-medium text-ink leading-[1.28] tracking-[-0.02em] mt-10 sm:mt-10 text-balance">
             Sales &amp; go-to-market
-          </h2>
-          <p className="font-display text-[22px] sm:text-[28px] lg:text-[32px] font-medium text-gold leading-[1.2] tracking-[-0.02em] mt-3 sm:mt-4 text-balance">
+          </p>
+          <p className="font-display text-[22px] sm:text-[26px] lg:text-[30px] font-medium text-gold leading-[1.35] tracking-[-0.02em] mt-3 sm:mt-2 max-w-[16ch] sm:max-w-none mx-auto text-balance">
             &amp; the custom AI systems I build.
           </p>
-          <p className="text-[15px] sm:text-[17px] text-muted leading-[1.7] mt-7 sm:mt-8 mx-auto max-w-[46ch] px-1">
-            Five years closing complex B2B SaaS — prescriptive discovery on the deal side, production systems leveraging AI on the build side. Both while carrying quota.
-          </p>
-          <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
-            <a href={calendlyUrl} target="_blank" rel="noopener noreferrer" className="btn-primary">
+          <div className="mt-12 sm:mt-12 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3.5 sm:gap-3">
+            <a href={calendlyUrl} target="_blank" rel="noopener noreferrer" className="btn-primary min-h-[52px] sm:min-h-[48px]">
               Book 30 minutes
             </a>
-            <a href="/resume" className="btn-ghost">
+            <a href="/resume" className="btn-ghost min-h-[52px] sm:min-h-[48px]">
               Résumé
             </a>
           </div>
         </div>
       </div>
 
-      <div className="relative z-10 mt-16 sm:mt-24">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+      <div className="relative z-10 mt-14 sm:mt-24">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-5">
           {stats.map((stat, i) => (
             <div
               key={stat.label}
-              className="stat-tile text-center px-3 py-6 sm:px-5 sm:py-7 reveal-up"
+              className="stat-tile text-center px-4 py-8 sm:px-5 sm:py-7 reveal-up"
               style={{ animationDelay: `${i * 80}ms` }}
               aria-label={`${stat.number} ${stat.label}`}
             >
-              <p className="font-display text-[30px] sm:text-[44px] font-semibold text-ink leading-none tracking-[-0.03em] tabular-nums">
+              <p className="font-display text-[32px] sm:text-[44px] font-semibold text-ink leading-none tracking-[-0.03em] tabular-nums">
                 {stat.number}
               </p>
-              <p className="text-[11px] sm:text-[13px] text-muted leading-[1.45] mt-3">{stat.label}</p>
+              <p className="text-[12px] sm:text-[13px] text-muted leading-[1.55] mt-3.5">{stat.label}</p>
             </div>
           ))}
         </div>
-        <div className="glass-panel mt-10 sm:mt-12 px-6 py-7 sm:px-10 sm:py-9 max-w-[56ch] mx-auto text-center">
-          <p className="text-[14px] sm:text-[15px] text-muted leading-[1.7]">
+        <div className="glass-panel mt-8 sm:mt-12 px-7 py-8 sm:px-10 sm:py-9 max-w-[56ch] mx-auto text-center">
+          <p className="text-[15px] sm:text-[15px] text-muted leading-[1.75]">
             Current role: Net New AE at SPS Commerce — full-cycle sales for complex B2B SaaS, including AI go-to-market with VPs and directors. Based in Minneapolis.
           </p>
         </div>
