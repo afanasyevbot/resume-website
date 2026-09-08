@@ -481,18 +481,6 @@ input:focus-visible {
   }
 }
 
-.hero-close-title {
-  font-size: clamp(2.85rem, 12.5vw, 5rem);
-  line-height: 1.14;
-}
-
-@media (min-width: 640px) {
-  .hero-close-title {
-    font-size: clamp(4.5rem, 8vw, 5rem);
-    line-height: 0.95;
-  }
-}
-
 .hero-portrait-arch {
   -webkit-mask-image: radial-gradient(78% 92% at 58% 48%, #000 0% 48%, #0000008c 62%, #0000 76%);
   mask-image: radial-gradient(78% 92% at 58% 48%, #000 0% 48%, #0000008c 62%, #0000 76%);
