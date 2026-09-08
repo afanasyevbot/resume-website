@@ -51,7 +51,7 @@ export default function SystemsSection() {
                 alt="Fidelis Pulse"
                 width={226}
                 height={61}
-                className="h-14 sm:h-16 w-auto mb-6"
+                className="h-11 sm:h-12 w-auto mb-5"
               />
               <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Own product · For business owners</p>
               <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-3 text-[22px] sm:text-[26px]">
@@ -80,7 +80,7 @@ export default function SystemsSection() {
                 alt="Fidelis Advisor"
                 width={234}
                 height={61}
-                className="h-14 sm:h-16 w-auto mb-6"
+                className="h-11 sm:h-12 w-auto mb-5"
               />
               <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Own product · For M&amp;A firms</p>
               <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-3 text-[22px] sm:text-[26px]">
