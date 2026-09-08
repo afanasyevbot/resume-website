@@ -34,7 +34,7 @@ export default function Hero() {
             Open to AE &amp; GTM roles · B2B SaaS
           </p>
           <div className="flex justify-center mt-7 sm:mt-8">
-            <h1 className="font-display font-semibold text-ink leading-[0.95] tracking-[-0.04em] text-[44px] sm:text-[64px] lg:text-[72px] text-left">
+            <h1 className="font-display font-bold text-ink leading-[0.92] tracking-[-0.04em] text-[48px] sm:text-[68px] lg:text-[76px] text-left">
               Sales.
               <br />
               Depth.
@@ -42,10 +42,10 @@ export default function Hero() {
               <span className="text-gold">Builder fluency.</span>
             </h1>
           </div>
-          <p className="font-display text-[22px] sm:text-[28px] lg:text-[32px] font-medium text-ink leading-[1.2] tracking-[-0.02em] mt-8 sm:mt-9 text-balance">
+          <p className="font-display text-[18px] sm:text-[22px] lg:text-[24px] font-medium text-muted leading-[1.35] tracking-[-0.01em] mt-8 sm:mt-9 text-balance">
             Sales &amp; go-to-market
           </p>
-          <p className="font-display text-[20px] sm:text-[26px] lg:text-[30px] font-medium text-gold leading-[1.25] tracking-[-0.02em] mt-2 sm:mt-3 text-balance">
+          <p className="font-display text-[17px] sm:text-[21px] lg:text-[23px] font-medium text-gold leading-[1.35] tracking-[-0.01em] mt-1.5 sm:mt-2 text-balance">
             &amp; the custom AI systems I build.
           </p>
           <p className="text-[15px] sm:text-[17px] text-muted leading-[1.7] mt-7 sm:mt-8 mx-auto max-w-[46ch] px-1">
