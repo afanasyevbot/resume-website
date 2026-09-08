@@ -66,8 +66,8 @@ body {
 
 .section-divider {
   border-top: 1px solid var(--color-border);
-  margin-top: 1.25rem;
-  padding-top: 3rem;
+  margin-top: 1.5rem;
+  padding-top: 3.5rem;
   scroll-margin-top: 88px;
 }
 
@@ -79,8 +79,8 @@ body {
 }
 
 .section-band {
-  margin-top: 1.75rem;
-  padding-top: 2.75rem;
+  margin-top: 2rem;
+  padding-top: 3.25rem;
   scroll-margin-top: 88px;
 }
 

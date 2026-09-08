@@ -8,7 +8,7 @@ export default function SalesMethodology() {
   const [open, setOpen] = useState(false)
 
   return (
-    <section id="methodology" className="section-band -mx-4 sm:-mx-10 lg:-mx-12">
+    <section id="methodology" className="section-band -mx-5 sm:-mx-10 lg:-mx-12">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}

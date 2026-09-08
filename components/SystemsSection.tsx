@@ -10,7 +10,7 @@ export default function SystemsSection() {
 
   return (
     <section id="builder" className="section-divider">
-      <div className="mb-10 sm:mb-14">
+      <div className="mb-12 sm:mb-14">
         <p className="text-[11px] font-medium uppercase tracking-[0.18em] mb-3 text-ghost">Selected work</p>
         <h2 className="font-display text-[30px] sm:text-[40px] lg:text-[44px] font-medium leading-[1.12] tracking-[-0.02em] max-w-[22ch] text-ink">
           7 production systems built
@@ -22,7 +22,7 @@ export default function SystemsSection() {
 
       <div className="space-y-6">
         <article className="card card-lift overflow-hidden signature-card">
-          <div className="p-6 sm:p-8">
+          <div className="p-7 sm:p-8">
             <Image
               src="/images/logos/paradise-capital.avif"
               alt="Paradise Capital"
@@ -61,7 +61,7 @@ export default function SystemsSection() {
                 className="mt-4 w-full rounded-lg border border-border/60 shadow-sm"
               />
             </div>
-            <div className="p-6 sm:p-7">
+            <div className="p-7 sm:p-7">
               <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Own product · For business owners</p>
               <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-3 text-[22px] sm:text-[26px]">
                 Fidelis Pulse
@@ -99,7 +99,7 @@ export default function SystemsSection() {
                 className="mt-4 w-full rounded-lg border border-border/60 shadow-sm"
               />
             </div>
-            <div className="p-6 sm:p-7">
+            <div className="p-7 sm:p-7">
               <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Own product · For M&amp;A advisors</p>
               <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-3 text-[22px] sm:text-[26px]">
                 Fidelis Advisor
@@ -121,7 +121,7 @@ export default function SystemsSection() {
           </article>
 
           <article className="card card-lift overflow-hidden lg:col-span-2">
-            <div className="p-6 sm:p-7 h-full flex flex-col">
+            <div className="p-7 sm:p-7 h-full flex flex-col">
               <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Lead gen · Client builds</p>
               <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-4 text-[22px] sm:text-[26px]">
                 AI prospecting engines
@@ -152,7 +152,7 @@ export default function SystemsSection() {
         <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-ghost mb-4">More builds</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <article className="card card-lift overflow-hidden md:col-span-2">
-            <div className="p-6 sm:p-7">
+            <div className="p-7 sm:p-7">
               <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Consumer PWA · expandable app</p>
               <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-3 text-[20px] sm:text-[22px]">
                 Glow Routine
@@ -188,7 +188,7 @@ export default function SystemsSection() {
           </article>
 
           <article className="card card-lift overflow-hidden">
-            <div className="p-6 sm:p-7">
+            <div className="p-7 sm:p-7">
               <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Client build · Advisory</p>
               <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-3 text-[20px] sm:text-[22px]">
                 Business Valuation System
@@ -201,7 +201,7 @@ export default function SystemsSection() {
           </article>
 
           <article className="card card-lift overflow-hidden">
-            <div className="p-6 sm:p-7">
+            <div className="p-7 sm:p-7">
               <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Pro bono</p>
               <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-3 text-[20px] sm:text-[22px]">
                 Grace Church

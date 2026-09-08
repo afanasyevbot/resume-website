@@ -13,7 +13,7 @@ export default function Page() {
     <div className="site-canvas">
       <SiteBackdrop />
       <SiteHeader />
-      <main className="relative z-10 max-w-page mx-auto px-4 sm:px-10 lg:px-12 pb-4">
+      <main className="relative z-10 max-w-page mx-auto px-5 sm:px-10 lg:px-12 pb-6 sm:pb-4">
         <Hero />
         <AskSection />
         <SalesMethodology />

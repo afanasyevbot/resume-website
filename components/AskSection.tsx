@@ -108,7 +108,7 @@ export default function AskSection() {
   }
 
   return (
-    <section id="tools" className="ask-section section-band -mx-4 sm:-mx-10 lg:-mx-12 px-4 sm:px-10 lg:px-12">
+    <section id="tools" className="ask-section section-band -mx-5 sm:-mx-10 lg:-mx-12 px-5 sm:px-10 lg:px-12">
       <div className="ask-panel reveal-up">
         <div className="ask-panel-inner">
           <span className="ask-eyebrow">Ask · Role fit</span>

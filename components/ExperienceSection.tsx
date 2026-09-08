@@ -4,7 +4,7 @@ import { experience } from '@/lib/siteContent'
 export default function ExperienceSection() {
   return (
     <section id="experience" className="section-divider">
-      <div className="mb-10 sm:mb-14">
+      <div className="mb-12 sm:mb-14">
         <p className="text-[11px] font-medium uppercase tracking-[0.18em] mb-3 text-ghost">Experience</p>
         <h2 className="font-display text-[30px] sm:text-[40px] lg:text-[44px] font-medium leading-[1.12] tracking-[-0.02em] max-w-[18ch] text-ink">
           Experience
@@ -18,7 +18,7 @@ export default function ExperienceSection() {
         {experience.map((role, i) => (
           <li
             key={role.fullTitle}
-            className="glass-tile glass-tile-lift p-6 sm:p-8 reveal-up"
+            className="glass-tile glass-tile-lift p-7 sm:p-8 reveal-up"
             style={{ animationDelay: `${i * 70}ms` }}
           >
             <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 sm:gap-6">
