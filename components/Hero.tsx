@@ -11,51 +11,47 @@ const stats = [
 export default function Hero() {
   return (
     <section className="relative pt-[104px] sm:pt-[116px] pb-14 sm:pb-20 overflow-hidden">
-      <div className="mx-auto w-full max-w-[56rem] xl:max-w-[60rem] reveal-up">
-        <div className="flex flex-col lg:flex-row items-center justify-center gap-10 sm:gap-12 lg:gap-8 xl:gap-12">
-          <div className="w-full max-w-[38rem] text-center lg:flex-1 lg:min-w-0">
-            <h2 className="font-display font-bold text-ink leading-[0.95] tracking-[-0.04em] text-[40px] sm:text-[72px] lg:text-[76px] xl:text-[80px] text-center">
-              Sales.
-              <br />
-              Depth.
-              <br />
-              <span className="text-gold">Builder fluency.</span>
-            </h2>
-            <p className="font-display text-[18px] sm:text-[22px] lg:text-[24px] font-medium text-muted leading-[1.35] tracking-[-0.01em] mt-8 sm:mt-9 text-balance mx-auto max-w-[34ch]">
-              Sales &amp; go-to-market
-            </p>
-            <p className="font-display text-[17px] sm:text-[21px] lg:text-[23px] font-medium text-gold leading-[1.35] tracking-[-0.01em] mt-1.5 sm:mt-2 text-balance mx-auto max-w-[34ch]">
-              &amp; the custom AI systems I build.
-            </p>
-            <p className="text-[15px] sm:text-[17px] text-muted leading-[1.7] mt-7 sm:mt-8 mx-auto max-w-[46ch]">
-              Five years closing complex B2B SaaS — consultative selling on the deal side, production systems leveraging AI on the build side. Both while carrying quota.
-            </p>
-            <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
-              <a href={calendlyUrl} target="_blank" rel="noopener noreferrer" className="btn-primary">
-                Book 30 minutes
-              </a>
-              <a href="/resume" className="btn-ghost">
-                Résumé
-              </a>
-            </div>
-          </div>
+      <div
+        className="pointer-events-none hidden md:block absolute top-[88px] sm:top-[96px] right-0 lg:-right-2 xl:right-0 w-[200px] lg:w-[260px] xl:w-[300px] aspect-[7/9] hero-portrait-arch z-0"
+        aria-hidden="true"
+      >
+        <div className="absolute -inset-8 rounded-full bg-gradient-to-br from-gold/20 via-transparent to-transparent blur-2xl opacity-70" />
+        <div className="relative overflow-hidden bg-transparent w-full h-full">
+          <Image
+            src="/images/headshot-sm.webp"
+            alt=""
+            fill
+            sizes="(max-width: 1024px) 200px, 300px"
+            className="object-contain object-center drop-shadow-[0_12px_32px_rgba(30,77,50,0.18)]"
+            priority
+          />
+        </div>
+      </div>
 
-          <div
-            className="pointer-events-none relative shrink-0 w-[min(58vw,240px)] sm:w-[260px] lg:w-[300px] xl:w-[340px] aspect-[7/9] hero-portrait-arch -mt-2 lg:-mt-4"
-            aria-hidden="true"
-          >
-            <div className="absolute -inset-10 rounded-full bg-gradient-to-br from-gold/25 via-transparent to-transparent blur-2xl opacity-80" />
-            <div className="relative overflow-hidden bg-transparent w-full h-full">
-              <Image
-                src="/images/headshot-sm.webp"
-                alt="Matthew Afanasiev"
-                fill
-                sizes="(max-width: 640px) 240px, (max-width: 1024px) 260px, 340px"
-                className="object-contain object-center drop-shadow-[0_16px_40px_rgba(30,77,50,0.22)]"
-                priority
-              />
-            </div>
-          </div>
+      <div className="relative z-10 mx-auto w-full max-w-[38rem] text-center reveal-up">
+        <h2 className="font-display font-bold text-ink leading-[0.95] tracking-[-0.04em] text-[40px] sm:text-[72px] lg:text-[76px] xl:text-[80px]">
+          Sales.
+          <br />
+          Depth.
+          <br />
+          <span className="text-gold">Builder fluency.</span>
+        </h2>
+        <p className="font-display text-[18px] sm:text-[22px] lg:text-[24px] font-medium text-muted leading-[1.35] tracking-[-0.01em] mt-8 sm:mt-9 text-balance mx-auto max-w-[34ch]">
+          Sales &amp; go-to-market
+        </p>
+        <p className="font-display text-[17px] sm:text-[21px] lg:text-[23px] font-medium text-gold leading-[1.35] tracking-[-0.01em] mt-1.5 sm:mt-2 text-balance mx-auto max-w-[34ch]">
+          &amp; the custom AI systems I build.
+        </p>
+        <p className="text-[15px] sm:text-[17px] text-muted leading-[1.7] mt-7 sm:mt-8 mx-auto max-w-[46ch]">
+          Five years closing complex B2B SaaS — consultative selling on the deal side, production systems leveraging AI on the build side. Both while carrying quota.
+        </p>
+        <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
+          <a href={calendlyUrl} target="_blank" rel="noopener noreferrer" className="btn-primary">
+            Book 30 minutes
+          </a>
+          <a href="/resume" className="btn-ghost">
+            Résumé
+          </a>
         </div>
       </div>
 
