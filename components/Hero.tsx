@@ -16,15 +16,15 @@ export default function Hero() {
           className="pointer-events-none hidden md:block absolute top-1/2 -translate-y-1/2 right-0 lg:-right-6 xl:-right-4 w-[min(46vw,280px)] lg:w-[400px] xl:w-[460px] aspect-[7/9] hero-portrait-arch z-0"
           aria-hidden="true"
         >
-          <div className="absolute -inset-10 rounded-full bg-gradient-to-br from-gold/20 via-transparent to-transparent blur-2xl opacity-70" />
           <div className="relative overflow-hidden bg-transparent w-full h-full">
             <Image
               src="/images/headshot-sm.webp"
               alt=""
               fill
               sizes="(max-width: 1024px) 280px, 460px"
-              className="object-contain object-center drop-shadow-[0_12px_32px_rgba(30,77,50,0.18)]"
+              className="object-contain object-center drop-shadow-[0_12px_32px_rgba(30,77,50,0.16)]"
               priority
+              quality={92}
             />
           </div>
         </div>
