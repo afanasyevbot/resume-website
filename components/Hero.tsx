@@ -30,17 +30,10 @@ export default function Hero() {
         </div>
 
         <div className="relative z-10 mx-auto max-w-[38rem] lg:max-w-[44rem] xl:max-w-[48rem] text-center pt-4 lg:pt-10 lg:pr-[200px] xl:pr-[240px] reveal-up">
-          <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-ghost mb-6">The close</p>
-          <div className="flex justify-center">
-            <h2 className="font-display font-semibold text-ink leading-[0.95] tracking-[-0.04em] text-[44px] sm:text-[64px] lg:text-[72px] text-left">
-              Sales.
-              <br />
-              Depth.
-              <br />
-              <span className="text-gold">Builder fluency.</span>
-            </h2>
-          </div>
-          <p className="font-display text-[24px] sm:text-[30px] lg:text-[34px] font-semibold text-ink leading-[1.15] tracking-[-0.02em] mt-8 sm:mt-9 text-balance">
+          <p className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.12em] sm:tracking-[0.18em] text-ghost px-3 py-1.5 rounded-full glass-tile">
+            Open to AE &amp; GTM roles · B2B SaaS
+          </p>
+          <p className="font-display text-[24px] sm:text-[30px] lg:text-[34px] font-semibold text-ink leading-[1.15] tracking-[-0.02em] mt-7 sm:mt-8 text-balance">
             Sales &amp; go-to-market
           </p>
           <p className="font-display text-[22px] sm:text-[28px] lg:text-[32px] font-semibold text-gold leading-[1.2] tracking-[-0.02em] mt-2 sm:mt-3 text-balance">
