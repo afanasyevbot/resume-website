@@ -30,10 +30,7 @@ export default function Hero() {
         </div>
 
         <div className="relative z-10 mx-auto max-w-[38rem] lg:max-w-[44rem] xl:max-w-[48rem] text-center pt-4 lg:pt-10 lg:pr-[200px] xl:pr-[240px] reveal-up">
-          <p className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.12em] sm:tracking-[0.18em] text-ghost px-3 py-1.5 rounded-full glass-tile">
-            Open to AE &amp; GTM roles · B2B SaaS
-          </p>
-          <div className="mt-7 sm:mt-8">
+          <div className="mt-2 sm:mt-0">
             <h2 className="font-display font-bold text-ink leading-[0.95] tracking-[-0.04em] text-[40px] sm:text-[72px] lg:text-[80px] text-center">
               Sales.
               <br />
