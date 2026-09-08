@@ -33,14 +33,14 @@ export default function Hero() {
           <p className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.12em] sm:tracking-[0.18em] text-ghost px-3 py-1.5 rounded-full glass-tile">
             Open to AE &amp; GTM roles · B2B SaaS
           </p>
-          <div className="flex justify-center mt-7 sm:mt-8">
-            <h1 className="font-display font-bold text-ink leading-[0.92] tracking-[-0.04em] text-[48px] sm:text-[68px] lg:text-[76px] text-left">
+          <div className="mt-7 sm:mt-8">
+            <h2 className="font-display font-bold text-ink leading-[0.95] tracking-[-0.04em] text-[40px] sm:text-[72px] lg:text-[80px] text-center">
               Sales.
               <br />
               Depth.
               <br />
               <span className="text-gold">Builder fluency.</span>
-            </h1>
+            </h2>
           </div>
           <p className="font-display text-[18px] sm:text-[22px] lg:text-[24px] font-medium text-muted leading-[1.35] tracking-[-0.01em] mt-8 sm:mt-9 text-balance">
             Sales &amp; go-to-market
