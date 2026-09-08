@@ -122,7 +122,7 @@ export default function AskSection() {
           <div className="ask-chat-surface">
             {limitReached ? (
               <div className="text-center py-4">
-                <p className="ask-title text-[22px] font-medium mb-5">&ldquo;That&apos;s enough — book the call.&rdquo;</p>
+                <p className="ask-title text-[22px] font-medium mb-5">&ldquo;That&apos;s enough. Book the call.&rdquo;</p>
                 <a
                   href={calendlyUrl}
                   target="_blank"

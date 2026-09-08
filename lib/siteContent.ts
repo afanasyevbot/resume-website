@@ -29,7 +29,7 @@ export const experience = [
     title: 'Founder & Growth Strategy Consultant',
     fullTitle: 'Founder & Growth Strategy Consultant',
     bullets: [
-      'Runs Fidelis Strategy end to end while carrying full quota at SPS — client work, delivery, GTM, and the builds behind it',
+      'Runs Fidelis Strategy end to end while carrying full quota at SPS: client work, delivery, GTM, and the builds behind it',
       'Growth consultancy serving $1M–$10M businesses on strategy, revenue operations, and AI enablement',
       'Built Fidelis Pulse, a live SaaS platform with billing and accounting integrations',
     ],
@@ -55,7 +55,7 @@ export const experience = [
     fullTitle: 'Associate Account Executive, Community Sales',
     bullets: [
       '#1 of 40 AEs · 151% quota · highest close rate',
-      'Partnered with major retailers on supplier onboarding campaigns — sold the solutions to trading partners',
+      'Partnered with major retailers on supplier onboarding campaigns and sold the solutions to trading partners',
       'Trained hundreds of trading partners on EDI and order-to-cash',
     ],
   },

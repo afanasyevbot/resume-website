@@ -44,7 +44,7 @@ export default function Hero() {
             &amp; the custom AI systems I build.
           </p>
           <p className="text-[15px] sm:text-[17px] text-muted leading-[1.7] mt-7 sm:mt-8 mx-auto max-w-[46ch]">
-            Five years closing complex B2B SaaS — consultative selling on the deal side, production systems leveraging AI on the build side. Both while carrying quota.
+            Five years closing complex B2B SaaS: consultative selling on the deal side, production systems leveraging AI on the build side. Both while carrying quota.
           </p>
           <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
             <a href={calendlyUrl} target="_blank" rel="noopener noreferrer" className="btn-primary">
@@ -75,7 +75,7 @@ export default function Hero() {
         </div>
         <div className="glass-panel mt-10 sm:mt-12 px-6 py-7 sm:px-10 sm:py-9 max-w-[56ch] mx-auto text-center">
           <p className="text-[14px] sm:text-[15px] text-muted leading-[1.7]">
-            Current role: Net New AE at SPS Commerce — full-cycle sales for complex B2B SaaS, including AI go-to-market with VPs and directors. Based in Minneapolis.
+            Current role: Net New AE at SPS Commerce. Full-cycle sales for complex B2B SaaS, including AI go-to-market with VPs and directors. Based in Minneapolis.
           </p>
         </div>
       </div>

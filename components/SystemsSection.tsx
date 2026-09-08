@@ -23,9 +23,16 @@ export default function SystemsSection() {
       <div className="space-y-6">
         <article className="card card-lift overflow-hidden signature-card">
           <div className="p-6 sm:p-8">
+            <Image
+              src="/images/logos/paradise-capital.avif"
+              alt="Paradise Capital"
+              width={220}
+              height={48}
+              className="h-9 sm:h-10 w-auto mb-5"
+            />
             <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Signature build · M&amp;A advisory</p>
             <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-3 text-[26px] sm:text-[32px]">
-              Buyer Engine · Paradise Capital
+              Buyer Engine
             </h3>
             <p className="text-[15px] text-muted leading-[1.7]">
               Full-cycle solo engagement: identified the pain point, pitched the solution, then designed, built, and now maintain a production platform that finds, enriches, and ranks likely buyers for M&amp;A deals. One person owning the pitch, the build, and the running system.
@@ -60,35 +67,35 @@ export default function SystemsSection() {
           </article>
 
           <article className="card card-lift overflow-hidden">
-            <div className="p-6 sm:p-7">
-              <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Lead gen · M&amp;A advisory</p>
-              <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-3 text-[22px] sm:text-[26px]">
-                M&amp;A lead-gen platform
+            <div className="p-6 sm:p-7 h-full flex flex-col">
+              <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Lead gen · Client builds</p>
+              <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-4 text-[22px] sm:text-[26px]">
+                AI prospecting engines
               </h3>
-              <p className="text-[15px] text-muted leading-[1.7]">
-                Automated acquisition-target discovery and qualification. Scoring against buyer criteria, a persistent lead database, and weekly reports for the advisory team.
+              <div className="space-y-5 flex-1">
+                <div>
+                  <p className="text-[13px] font-semibold text-ink mb-1.5">M&amp;A advisory</p>
+                  <p className="text-[15px] text-muted leading-[1.7]">
+                    Automated acquisition-target discovery and qualification. Scoring against buyer criteria, a persistent lead database, and weekly reports for the advisory team.
+                  </p>
+                </div>
+                <div className="pt-5 border-t border-border">
+                  <p className="text-[13px] font-semibold text-ink mb-1.5">Real estate tech</p>
+                  <p className="text-[15px] text-muted leading-[1.7]">
+                    Automated prospect discovery with Playwright scraping, multi-provider enrichment (Apollo, Hunter), ICP scoring, and outreach draft generation on a cron pipeline.
+                  </p>
+                </div>
+              </div>
+              <p className="text-[12px] text-ghost mt-5 pt-5 border-t border-border">
+                Next.js · Playwright · Apollo · Railway · SQLite · Sentry
               </p>
-              <p className="text-[12px] text-ghost mt-5 pt-5 border-t border-border">Next.js · SQLite · Railway · Sentry</p>
-            </div>
-          </article>
-
-          <article className="card card-lift overflow-hidden lg:col-span-2">
-            <div className="p-6 sm:p-7">
-              <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Lead gen · Real estate tech</p>
-              <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-3 text-[22px] sm:text-[26px]">
-                Real estate prospecting engine
-              </h3>
-              <p className="text-[15px] text-muted leading-[1.7]">
-                Automated prospect discovery with Playwright scraping, multi-provider enrichment (Apollo, Hunter), ICP scoring, and outreach draft generation on a cron pipeline.
-              </p>
-              <p className="text-[12px] text-ghost mt-5 pt-5 border-t border-border">Next.js · Playwright · Apollo · Railway</p>
             </div>
           </article>
         </div>
       </div>
 
       <div className="mt-12">
-        <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-ghost mb-4">Other</p>
+        <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-ghost mb-4">More builds</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <article className="card card-lift overflow-hidden md:col-span-2">
             <div className="p-6 sm:p-7">
@@ -97,7 +104,7 @@ export default function SystemsSection() {
                 Glow Routine
               </h3>
               <p className="text-[15px] text-muted leading-[1.7]">
-                Skincare tracking PWA with AM/PM checklists, streak tracking, and an advisor. Side project — expand below to tap through a preview.
+                Skincare tracking PWA with AM/PM checklists, streak tracking, and an advisor. Side project: expand below to tap through a preview.
               </p>
               <div className="mt-5 flex flex-wrap items-center gap-3">
                 <button
@@ -146,7 +153,7 @@ export default function SystemsSection() {
                 Grace Church
               </h3>
               <p className="text-[15px] text-muted leading-[1.7]">
-                Built a custom member portal and back end on Azure SQL — website rebrand, online giving, Microsoft 365 for staff email, and tools for announcements, groups, and volunteer coordination.
+                Built a custom member portal and back end on Azure SQL: website rebrand, online giving, Microsoft 365 for staff email, and tools for announcements, groups, and volunteer coordination.
               </p>
               <p className="text-[12px] text-ghost mt-5 pt-5 border-t border-border">Next.js · Azure SQL · Microsoft 365 · Donation platform</p>
               <a
