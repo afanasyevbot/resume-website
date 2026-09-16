@@ -175,6 +175,8 @@ export const professionalContext: ProfessionalContext = {
     '#1 of 40 AEs at 151% quota attainment (Community Sales)',
     '500+ account portfolio at peak (Mid-Market)',
     '5 years B2B SaaS sales experience',
+    'Currently first or second among 30 account executives year-to-date at SPS Commerce',
+    '5,500+ pull requests shipped in six months across client and product builds',
     'Buyer Engine client result: buyer-list preparation reduced from weeks to minutes (Paradise Capital)',
   ],
 
@@ -328,14 +330,14 @@ export const professionalContext: ProfessionalContext = {
     {
       category: 'AI & TECH',
       items:
-        'LLM APIs, agentic workflows, API integrations, FastAPI, Next.js, Postgres, Supabase',
+        'LLM APIs, agentic workflows, API integrations, FastAPI, Next.js, Postgres, Supabase, 5,500+ pull requests in six months',
     },
   ],
 
   positioning: {
     openTo: 'Account executive and go-to-market (AE & GTM) roles in B2B SaaS',
     currentRole:
-      'Net New AE at SPS Commerce. Full-cycle sales for complex B2B SaaS, partnering with directors and VPs on AI workflow improvements. Based in Minneapolis.',
+      'Net New AE at SPS Commerce. Finished Q1 2026 ranked #1 of 30 account executives; currently first or second among 30 AEs year-to-date. Full-cycle sales for complex B2B SaaS, partnering with directors and VPs on AI workflow improvements. Based in Minneapolis.',
     salesHeadline: 'Account Executive | AI Systems & GTM',
     gtmHeadline: 'Account Executive | AI Systems & GTM',
     fidelisValue:
@@ -371,7 +373,7 @@ export const professionalContext: ProfessionalContext = {
     deep: [
       'Full-cycle B2B SaaS sales (hunting, discovery, demo, negotiation, close)',
       'Consultative discovery and ROI modeling with C-suite buyers',
-      'AI systems building with Claude API, Anthropic Agent SDK, and RAG pipelines',
+      'AI systems building with Claude API, Anthropic Agent SDK, and RAG pipelines; 5,500+ pull requests shipped in six months',
       'Pipeline building from zero, prospecting, ICP targeting, territory strategy',
       'Multi-stakeholder sales cycles across IT, finance, and operations',
     ],

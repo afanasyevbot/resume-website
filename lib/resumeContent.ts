@@ -139,7 +139,7 @@ export const resumeVariants: Record<ResumeVariant, ResumeVariantContent> = {
       },
       {
         category: 'AI & Technical',
-        items: 'LLM APIs, agentic workflows, API integrations, FastAPI, Next.js, Postgres, Supabase',
+        items: 'LLM APIs, agentic workflows, API integrations, FastAPI, Next.js, Postgres, Supabase, 5,500+ pull requests in six months',
       },
     ],
   },
@@ -187,7 +187,7 @@ export const resumeVariants: Record<ResumeVariant, ResumeVariantContent> = {
       },
       {
         category: 'AI & Technical',
-        items: 'Agentic workflows, API integrations, LLM APIs, FastAPI, Next.js, Postgres, Supabase',
+        items: 'Agentic workflows, API integrations, LLM APIs, FastAPI, Next.js, Postgres, Supabase, 5,500+ pull requests in six months',
       },
       {
         category: 'Sales',

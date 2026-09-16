@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import { RESUME_PDF_PATHS } from '@/lib/resumeContent'
-import { heroIntro, heroStatement, professionalLabel } from '@/lib/siteContent'
+import { heroCurrentRoleNote, heroIntro, heroTagline, professionalLabel } from '@/lib/siteContent'
 
 const stats = [
   { number: '#1', label: 'of 30 AEs · Q1 2026' },
@@ -34,10 +34,17 @@ export default function Hero() {
           <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-ghost mb-5">
             {professionalLabel}
           </p>
-          <h2 className="font-display font-bold text-ink leading-[1.08] sm:leading-[1.02] tracking-[-0.04em] text-[32px] sm:text-[56px] lg:text-[60px] xl:text-[64px] text-balance">
-            {heroStatement}
+          <h2 className="font-display font-bold text-ink leading-[1] sm:leading-[0.95] tracking-[-0.04em] text-[36px] sm:text-[72px] lg:text-[76px] xl:text-[80px]">
+            Sales.
+            <br />
+            Depth.
+            <br />
+            <span className="text-gold">Builder fluency.</span>
           </h2>
-          <p className="text-[15px] sm:text-[17px] text-muted leading-[1.75] sm:leading-[1.7] mt-9 sm:mt-8 mx-auto max-w-[22rem] sm:max-w-[52ch]">
+          <p className="font-display text-[16px] sm:text-[19px] lg:text-[20px] font-medium text-muted leading-[1.45] tracking-[-0.01em] mt-8 sm:mt-7 text-balance mx-auto max-w-[22rem] sm:max-w-[40ch]">
+            {heroTagline}
+          </p>
+          <p className="text-[15px] sm:text-[17px] text-muted leading-[1.75] sm:leading-[1.7] mt-7 sm:mt-6 mx-auto max-w-[22rem] sm:max-w-[52ch]">
             {heroIntro}
           </p>
           <div className="mt-12 sm:mt-12 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4 sm:gap-3">
@@ -69,7 +76,7 @@ export default function Hero() {
         </div>
         <div className="glass-panel mt-12 sm:mt-12 px-5 py-8 sm:px-10 sm:py-9 max-w-[56ch] mx-auto text-center">
           <p className="text-[14px] sm:text-[15px] text-muted leading-[1.7]">
-            Current role: Net New AE at SPS Commerce. Full-cycle sales for complex B2B SaaS, partnering with directors and VPs on AI workflow improvements. Based in Minneapolis.
+            {heroCurrentRoleNote}
           </p>
         </div>
       </div>

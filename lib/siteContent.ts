@@ -10,9 +10,12 @@ export const fidelisUrl = 'https://fidelisstrategy.net'
 export const paradiseCaseStudyUrl = 'https://fidelisstrategy.net/'
 
 export const professionalLabel = 'Account Executive | AI Systems & GTM'
-export const heroStatement = 'I sell complex software and build AI systems around real business needs.'
+export const heroTagline = 'I sell complex software and build AI systems around real business needs.'
 export const heroIntro =
   'Five years of B2B SaaS sales experience. At SPS Commerce, I sell complex solutions and partner with directors, VPs, and go-to-market engineers to improve sales workflows. Through Fidelis Strategy, I build custom AI software from business discovery through deployment.'
+export const heroCurrentRoleNote =
+  'Finished Q1 2026 ranked #1 of 30 account executives. Currently first or second among 30 AEs year-to-date. Based in Minneapolis.'
+export const builderCredibilityLine = '5,500+ pull requests shipped in six months across client and product builds.'
 export const personalSignature = 'MY WHY: Faith · Family · First generation'
 
 export const experience = [
