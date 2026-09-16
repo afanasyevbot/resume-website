@@ -10,7 +10,7 @@ describe('buildSystemPrompt', () => {
 
   it('includes deal size context', () => {
     const prompt = buildSystemPrompt(professionalContext)
-    expect(prompt).toContain('$50K')
+    expect(prompt).toContain('$99K')
   })
 
   it('includes explicit gaps', () => {
@@ -28,8 +28,7 @@ describe('buildSystemPrompt', () => {
   it('includes curated resume variants for chat', () => {
     const prompt = buildSystemPrompt(professionalContext)
     expect(prompt).toContain('CURATED RESUME VARIANTS')
-    expect(prompt).toContain('I close deals. I build AI systems.')
-    expect(prompt).toContain('I build AI systems. I drive go-to-market strategy.')
-    expect(prompt).toContain('mafanasiev@outlook.com')
+    expect(prompt).toContain('Account Executive | AI Systems & GTM')
+    expect(prompt).toContain('mattafanasiev@outlook.com')
   })
 })

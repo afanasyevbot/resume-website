@@ -2,11 +2,11 @@ import type { ProfessionalContext } from './types'
 
 export const professionalContext: ProfessionalContext = {
   summary:
-    'Full-cycle B2B SaaS account executive with five years selling complex solutions across mid-market buyers. Prescriptive selling: find the pain, guide the buying process, and teach how the platform solves it. Currently Net New AE at SPS Commerce, including AI go-to-market with VPs and directors alongside core supply chain sales. Ranked #1 in net-new production on a 9-person strategic initiative (Q1 2026), 102.6% FY25 quota, and highest close rate in the division. Runs Fidelis Strategy end to end while carrying full quota: client work, delivery, GTM, and production builds for $1M-$10M businesses. Seven production systems deployed, including a live monetized SaaS product (Fidelis Pulse), M&A buyer intelligence, two lead-gen platforms, a valuation workspace, a consumer PWA, and a custom church portal on Azure SQL.',
+    'Account executive with five years of B2B SaaS sales experience, combining full-cycle selling, AI workflow improvement, and hands-on software delivery. At SPS Commerce, partners with directors, VPs, and go-to-market engineers to improve sales workflows; finished Q1 2026 ranked #1 of 30 account executives with 102.6% FY25 quota and the division\'s highest close rate. Through Fidelis Strategy, builds custom AI software from business discovery through deployment, including the Buyer Engine for Paradise Capital and products Fidelis Pulse and Fidelis Advisor.',
 
   identity: {
     name: 'Matthew Afanasiev',
-    email: 'mafanasiev@outlook.com',
+    email: 'mattafanasiev@outlook.com',
     phone: '651-468-1408',
     linkedin: 'linkedin.com/in/matthewafanasiev',
     calendly: 'calendly.com/mafanasiev-fidelisstrategy/30min',
@@ -22,13 +22,12 @@ export const professionalContext: ProfessionalContext = {
       company: 'SPS Commerce',
       dates: 'Feb 2025 – Present',
       preview:
-        'Selected for an elite 9-person net-new initiative. Zero inherited pipeline. Built from scratch across retail, food, manufacturing, and fashion verticals.',
+        'Finished Q1 2026 ranked #1 of 30 account executives. Partners with leadership on AI workflow improvements alongside full-cycle supply chain sales.',
       bullets: [
-        'Selected for a 9-person net-new strategic initiative; led the division in new subscriber sales, ranking #1 in individual net-new production',
-        'Ranked 5th of 30 AEs (FY25, 102.6% quota attainment) with the highest close rate in the division; recognized as top-performing rep in Q1 2026',
-        'Full-cycle sales of complex B2B SaaS across retail, food, manufacturing, and fashion verticals',
-        'AI go-to-market with VPs and directors alongside core supply chain solutions',
-        'Consultative discovery with C-suite decision-makers, mapping workflows end-to-end to build ROI cases',
+        'Finished Q1 2026 ranked #1 of 30 account executives; achieved 102.6% of FY25 quota with the division\'s highest close rate',
+        'Own full-cycle mid-market sales to operators and CTOs, leading technical discovery and demos around supply-chain integrations',
+        'Serve as a go-to frontline partner to directors and VPs, identifying rep bottlenecks and shaping AI workflow improvements with go-to-market engineers',
+        'Helped lead the AI email-drafting pilot and presented the sales-team launch demo. Reported sales-floor results: users convert leads 10–20% faster and close deals approximately 1.5x faster than non-users',
       ],
       aiContext: {
         situation:
@@ -36,7 +35,7 @@ export const professionalContext: ProfessionalContext = {
         approach:
           'Consultative from the first conversation. The job is less about pitching features and more about teaching — helping prospects understand what they actually need, what questions to ask, and what a good solution looks like before they are ready to commit. Walk them through standing up on SPS supply chain solutions end to end. A growing and increasingly important part of every conversation is educating companies on how AI agents can be integrated directly into their supply chain and order management workflows, turning manual and reactive processes into automated, intelligent ones. Most buyers have heard about AI but have no idea how to apply it to their operations. Being able to explain that credibly, and connect it to their specific workflow, is a genuine differentiator in the sales process.',
         results:
-          'Ranked #1 in the division in net-new production. 5th of 30 AEs overall in FY25 at 102.6% attainment. Highest close rate in the division. Recognized as top performer Q1 2026.',
+          'Finished Q1 2026 ranked #1 of 30 account executives. 102.6% FY25 quota attainment with the division\'s highest close rate. Reported pilot results: users convert leads 10–20% faster and close deals approximately 1.5x faster than non-users.',
         lessons:
           'Pattern recognition beats activity volume. When you understand which accounts have real pain and which do not, you stop chasing and start closing.',
       },
@@ -47,13 +46,12 @@ export const professionalContext: ProfessionalContext = {
       company: 'Fidelis Strategy LLC',
       dates: 'Jan 2026 – Present (concurrent with SPS Commerce)',
       preview:
-        'Built 7 production systems while carrying full quota, including 2 lead-generation platforms. Growth consultancy serving $1M–$10M businesses. Built and launched a monetized SaaS product from scratch.',
+        'Partners with Paradise Capital on Buyer Engine and custom AI workflows. Owns client discovery through deployment while carrying full quota at SPS.',
       bullets: [
-        'Runs Fidelis Strategy end to end while carrying full quota at SPS — client work, delivery, GTM, and the builds behind it',
-        'Growth consultancy serving early- and growth-stage businesses ($1M–$10M) on strategic planning, revenue operations, and AI enablement',
-        'Built 7 production systems using modern APIs and LLM platforms — not demos, working products in production, including 2 lead-generation systems',
-        'Developed proprietary 4D Growth Engine framework (Diagnose, Design, Deliver, Drive); first engagement projected $2M in revenue impact',
-        'Fidelis Pulse: live SaaS platform for financial advisors and owners — three billing tiers, Claude for Financial Services-powered Close add-on, QuickBooks + Xero + Plaid integrations, multi-tenant architecture',
+        'Partner with Paradise Capital on its Buyer Engine and custom AI workflows, translating M&A operating needs into software and ongoing improvements',
+        'Own client discovery, proposals, commercial agreement, solution design, deployment, and ongoing development',
+        'Built Fidelis Pulse (owner dashboards) and Fidelis Advisor (M&A client workspaces) as separate products',
+        'Built AI lead-generation systems and other client platforms with Next.js, FastAPI, Supabase, and LLM APIs',
       ],
       aiContext: {
         situation:
@@ -61,7 +59,7 @@ export const professionalContext: ProfessionalContext = {
         approach:
           'Build production systems, not prototypes. Every tool built has real users, real infrastructure (Next.js, Supabase, Railway, Stripe), and real constraints. Used Anthropic API across all projects, chat advisors, agent pipelines, scoring engines, and lead generation workflows.',
         results:
-          '7 production systems delivered. Two lead-generation platforms for M&A advisory and real estate tech. Fidelis Pulse launched with three billing tiers (Pulse $249/mo, Advisor Starter $499/mo, Advisor Growth $1,299/mo) and a $5,000/engagement Close add-on. M&A client engagement projected $2M revenue impact. Buyer intelligence, valuation, Glow Routine, and Grace Church technology buildout also in production.',
+          'Buyer Engine for Paradise Capital: client reports reducing buyer-list preparation from weeks to minutes. Fidelis Pulse and Fidelis Advisor built as separate products. Additional client builds include lead generation, valuation, Glow Routine, and Grace Church technology.',
         lessons:
           'Execution beats planning. Real users expose problems that specs never anticipate. Building AI systems while selling AI taught me what buyers actually fear vs. what they say they want. The deeper lesson: AI advancements — especially what Anthropic is building toward — have fundamentally changed what is possible for any business. Off-the-shelf software forces a company to reshape its operations around someone else\'s workflows. That is backwards. Every business has specific processes that create their edge, and those processes should not be sacrificed to fit a generic system. With modern AI, you can build systems that conform to how a business actually works, not the other way around. That belief is the foundation of everything I build at Fidelis Strategy.',
       },
@@ -163,24 +161,21 @@ export const professionalContext: ProfessionalContext = {
   },
 
   headlineMetrics: [
-    { value: '#1', label: 'Net-New Production · Q1 2026' },
+    { value: '#1', label: 'Of 30 AEs · Q1 2026' },
     { value: '102.6%', label: 'FY25 Attainment' },
     { value: '58%', label: 'ARR Growth · FY24' },
-    { value: '7', label: 'Production Systems Built' },
+    { value: '5 yrs', label: 'B2B SaaS Sales' },
   ],
 
   keyStats: [
-    '#1 in net-new production in the division, Q1 2026 at SPS Commerce',
-    '5th of 30 AEs overall in FY25 at 102.6% quota attainment',
-    'Highest close rate in the division (current role)',
+    'Finished Q1 2026 ranked #1 of 30 account executives at SPS Commerce',
+    '102.6% FY25 quota attainment with the division\'s highest close rate',
+    'Reported AI pilot results: users convert leads 10–20% faster and close deals approximately 1.5x faster than non-users',
     '58% ARR growth year-over-year in FY24 (Mid-Market AE)',
     '#1 of 40 AEs at 151% quota attainment (Community Sales)',
-    '$99K closed in first 2 months against a $29K ramp quota',
-    'Closed deals reaching into the $40K-$50K range on full-system integration engagements',
-    'Selected for elite 9-person net-new strategic initiative',
     '500+ account portfolio at peak (Mid-Market)',
-    '4.5 years full-cycle B2B SaaS sales at SPS Commerce; 5 years total sales experience',
-    '7 production systems built and deployed while carrying full sales quota, including 2 lead-generation platforms',
+    '5 years B2B SaaS sales experience',
+    'Buyer Engine client result: buyer-list preparation reduced from weeks to minutes (Paradise Capital)',
   ],
 
   starStories: [
@@ -238,57 +233,35 @@ export const professionalContext: ProfessionalContext = {
 
   projects: [
     {
+      name: 'Buyer Engine',
+      badge: 'Paradise Capital',
+      description:
+        'M&A buyer-research platform that finds, enriches, and ranks prospective acquirers. Client reports reducing buyer-list preparation from weeks to minutes.',
+      stack: ['FastAPI', 'Anthropic Agent SDK', 'Supabase', 'Next.js', 'pgvector'],
+      link: 'https://fidelisstrategy.net/',
+    },
+    {
       name: 'Fidelis Pulse',
-      badge: 'Live SaaS Product',
+      badge: 'Own Product',
       description:
-        "Live SaaS platform for financial advisors and owner-operators. Three subscription tiers: Pulse ($249/mo for owners), Advisor Starter ($499/mo per firm), Advisor Growth ($1,299/mo per firm). Close add-on ($5,000/engagement) powered by Claude for Financial Services delivers opinion of value, Q of E, and a buyer-facing data room with magic-link invites. Multi-tenant architecture, Stripe billing, QuickBooks + Xero + Plaid OAuth integrations, and a Claude-powered AI advisor. Live in production with real customers.",
-      stack: [
-        'Next.js 15 App Router',
-        'Railway Postgres',
-        'Stripe (live mode)',
-        'NextAuth 5',
-        'Anthropic Claude API',
-        'QuickBooks Online',
-        'Xero',
-        'Plaid',
-      ],
-      link: 'https://fidelispulse.com',
+        'Business-visibility dashboards that consolidate information for owners.',
+      stack: ['Next.js', 'Railway Postgres', 'Stripe', 'LLM APIs'],
+      link: 'https://fidelispulse.com/pulse',
     },
     {
-      name: 'M&A Advisory, Buyer Intelligence Engine',
-      badge: 'AI Agents · Client',
+      name: 'Fidelis Advisor',
+      badge: 'Own Product',
       description:
-        'Multi-agent platform for a PE advisory firm. Discovers, enriches, and semantically ranks acquisition targets. Uses pgvector for semantic search, Python FastAPI workers for data processing, and Anthropic Managed Agents + Claude Agent SDK for autonomous research tasks. Built as a Turborepo monorepo with Next.js frontend and Supabase backend.',
-      stack: [
-        'Turborepo',
-        'Next.js 15',
-        'Supabase (pgvector + PGMQ)',
-        'FastAPI',
-        'Anthropic Agent SDK',
-        'Anthropic Managed Agents',
-      ],
+        'A workspace for M&A/advisory firms to onboard clients, share documents, and manage notes and reminders.',
+      stack: ['Next.js', 'Railway Postgres', 'Stripe', 'Claude for Finance'],
+      link: 'https://fidelispulse.com/advisor',
     },
     {
-      name: 'M&A Advisory, Lead Generation Platform',
-      badge: 'Lead Gen · Client',
+      name: 'AI Lead Generation',
+      badge: 'Client Build',
       description:
-        'Automated acquisition target discovery and qualification for an M&A advisory client. Claude-powered scoring against buyer criteria, persistent lead database, weekly automated reports for the advisory team. Deployed on Railway with cron-triggered pipeline.',
-      stack: ['Next.js', 'Claude API', 'SQLite', 'Railway', 'Sentry'],
-    },
-    {
-      name: 'Real Estate Tech, AI Prospecting Engine',
-      badge: 'Lead Gen · Client',
-      description:
-        'Automated prospect discovery for a real estate SaaS client. Playwright web and LinkedIn scraping, multi-provider enrichment (Apollo, Hunter, Snov, Dropcontact), AI-scored ICP matching, and outreach draft generation. Deployed on Railway with cron-triggered pipeline. Vitest test suite.',
-      stack: [
-        'Next.js 16',
-        'TypeScript',
-        'Playwright',
-        'Apollo',
-        'Hunter',
-        'Railway',
-        'Vitest',
-      ],
+        'Automated lead discovery and qualification with Next.js, Playwright, and Railway.',
+      stack: ['Next.js', 'Playwright', 'Railway'],
     },
     {
       name: 'M&A Valuation System',
@@ -336,33 +309,37 @@ export const professionalContext: ProfessionalContext = {
   ],
 
   resumeStats: [
-    { big: '#1', sub: 'NET-NEW PRODUCTION · Q1 2026' },
+    { big: '#1', sub: 'OF 30 AEs · Q1 2026' },
     { big: '102.6%', sub: 'FY25 ATTAINMENT' },
     { big: '58%', sub: 'ARR GROWTH · FY24' },
-    { big: '7', sub: 'PRODUCTION SYSTEMS' },
+    { big: '5 yrs', sub: 'B2B SAAS SALES' },
   ],
 
   resumeSkills: [
     {
       category: 'SALES',
       items:
-        'Full-Cycle Mid-Market Hunter, Consultative Discovery, Technical Discovery, Product Demonstration, Pipeline Building from Zero, Self-Sourced Outbound, Multithreading, Value & ROI Selling, New Business Acquisition, Account Expansion',
+        'Full-cycle SaaS sales, technical discovery, demos, ROI selling, outbound prospecting, Salesforce',
+    },
+    {
+      category: 'GTM & AI ADOPTION',
+      items: 'Workflow discovery, requirements feedback, pilot leadership, rollout support',
     },
     {
       category: 'AI & TECH',
       items:
-        'Claude Code, Cursor, Claude API & Agent SDK, RAG / pgvector, Next.js, Supabase / Postgres, Stripe, Playwright, Apollo, Salesforce, Power BI',
+        'LLM APIs, agentic workflows, API integrations, FastAPI, Next.js, Postgres, Supabase',
     },
   ],
 
   positioning: {
     openTo: 'Account executive and go-to-market (AE & GTM) roles in B2B SaaS',
     currentRole:
-      'Net New AE at SPS Commerce. Full-cycle sales rep for complex B2B SaaS, including AI go-to-market with VPs and directors. Based in Minneapolis.',
-    salesHeadline: 'I close deals. I build AI systems.',
-    gtmHeadline: 'I build AI systems. I drive go-to-market strategy.',
+      'Net New AE at SPS Commerce. Full-cycle sales for complex B2B SaaS, partnering with directors and VPs on AI workflow improvements. Based in Minneapolis.',
+    salesHeadline: 'Account Executive | AI Systems & GTM',
+    gtmHeadline: 'Account Executive | AI Systems & GTM',
     fidelisValue:
-      'Fidelis Strategy runs end to end alongside SPS, not just GTM. Matthew owns client work, delivery, scoping, sourcing, closing, and the production builds. Serves $1M-$10M businesses on strategy, revenue operations, and AI enablement. First engagement projected $2M revenue impact. Built Fidelis Pulse (live SaaS with Stripe, QuickBooks, Xero, Plaid), M&A buyer intelligence, lead-gen platforms, valuation workspace, Glow Routine PWA, and Grace Church custom portal on Azure SQL.',
+      'Fidelis Strategy runs alongside SPS. Matthew owns client discovery through deployment, including the Buyer Engine for Paradise Capital (client reports buyer-list prep reduced from weeks to minutes), Fidelis Pulse, Fidelis Advisor, and other custom AI systems.',
     prescriptiveSelling:
       'Find the pain, guide the buying process, teach how the platform solves it. Discovery with operators and executives on SaaS deals, prescriptive evaluation guidance, demos mapped to named pain, ROI before pricing, multithreading through security and procurement.',
   },

@@ -2,16 +2,16 @@ import { describe, it, expect } from 'vitest'
 import { professionalContext } from '../professionalContext'
 
 describe('professionalContext canonical facts', () => {
-  it('lists 7 production systems (6 AI projects plus the Grace Church buildout)', () => {
-    expect(professionalContext.projects).toHaveLength(6)
-    expect(professionalContext.proBono).toHaveLength(1)
-    expect(professionalContext.projects.length + professionalContext.proBono.length).toBe(7)
+  it('uses the updated personal email', () => {
+    expect(professionalContext.identity.email).toBe('mattafanasiev@outlook.com')
   })
 
-  it('includes both lead-generation systems', () => {
+  it('includes Buyer Engine, Pulse, Advisor, and AI Lead Generation', () => {
     const names = professionalContext.projects.map((p) => p.name)
-    expect(names.some((n) => n.includes('Lead Generation'))).toBe(true)
-    expect(names.some((n) => n.includes('Prospecting'))).toBe(true)
+    expect(names).toContain('Buyer Engine')
+    expect(names).toContain('Fidelis Pulse')
+    expect(names).toContain('Fidelis Advisor')
+    expect(names).toContain('AI Lead Generation')
   })
 
   it('includes the M&A Valuation System', () => {
@@ -19,11 +19,15 @@ describe('professionalContext canonical facts', () => {
     expect(names).toContain('M&A Valuation System')
   })
 
-  it('summary states 7 production systems', () => {
-    expect(professionalContext.summary).toMatch(/7|Seven production systems/i)
+  it('summary reflects updated positioning without monetized Pulse claims', () => {
+    expect(professionalContext.summary).toContain('Account executive with five years')
+    expect(professionalContext.summary).not.toMatch(/monetized/i)
+    expect(professionalContext.summary).not.toMatch(/7 production systems/i)
   })
 
-  it('key stats state 7 production systems', () => {
-    expect(professionalContext.keyStats.some((s) => s.includes('7 production systems'))).toBe(true)
+  it('headline metrics no longer use a production-system count', () => {
+    expect(professionalContext.headlineMetrics.some((m) => m.label.toLowerCase().includes('production systems'))).toBe(
+      false,
+    )
   })
 })

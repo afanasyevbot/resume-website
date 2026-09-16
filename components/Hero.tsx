@@ -1,11 +1,12 @@
 import Image from 'next/image'
-import { calendlyUrl } from '@/lib/siteContent'
+import { RESUME_PDF_PATHS } from '@/lib/resumeContent'
+import { heroIntro, heroStatement, professionalLabel } from '@/lib/siteContent'
 
 const stats = [
-  { number: '#1', label: 'net-new production · Q1 2026' },
+  { number: '#1', label: 'of 30 AEs · Q1 2026' },
   { number: '102.6%', label: 'FY25 attainment' },
   { number: '58%', label: 'ARR growth · FY24' },
-  { number: '7', label: 'production systems built' },
+  { number: '5 yrs', label: 'B2B SaaS sales' },
 ]
 
 export default function Hero() {
@@ -30,28 +31,21 @@ export default function Hero() {
         </div>
 
         <div className="relative z-10 mx-auto w-full max-w-[38rem] text-center px-1 sm:px-0">
-          <h2 className="font-display font-bold text-ink leading-[1] sm:leading-[0.95] tracking-[-0.04em] text-[36px] sm:text-[72px] lg:text-[76px] xl:text-[80px]">
-            Sales.
-            <br />
-            Depth.
-            <br />
-            <span className="text-gold">Builder fluency.</span>
+          <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-ghost mb-5">
+            {professionalLabel}
+          </p>
+          <h2 className="font-display font-bold text-ink leading-[1.08] sm:leading-[1.02] tracking-[-0.04em] text-[32px] sm:text-[56px] lg:text-[60px] xl:text-[64px] text-balance">
+            {heroStatement}
           </h2>
-          <p className="font-display text-[17px] sm:text-[22px] lg:text-[24px] font-medium text-muted leading-[1.4] sm:leading-[1.35] tracking-[-0.01em] mt-10 sm:mt-9 text-balance mx-auto max-w-[20rem] sm:max-w-[34ch]">
-            Sales &amp; go-to-market
-          </p>
-          <p className="font-display text-[16px] sm:text-[21px] lg:text-[23px] font-medium text-gold leading-[1.4] sm:leading-[1.35] tracking-[-0.01em] mt-2.5 sm:mt-2 text-balance mx-auto max-w-[20rem] sm:max-w-[34ch]">
-            &amp; the custom AI systems I build.
-          </p>
-          <p className="text-[15px] sm:text-[17px] text-muted leading-[1.75] sm:leading-[1.7] mt-9 sm:mt-8 mx-auto max-w-[22rem] sm:max-w-[46ch]">
-            Five years closing complex B2B SaaS: consultative selling on the deal side, production systems leveraging AI on the build side. Both while carrying quota.
+          <p className="text-[15px] sm:text-[17px] text-muted leading-[1.75] sm:leading-[1.7] mt-9 sm:mt-8 mx-auto max-w-[22rem] sm:max-w-[52ch]">
+            {heroIntro}
           </p>
           <div className="mt-12 sm:mt-12 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4 sm:gap-3">
-            <a href={calendlyUrl} target="_blank" rel="noopener noreferrer" className="btn-primary">
-              Book 30 minutes
+            <a href="#builder" className="btn-primary">
+              View my work
             </a>
-            <a href="/resume" className="btn-ghost">
-              Résumé
+            <a href={RESUME_PDF_PATHS.sales} className="btn-ghost" download>
+              Download resume
             </a>
           </div>
         </div>
@@ -75,7 +69,7 @@ export default function Hero() {
         </div>
         <div className="glass-panel mt-12 sm:mt-12 px-5 py-8 sm:px-10 sm:py-9 max-w-[56ch] mx-auto text-center">
           <p className="text-[14px] sm:text-[15px] text-muted leading-[1.7]">
-            Current role: Net New AE at SPS Commerce. Full-cycle sales for complex B2B SaaS, including AI go-to-market with VPs and directors. Based in Minneapolis.
+            Current role: Net New AE at SPS Commerce. Full-cycle sales for complex B2B SaaS, partnering with directors and VPs on AI workflow improvements. Based in Minneapolis.
           </p>
         </div>
       </div>

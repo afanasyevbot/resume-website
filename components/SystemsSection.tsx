@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import GlowRoutineApp from '@/components/GlowRoutineApp'
-import { advisorUrl, glowUrl, pulseProductUrl } from '@/lib/siteContent'
+import { advisorUrl, glowUrl, paradiseCaseStudyUrl, pulseProductUrl } from '@/lib/siteContent'
 
 export default function SystemsSection() {
   const [glowOpen, setGlowOpen] = useState(false)
@@ -13,10 +13,10 @@ export default function SystemsSection() {
       <div className="mb-12 sm:mb-14">
         <p className="text-[11px] font-medium uppercase tracking-[0.18em] mb-3 text-ghost">Selected work</p>
         <h2 className="font-display text-[30px] sm:text-[40px] lg:text-[44px] font-medium leading-[1.12] tracking-[-0.02em] max-w-[22ch] text-ink">
-          7 production systems built
+          Products &amp; systems I built
         </h2>
         <p className="text-[15px] sm:text-[16px] leading-[1.65] mt-4 max-w-[52ch] text-muted">
-          Signature work built while carrying quota: live SaaS products, two lead-gen systems, client platforms, and one expandable app.
+          Client platforms and own products built while carrying quota — from M&amp;A buyer research to owner dashboards and lead generation.
         </p>
       </div>
 
@@ -30,15 +30,30 @@ export default function SystemsSection() {
               height={48}
               className="h-9 sm:h-10 w-auto mb-5"
             />
-            <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Signature build · M&amp;A advisory</p>
+            <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Featured case study · M&amp;A advisory</p>
             <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-3 text-[26px] sm:text-[32px]">
               Buyer Engine
             </h3>
             <p className="text-[15px] text-muted leading-[1.7]">
-              Full-cycle solo engagement: identified the pain point, pitched the solution, then designed, built, and now maintain a production platform that finds, enriches, and ranks likely buyers for M&amp;A deals. One person owning the pitch, the build, and the running system.
+              Preparing a buyer list for an M&amp;A mandate required repeated manual research. Built a platform that finds, enriches, and ranks prospective acquirers for the firm&apos;s deal workflow.
             </p>
+            <p className="text-[15px] text-ink font-medium leading-[1.65] mt-4">
+              Client-reported result: buyer-list preparation reduced from weeks to minutes.
+            </p>
+            <p className="text-[14px] text-muted leading-[1.65] mt-3">
+              My role: client discovery, commercial agreement, solution design, development, deployment, and ongoing maintenance.
+            </p>
+            <a
+              href={paradiseCaseStudyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-[14px] text-ink font-semibold mt-5 hover:underline underline-offset-4"
+            >
+              Read the Paradise Capital case study
+              <Image src="/icons/external-link.svg" alt="" aria-hidden width={14} height={14} />
+            </a>
             <p className="text-[12px] text-ghost mt-5 pt-5 border-t border-border">
-              Next.js · Supabase (pgvector) · FastAPI · Agent SDK · Turborepo
+              FastAPI · Anthropic Agent SDK · Supabase · Next.js
             </p>
           </div>
         </article>
@@ -102,28 +117,17 @@ export default function SystemsSection() {
             </div>
           </article>
 
-          <article className="card card-lift overflow-hidden lg:col-span-2">
+          <article className="card card-lift overflow-hidden">
             <div className="p-7 sm:p-7 h-full flex flex-col">
-              <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Lead gen · Client builds</p>
+              <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Client build</p>
               <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-4 text-[22px] sm:text-[26px]">
-                AI prospecting engines
+                AI Lead Generation
               </h3>
-              <div className="space-y-5 flex-1">
-                <div>
-                  <p className="text-[13px] font-semibold text-ink mb-1.5">M&amp;A advisory</p>
-                  <p className="text-[15px] text-muted leading-[1.7]">
-                    Automated acquisition-target discovery and qualification. Scoring against buyer criteria, a persistent lead database, and weekly reports for the advisory team.
-                  </p>
-                </div>
-                <div className="pt-5 border-t border-border">
-                  <p className="text-[13px] font-semibold text-ink mb-1.5">Real estate tech</p>
-                  <p className="text-[15px] text-muted leading-[1.7]">
-                    Automated prospect discovery with Playwright scraping, multi-provider enrichment (Apollo, Hunter), ICP scoring, and outreach draft generation on a cron pipeline.
-                  </p>
-                </div>
-              </div>
+              <p className="text-[15px] text-muted leading-[1.7] flex-1">
+                Automated lead discovery and qualification with Next.js, Playwright, and Railway.
+              </p>
               <p className="text-[12px] text-ghost mt-5 pt-5 border-t border-border">
-                Next.js · Playwright · Apollo · Railway · SQLite · Sentry
+                Next.js · Playwright · Railway
               </p>
             </div>
           </article>
