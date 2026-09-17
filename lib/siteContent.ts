@@ -1,12 +1,31 @@
+import {
+  PERFORMANCE_AS_OF,
+  SPS_AI_REPORTED_RESULTS,
+  SPS_FY25_BULLET,
+  SPS_PERFORMANCE_EXPERIENCE_LINE,
+  homepageProofPoints,
+} from '@/lib/performanceFacts'
+
 export const OPEN_ASK_EVENT = 'open-ask-ai'
 
-export const publicEmail = 'mafanasiev@outlook.com'
+export const publicEmail = 'mattafanasiev@outlook.com'
 export const calendlyUrl = 'https://calendly.com/mafanasiev-fidelisstrategy/30min'
 export const pulseUrl = 'https://fidelispulse.com'
 export const pulseProductUrl = 'https://fidelispulse.com/pulse'
 export const advisorUrl = 'https://fidelispulse.com/advisor'
 export const glowUrl = 'https://glow-routine-seven.vercel.app'
 export const fidelisUrl = 'https://fidelisstrategy.net'
+export const paradiseCaseStudyUrl = 'https://fidelisstrategy.net/'
+
+export const professionalLabel = 'Account Executive | AI Systems & GTM'
+export const heroTagline = 'I sell complex software and build AI systems around real business needs.'
+export const heroIntro =
+  'Five years of B2B SaaS sales experience. At SPS Commerce, I sell complex solutions and partner with directors, VPs, and go-to-market engineers to improve sales workflows. Through Fidelis Strategy, I build custom AI software from business discovery through deployment.'
+export const heroCurrentRoleNote =
+  'Current role: Net New AE at SPS Commerce. Partnering with directors and VPs on AI workflow improvements. Based in Minneapolis.'
+export const personalSignature = 'MY WHY: Faith · Family · First generation'
+
+export { homepageProofPoints }
 
 export const experience = [
   {
@@ -16,11 +35,12 @@ export const experience = [
     title: 'Net New AE · Supply Chain Performance',
     fullTitle: 'Net New Subscriber Account Executive, Supply Chain Performance',
     bullets: [
-      'Full-cycle sales of complex B2B SaaS across retail, food, manufacturing, and fashion',
-      'AI go-to-market with VPs and directors alongside core supply chain solutions',
-      '#1 in net-new production on a 9-person strategic initiative · Q1 2026',
-      '102.6% FY25 quota · highest close rate in the division',
-      'Consultative discovery with C-suite buyers: workflow mapping and ROI cases',
+      'Top performer in Q1 2026 and Q3 to date',
+      SPS_PERFORMANCE_EXPERIENCE_LINE,
+      SPS_FY25_BULLET,
+      'Own full-cycle mid-market sales to operators and CTOs, leading technical discovery and demos around supply-chain integrations',
+      'Serve as a go-to frontline partner to directors and VPs, identifying rep bottlenecks and shaping AI workflow improvements with go-to-market engineers',
+      `Helped lead the AI email-drafting pilot and presented the sales-team launch demo. ${SPS_AI_REPORTED_RESULTS}`,
     ],
   },
   {
@@ -31,22 +51,18 @@ export const experience = [
     title: 'Founder & Growth Strategy Consultant',
     fullTitle: 'Founder & Growth Strategy Consultant',
     bullets: [
-      'Runs Fidelis Strategy end to end while carrying full quota at SPS: client work, delivery, GTM, and the builds behind it',
-      'Growth consultancy serving $1M–$10M businesses on strategy, revenue operations, and AI enablement',
-      'Built Fidelis Pulse, a live SaaS platform with billing and accounting integrations',
+      'Partner with Paradise Capital on its Buyer Engine and custom AI workflows, translating M&A operating needs into software and ongoing improvements',
+      'Own client discovery, proposals, commercial agreement, solution design, deployment, and ongoing development',
     ],
   },
   {
     dates: 'Nov 2022 – Jan 2025',
     company: 'SPS Commerce',
-    note: '58% ARR growth · FY24',
+    note: '58% portfolio ARR growth · FY24',
     title: 'Mid-Market Account Executive',
     fullTitle: 'Mid-Market Account Executive',
     bullets: [
-      'Grew ARR 58% YoY across 500+ accounts (companies up to $150M revenue)',
-      'Built expansion playbooks with CRM and Power BI to spot upsell triggers',
-      'Go-to advisor on ERP migrations, data connectivity, and tech stack consolidation',
-      'Multi-stakeholder cycles across IT, finance, and operations',
+      'Grew portfolio ARR 58% YoY across 500+ accounts; advised companies up to $150M in revenue on ERP migrations',
     ],
   },
   {
@@ -56,9 +72,7 @@ export const experience = [
     title: 'Associate AE · Community Sales',
     fullTitle: 'Associate Account Executive, Community Sales',
     bullets: [
-      '#1 of 40 AEs · 151% quota · highest close rate',
-      'Partnered with major retailers on supplier onboarding campaigns and sold the solutions to trading partners',
-      'Trained hundreds of trading partners on EDI and order-to-cash',
+      'Ranked #1 of 40 account executives at 151% quota attainment; designed supplier onboarding campaigns with major retailers',
     ],
   },
   {
@@ -72,6 +86,16 @@ export const experience = [
     ],
   },
 ]
+
+export const spsCaseStudy = {
+  title: 'Turning rep feedback into a useful AI sales workflow',
+  body:
+    'Repetitive customer-email drafting was taking time away from customer conversations. After identifying the problem and requesting AI access, I joined an existing SPS initiative, helped lead the sales-side pilot, and worked with go-to-market engineers to shape the solution around real rep workflows. I presented the launch demo to the sales team and continue to help directors and VPs identify bottlenecks and useful improvements.',
+  reportedResults: SPS_AI_REPORTED_RESULTS,
+  contribution:
+    'Contribution: frontline workflow input, pilot leadership, requirements feedback, and launch demonstration — not sole development of the company\'s tool.',
+  asOfNote: `Performance standings on this page are current as of ${PERFORMANCE_AS_OF}.`,
+}
 
 export const methodology = [
   {

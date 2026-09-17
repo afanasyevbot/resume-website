@@ -34,13 +34,13 @@ const archivo = Archivo({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://mafanasiev.me'),
-  title: 'Matthew Afanasiev · AE & GTM',
+  title: 'Matthew Afanasiev | Account Executive, AI Systems & GTM',
   description:
-    'Matthew Afanasiev · B2B SaaS account executive. Prescriptive selling: find the pain, guide the buying process, teach how the solution solves it.',
+    'B2B SaaS account executive with five years of sales experience, AI workflow work at SPS Commerce, and custom software delivery through Fidelis Strategy.',
   openGraph: {
-    title: 'Matthew Afanasiev · AE & GTM',
+    title: 'Matthew Afanasiev | Account Executive, AI Systems & GTM',
     description:
-      'B2B SaaS account executive. Prescriptive selling, five years closing, 7 production systems built.',
+      'B2B SaaS account executive with five years of sales experience, AI workflow work at SPS Commerce, and custom software delivery through Fidelis Strategy.',
     url: 'https://mafanasiev.me',
     type: 'website',
   },

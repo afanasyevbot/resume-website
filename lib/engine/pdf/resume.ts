@@ -1,6 +1,8 @@
 import { PDFDocument, StandardFonts, rgb, type PDFPage, type PDFFont } from 'pdf-lib'
 import type { TailoredPackage } from '@/lib/engine/tailorTypes'
 import {
+  PERSONAL_SIGNATURE,
+  RESUME_HEADLINE,
   archetypeToVariant,
   contactLine,
   resumeVariants,
@@ -194,22 +196,18 @@ function drawProject(ctx: PdfCtx, proj: ResumeProjectBlock, x = MARGIN, width = 
   ensureSpace(ctx, 36)
   const nameSize = 8.8
   ctx.page.drawText(proj.name, { x: x + 2, y: ctx.y, size: nameSize, font: ctx.fontBold, color: DARK })
-  const nw = ctx.fontBold.widthOfTextAtSize(proj.name, nameSize)
-  ctx.page.drawText(`  ${proj.badge}`, {
-    x: x + 2 + nw + 3,
-    y: ctx.y,
-    size: 6.2,
-    font: ctx.fontBold,
-    color: GREEN,
-  })
   ctx.y -= 10
-  drawWrapped(ctx, proj.description, { x: x + 2, maxWidth: width - 4, size: 7.8, color: MID, lineHeight: 10 })
-  ctx.y -= 1
-  drawWrapped(ctx, proj.stack, { x: x + 2, maxWidth: width - 4, size: 6.8, color: FAINT, lineHeight: 8.5 })
+  const description = proj.stack ? `${proj.description} Built with ${proj.stack.replaceAll(' · ', ', ')}.` : proj.description
+  drawWrapped(ctx, description, { x: x + 2, maxWidth: width - 4, size: 7.8, color: MID, lineHeight: 10 })
   ctx.y -= 4
 }
 
-function buildSalesPdf(ctx: PdfCtx, variant: ResumeVariant, pkg: TailoredPackage, role: { company: string; title: string }) {
+function buildStandardPdf(
+  ctx: PdfCtx,
+  variant: ResumeVariant,
+  pkg: TailoredPackage,
+  role: { company: string; title: string },
+) {
   const content = resumeVariants[variant]
 
   if (role.company && role.title) {
@@ -222,144 +220,42 @@ function buildSalesPdf(ctx: PdfCtx, variant: ResumeVariant, pkg: TailoredPackage
   }
 
   drawCentered(ctx, 'MATTHEW AFANASIEV', { font: ctx.fontBold, size: 20, color: DARK })
-  drawCentered(ctx, 'R E V E N U E  x  A I', { font: ctx.fontBold, size: 7, color: GREEN })
-  drawCentered(ctx, content.subtitle, { font: ctx.fontItalic, size: 9.5, color: MID })
-  drawCentered(ctx, contactLine(), { size: 7, color: FAINT })
+  drawCentered(ctx, RESUME_HEADLINE, { font: ctx.fontBold, size: 8.5, color: GREEN })
+  for (const line of contactLine().split('\n')) {
+    drawCentered(ctx, line, { size: 7, color: FAINT })
+  }
   ctx.y -= 8
 
-  drawCentered(ctx, content.headline, { font: ctx.fontBold, size: 13, color: DARK })
-  drawCentered(ctx, content.tagline, { font: ctx.fontItalic, size: 8, color: MID })
-  ctx.y -= 4
   drawWrapped(ctx, pkg.summary || content.summary, { size: 8.5, color: MID, lineHeight: 11 })
   ctx.y -= 6
 
-  drawStats(ctx, content.stats)
-  ctx.y -= 4
-
-  sectionHeading(ctx, 'EXPERIENCE')
+  sectionHeading(ctx, 'PROFESSIONAL EXPERIENCE')
   for (let i = 0; i < content.roles.length; i++) {
     const firstBullets = i === 0 && pkg.emphasizedBullets.length > 0 ? pkg.emphasizedBullets : undefined
     drawRole(ctx, content.roles[i], MARGIN, CONTENT_W, firstBullets)
   }
 
-  sectionHeading(ctx, 'AI SYSTEMS BUILT')
+  sectionHeading(ctx, 'AI PRODUCTS & SYSTEMS BUILT')
   for (const proj of content.projects) drawProject(ctx, proj)
 
-  sectionHeading(ctx, 'CORE SKILLS')
+  sectionHeading(ctx, 'SKILLS')
   for (const skill of content.skills) {
     ensureSpace(ctx, 18)
-    ctx.page.drawText(skill.category, { x: MARGIN, y: ctx.y, size: 7, font: ctx.fontBold, color: DARK })
-    const labelW = ctx.fontBold.widthOfTextAtSize(skill.category, 7)
+    ctx.page.drawText(`${skill.category}:`, { x: MARGIN, y: ctx.y, size: 7, font: ctx.fontBold, color: DARK })
+    const labelW = ctx.fontBold.widthOfTextAtSize(`${skill.category}:`, 7)
     drawWrapped(ctx, skill.items, { x: MARGIN + labelW + 5, maxWidth: CONTENT_W - labelW - 5, size: 8, color: MID, lineHeight: 10 })
     ctx.y -= 2
   }
 
   sectionHeading(ctx, 'EDUCATION')
-  drawWrapped(ctx, 'BBA, Marketing Management · University of St. Thomas    2017 - 2021', {
+  drawWrapped(ctx, 'BBA, Marketing Management · University of St. Thomas · 2017 - 2021', {
     size: 8.5,
     font: ctx.fontBold,
     color: DARK,
     lineHeight: 11,
   })
-}
-
-function buildGtmPdf(ctx: PdfCtx, pkg: TailoredPackage) {
-  const content = resumeVariants.gtm
-  const sidebarX = MARGIN
-  let sidebarY = PAGE_H - MARGIN
-
-  function sidebarHeading(label: string) {
-    const size = 6.2
-    const text = label.toUpperCase().split('').join(' ')
-    ctx.page.drawText(text, { x: sidebarX, y: sidebarY, size, font: ctx.fontBold, color: GREEN })
-    sidebarY -= 8
-    ctx.page.drawLine({
-      start: { x: sidebarX, y: sidebarY },
-      end: { x: sidebarX + SIDEBAR_W, y: sidebarY },
-      thickness: 0.8,
-      color: GREEN,
-    })
-    sidebarY -= 7
-  }
-
-  function sidebarLine(text: string, size = 7.2) {
-    const words = text.split(/\s+/)
-    let line = ''
-    for (const word of words) {
-      const test = line ? `${line} ${word}` : word
-      if (ctx.fontRegular.widthOfTextAtSize(test, size) > SIDEBAR_W && line) {
-        ctx.page.drawText(line, { x: sidebarX, y: sidebarY, size, font: ctx.fontRegular, color: MID })
-        sidebarY -= size * 1.3
-        line = word
-      } else {
-        line = test
-      }
-    }
-    if (line) {
-      ctx.page.drawText(line, { x: sidebarX, y: sidebarY, size, font: ctx.fontRegular, color: MID })
-      sidebarY -= size * 1.3
-    }
-  }
-
-  sidebarHeading('Contact')
-  for (const line of contactLine().split(' · ')) {
-    sidebarLine(line, 6.8)
-  }
-  sidebarY -= 6
-
-  sidebarHeading('Go-To-Market Expertise')
-  for (const item of content.gtmExpertise ?? []) {
-    sidebarLine(`• ${item}`, 6.6)
-  }
-  sidebarY -= 6
-
-  sidebarHeading('Tools & Stack')
-  for (const item of content.toolsStack ?? []) {
-    sidebarLine(item, 6.6)
-  }
-  sidebarY -= 6
-
-  sidebarHeading('Education')
-  sidebarLine('BBA, Marketing Management', 6.8)
-  sidebarLine('University of St. Thomas', 6.8)
-  sidebarLine('2017 - 2021', 6.8)
-  sidebarY -= 6
-
-  sidebarHeading('What Drives Me')
-  sidebarLine(content.whatDrivesMe ?? '', 6.8)
-
-  ctx.page.drawText('MATTHEW', { x: MAIN_X, y: ctx.y, size: 26, font: ctx.fontBold, color: DARK })
-  ctx.y -= 28
-  ctx.page.drawText('AFANASIEV', { x: MAIN_X, y: ctx.y, size: 26, font: ctx.fontBold, color: DARK })
-  ctx.y -= 14
-  ctx.page.drawText('R E V E N U E  x  A I', { x: MAIN_X, y: ctx.y, size: 7, font: ctx.fontBold, color: GREEN })
-  ctx.y -= 11
-  drawWrapped(ctx, content.subtitle, { x: MAIN_X, maxWidth: MAIN_W, size: 9.5, font: ctx.fontItalic, color: MID, lineHeight: 11 })
-  ctx.y -= 6
-  drawWrapped(ctx, content.headline, { x: MAIN_X, maxWidth: MAIN_W, size: 12, font: ctx.fontBold, color: DARK, lineHeight: 14 })
-  drawWrapped(ctx, content.tagline, { x: MAIN_X, maxWidth: MAIN_W, size: 8, font: ctx.fontItalic, color: MID, lineHeight: 10 })
-  ctx.y -= 2
-  drawWrapped(ctx, pkg.summary || content.summary, { x: MAIN_X, maxWidth: MAIN_W, size: 8.2, color: MID, lineHeight: 10.5 })
-  ctx.y -= 4
-
-  drawStats(ctx, content.stats, MAIN_X, MAIN_W)
-  ctx.y -= 2
-
-  sectionHeading(ctx, 'EXPERIENCE', MAIN_X, MAIN_W)
-  for (let i = 0; i < content.roles.length; i++) {
-    const firstBullets = i === 0 && pkg.emphasizedBullets.length > 0 ? pkg.emphasizedBullets : undefined
-    drawRole(ctx, content.roles[i], MAIN_X, MAIN_W, firstBullets)
-  }
-
-  if (content.signatureBuild) {
-    sectionHeading(ctx, 'Signature Build', MAIN_X, MAIN_W)
-    drawProject(ctx, content.signatureBuild, MAIN_X, MAIN_W)
-  }
-
-  if (content.additionalBuilds?.length) {
-    sectionHeading(ctx, 'Additional Builds', MAIN_X, MAIN_W)
-    for (const proj of content.additionalBuilds) drawProject(ctx, proj, MAIN_X, MAIN_W)
-  }
+  ctx.y -= 8
+  drawCentered(ctx, PERSONAL_SIGNATURE, { size: 7.5, color: MID })
 }
 
 export async function buildResumePdf(
@@ -376,11 +272,7 @@ export async function buildResumePdf(
   const ctx = makeCtx(doc, page, fonts)
   const variant = archetypeToVariant(pkg.archetype)
 
-  if (variant === 'gtm') {
-    buildGtmPdf(ctx, pkg)
-  } else {
-    buildSalesPdf(ctx, variant, pkg, role)
-  }
+  buildStandardPdf(ctx, variant, pkg, role)
 
   return doc.save()
 }
