@@ -14,6 +14,7 @@ export default function SPSCaseStudySection() {
         <p className="text-[15px] sm:text-[16px] text-muted leading-[1.75]">{spsCaseStudy.body}</p>
         <p className="text-[15px] sm:text-[16px] text-ink font-medium leading-[1.65] mt-6">{spsCaseStudy.reportedResults}</p>
         <p className="text-[13px] text-ghost leading-[1.65] mt-5 pt-5 border-t border-border">{spsCaseStudy.contribution}</p>
+        <p className="text-[12px] text-ghost leading-[1.6] mt-4">{spsCaseStudy.asOfNote}</p>
       </article>
     </section>
   )

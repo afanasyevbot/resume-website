@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import GlowRoutineApp from '@/components/GlowRoutineApp'
-import { advisorUrl, builderCredibilityLine, glowUrl, paradiseCaseStudyUrl, pulseProductUrl } from '@/lib/siteContent'
+import { advisorUrl, glowUrl, paradiseCaseStudyUrl, pulseProductUrl } from '@/lib/siteContent'
 
 export default function SystemsSection() {
   const [glowOpen, setGlowOpen] = useState(false)
@@ -17,9 +17,6 @@ export default function SystemsSection() {
         </h2>
         <p className="text-[15px] sm:text-[16px] leading-[1.65] mt-4 max-w-[52ch] text-muted">
           Client platforms and own products built while carrying quota — from M&amp;A buyer research to owner dashboards and lead generation.
-        </p>
-        <p className="text-[13px] sm:text-[14px] leading-[1.6] mt-3 max-w-[52ch] text-ghost">
-          {builderCredibilityLine}
         </p>
       </div>
 

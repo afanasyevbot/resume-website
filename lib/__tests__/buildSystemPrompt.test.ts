@@ -31,4 +31,11 @@ describe('buildSystemPrompt', () => {
     expect(prompt).toContain('Account Executive | AI Systems & GTM')
     expect(prompt).toContain('mattafanasiev@outlook.com')
   })
+
+  it('includes performance standings with Q3 tied-for-first limits', () => {
+    const prompt = buildSystemPrompt(professionalContext)
+    expect(prompt).toContain('PERFORMANCE STANDINGS')
+    expect(prompt).toContain('tied for #1')
+    expect(prompt).toContain('do not describe as an outright or completed Q3 win')
+  })
 })

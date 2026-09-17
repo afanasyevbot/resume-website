@@ -23,7 +23,6 @@ export const heroIntro =
   'Five years of B2B SaaS sales experience. At SPS Commerce, I sell complex solutions and partner with directors, VPs, and go-to-market engineers to improve sales workflows. Through Fidelis Strategy, I build custom AI software from business discovery through deployment.'
 export const heroCurrentRoleNote =
   'Current role: Net New AE at SPS Commerce. Partnering with directors and VPs on AI workflow improvements. Based in Minneapolis.'
-export const builderCredibilityLine = '5,500+ pull requests shipped in six months across client and product builds.'
 export const personalSignature = 'MY WHY: Faith · Family · First generation'
 
 export { homepageProofPoints }
@@ -36,8 +35,8 @@ export const experience = [
     title: 'Net New AE · Supply Chain Performance',
     fullTitle: 'Net New Subscriber Account Executive, Supply Chain Performance',
     bullets: [
-      SPS_PERFORMANCE_EXPERIENCE_LINE,
       'Top performer in Q1 2026 and Q3 to date',
+      SPS_PERFORMANCE_EXPERIENCE_LINE,
       SPS_FY25_BULLET,
       'Own full-cycle mid-market sales to operators and CTOs, leading technical discovery and demos around supply-chain integrations',
       'Serve as a go-to frontline partner to directors and VPs, identifying rep bottlenecks and shaping AI workflow improvements with go-to-market engineers',

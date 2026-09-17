@@ -1,5 +1,6 @@
 import type { ProfessionalContext } from './types'
 import { formatAllResumeVariantsForPrompt, contactLine, RESUME_CONTACT } from './resumeContent'
+import { PERFORMANCE_AS_OF, performanceSourceFacts } from './performanceFacts'
 
 export function buildSystemPrompt(ctx: ProfessionalContext): string {
   const rolesText = ctx.roles
@@ -90,6 +91,11 @@ ${ctx.salesContext.industries.map((i) => `- ${i}`).join('\n')}
 
 ## HEADLINE METRICS (the numbers shown on his site)
 ${ctx.headlineMetrics.map((m) => `- ${m.value} ${m.label}`).join('\n')}
+
+---
+
+## PERFORMANCE STANDINGS (as of ${PERFORMANCE_AS_OF})
+${performanceSourceFacts.map((fact) => `- ${fact}`).join('\n')}
 
 ---
 

@@ -4,7 +4,6 @@ import {
   SPS_AI_REPORTED_RESULTS,
   SPS_FY25_BULLET,
   SPS_PERFORMANCE_EXPERIENCE_LINE,
-  SPS_PERFORMANCE_RESUME_BULLET,
   homepageProofPoints,
   performanceSourceFacts,
 } from './performanceFacts'
@@ -33,8 +32,8 @@ export const professionalContext: ProfessionalContext = {
       preview:
         'Top performer in Q1 2026 and Q3 to date. Partners with leadership on AI workflow improvements alongside full-cycle supply chain sales.',
       bullets: [
-        SPS_PERFORMANCE_EXPERIENCE_LINE,
         'Top performer in Q1 2026 and Q3 to date',
+        SPS_PERFORMANCE_EXPERIENCE_LINE,
         SPS_FY25_BULLET,
         'Own full-cycle mid-market sales to operators and CTOs, leading technical discovery and demos around supply-chain integrations',
         'Serve as a go-to frontline partner to directors and VPs, identifying rep bottlenecks and shaping AI workflow improvements with go-to-market engineers',
@@ -182,7 +181,6 @@ export const professionalContext: ProfessionalContext = {
     '#1 of 40 AEs at 151% quota attainment (Community Sales)',
     '5 years B2B SaaS sales experience',
     'Buyer Engine client result: buyer-list preparation reduced from weeks to minutes (Paradise Capital)',
-    '5,500+ pull requests shipped in six months across client and product builds (builder context; not a resume headline stat)',
   ],
 
   starStories: [
@@ -340,7 +338,7 @@ export const professionalContext: ProfessionalContext = {
   positioning: {
     openTo: 'Account executive and go-to-market (AE & GTM) roles in B2B SaaS',
     currentRole:
-      `Net New AE at SPS Commerce. Top performer in Q1 2026 and Q3 to date; ranked #3 of 30 account executives YTD as of ${PERFORMANCE_AS_OF}. Full-cycle sales for complex B2B SaaS, partnering with directors and VPs on AI workflow improvements. Based in Minneapolis.`,
+      `Net New AE at SPS Commerce. Top performer in Q1 2026 and Q3 to date. ${SPS_PERFORMANCE_EXPERIENCE_LINE} Full-cycle sales for complex B2B SaaS, partnering with directors and VPs on AI workflow improvements. Based in Minneapolis.`,
     salesHeadline: 'Account Executive | AI Systems & GTM',
     gtmHeadline: 'Account Executive | AI Systems & GTM',
     fidelisValue:
@@ -410,6 +408,10 @@ export const professionalContext: ProfessionalContext = {
     'Do not claim to train or fine-tune AI models, Matthew uses and builds on top of APIs',
     'Do not name the specific AI vendor/API in application copy, say "multiple AI APIs" or "API integrations" (internal data may name it)',
     'Do not claim a $1M+ quota, his quota is mid-market sized but growing',
+    'Do not describe Q3 2026 as a completed or outright win; Q3 first place is tied and in progress as of September 16, 2026',
+    'Do not describe President\'s Club as an award already earned; it is a trajectory/forecast',
+    'Do not present SPS AI pilot metrics as Matthew\'s personal conversion gains; they compare users versus non-users',
+    'Do not auto-advance performance standings or as-of dates without a new user confirmation',
     'Decline gracefully if asked personal questions unrelated to professional background',
   ],
 }
