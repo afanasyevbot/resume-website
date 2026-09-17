@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import ResumeCta from '@/components/ResumeCta'
 import { calendlyUrl, publicEmail } from '@/lib/siteContent'
 
 export default function ClosingHero() {
@@ -16,10 +17,7 @@ export default function ClosingHero() {
           <a href={calendlyUrl} target="_blank" rel="noopener noreferrer" className="btn-primary">
             Book 30 minutes
           </a>
-          <a href="/resume" className="btn-ghost">
-            <Image src="/icons/document.svg" alt="" aria-hidden width={16} height={16} />
-            Résumé
-          </a>
+          <ResumeCta />
           <a
             href={`mailto:${publicEmail}`}
             className="inline-flex items-center justify-center min-h-[48px] px-4 text-[14px] font-semibold text-ink hover:underline underline-offset-4 decoration-border break-all"

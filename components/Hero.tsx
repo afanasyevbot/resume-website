@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { RESUME_PDF_PATHS } from '@/lib/resumeContent'
+import ResumeCta from '@/components/ResumeCta'
 import { heroCurrentRoleNote, heroIntro, heroTagline, homepageProofPoints, professionalLabel } from '@/lib/siteContent'
 
 export default function Hero() {
@@ -44,9 +44,7 @@ export default function Hero() {
             <a href="#builder" className="btn-primary">
               View my work
             </a>
-            <a href={RESUME_PDF_PATHS.sales} className="btn-ghost" download>
-              Download resume
-            </a>
+            <ResumeCta />
           </div>
         </div>
       </div>
