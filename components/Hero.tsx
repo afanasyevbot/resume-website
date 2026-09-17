@@ -58,7 +58,11 @@ export default function Hero() {
               key={stat.label}
               className="stat-tile text-center px-4 py-7 sm:px-5 sm:py-8 reveal-up"
               style={{ animationDelay: `${i * 80}ms` }}
-              aria-label={stat.note ? `${stat.value} ${stat.label}. ${stat.note}` : `${stat.value} ${stat.label}`}
+              aria-label={
+                'note' in stat && stat.note
+                  ? `${stat.value} ${stat.label}. ${stat.note}`
+                  : `${stat.value} ${stat.label}`
+              }
             >
               <p
                 className={`font-display font-semibold text-ink leading-[1.05] tracking-[-0.03em] ${
