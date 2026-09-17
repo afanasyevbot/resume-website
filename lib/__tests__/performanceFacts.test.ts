@@ -17,6 +17,12 @@ describe('performanceFacts', () => {
     ])
   })
 
+  it('does not show the old public disclaimers on homepage proof points', () => {
+    const notes = homepageProofPoints.map((p) => ('note' in p ? p.note : '')).join(' ')
+    expect(notes).not.toMatch(/formal award/i)
+    expect(notes).not.toMatch(/company-wide SPS ARR/i)
+  })
+
   it('keeps the exact SPS AI reported-results wording', () => {
     expect(SPS_AI_REPORTED_RESULTS).toBe(
       'Reported sales-floor results: users convert leads 10–20% faster and close deals approximately 1.5x faster than non-users.',
