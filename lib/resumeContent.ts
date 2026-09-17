@@ -1,4 +1,9 @@
 import type { Archetype } from '@/lib/engine/tailorTypes'
+import {
+  SPS_AI_REPORTED_RESULTS,
+  SPS_FY25_BULLET,
+  SPS_PERFORMANCE_RESUME_BULLET,
+} from '@/lib/performanceFacts'
 
 export type ResumeVariant = 'sales' | 'gtm'
 
@@ -47,14 +52,13 @@ export interface ResumeVariantContent {
 }
 
 const SHARED_BULLETS = {
-  sales_result:
-    "Finished Q1 2026 ranked #1 of 30 account executives; achieved 102.6% of FY25 quota with the division's highest close rate.",
+  sales_result: SPS_PERFORMANCE_RESUME_BULLET,
+  fy25_result: SPS_FY25_BULLET,
   sales_scope:
     'Own full-cycle mid-market sales to operators and CTOs, leading technical discovery and demos around supply-chain integrations.',
   ai_partner:
     'Serve as a go-to frontline partner to directors and VPs, identifying rep bottlenecks and shaping AI workflow improvements with go-to-market engineers.',
-  ai_pilot:
-    'Helped lead the AI email-drafting pilot and presented the sales-team launch demo. Reported sales-floor results: users convert leads 10–20% faster and close deals approximately 1.5x faster than non-users.',
+  ai_pilot: `Helped lead the AI email-drafting pilot and presented the sales-team launch demo. ${SPS_AI_REPORTED_RESULTS}`,
   mid_market:
     'Grew portfolio ARR 58% YoY in FY24 across 500+ accounts; advised companies up to $150M in revenue on ERP migrations.',
   associate:
@@ -101,6 +105,7 @@ export const resumeVariants: Record<ResumeVariant, ResumeVariantContent> = {
         dates: 'Feb 2025 - Present',
         bullets: [
           SHARED_BULLETS.sales_result,
+          SHARED_BULLETS.fy25_result,
           SHARED_BULLETS.sales_scope,
           SHARED_BULLETS.ai_partner,
           SHARED_BULLETS.ai_pilot,
@@ -139,7 +144,7 @@ export const resumeVariants: Record<ResumeVariant, ResumeVariantContent> = {
       },
       {
         category: 'AI & Technical',
-        items: 'LLM APIs, agentic workflows, API integrations, FastAPI, Next.js, Postgres, Supabase, 5,500+ pull requests in six months',
+        items: 'LLM APIs, agentic workflows, API integrations, FastAPI, Next.js, Postgres, Supabase',
       },
     ],
   },
@@ -156,6 +161,7 @@ export const resumeVariants: Record<ResumeVariant, ResumeVariantContent> = {
           SHARED_BULLETS.ai_partner,
           SHARED_BULLETS.ai_pilot,
           SHARED_BULLETS.sales_result,
+          SHARED_BULLETS.fy25_result,
           SHARED_BULLETS.sales_scope,
         ],
       },
@@ -187,7 +193,7 @@ export const resumeVariants: Record<ResumeVariant, ResumeVariantContent> = {
       },
       {
         category: 'AI & Technical',
-        items: 'Agentic workflows, API integrations, LLM APIs, FastAPI, Next.js, Postgres, Supabase, 5,500+ pull requests in six months',
+        items: 'Agentic workflows, API integrations, LLM APIs, FastAPI, Next.js, Postgres, Supabase',
       },
       {
         category: 'Sales',

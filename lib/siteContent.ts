@@ -1,3 +1,11 @@
+import {
+  PERFORMANCE_AS_OF,
+  SPS_AI_REPORTED_RESULTS,
+  SPS_FY25_BULLET,
+  SPS_PERFORMANCE_EXPERIENCE_LINE,
+  homepageProofPoints,
+} from '@/lib/performanceFacts'
+
 export const OPEN_ASK_EVENT = 'open-ask-ai'
 
 export const publicEmail = 'mattafanasiev@outlook.com'
@@ -14,9 +22,11 @@ export const heroTagline = 'I sell complex software and build AI systems around 
 export const heroIntro =
   'Five years of B2B SaaS sales experience. At SPS Commerce, I sell complex solutions and partner with directors, VPs, and go-to-market engineers to improve sales workflows. Through Fidelis Strategy, I build custom AI software from business discovery through deployment.'
 export const heroCurrentRoleNote =
-  'Finished Q1 2026 ranked #1 of 30 account executives. Currently first or second among 30 AEs year-to-date. Based in Minneapolis.'
+  'Current role: Net New AE at SPS Commerce. Partnering with directors and VPs on AI workflow improvements. Based in Minneapolis.'
 export const builderCredibilityLine = '5,500+ pull requests shipped in six months across client and product builds.'
 export const personalSignature = 'MY WHY: Faith · Family · First generation'
+
+export { homepageProofPoints }
 
 export const experience = [
   {
@@ -26,10 +36,12 @@ export const experience = [
     title: 'Net New AE · Supply Chain Performance',
     fullTitle: 'Net New Subscriber Account Executive, Supply Chain Performance',
     bullets: [
-      'Finished Q1 2026 ranked #1 of 30 account executives; achieved 102.6% of FY25 quota with the division\'s highest close rate',
+      SPS_PERFORMANCE_EXPERIENCE_LINE,
+      'Top performer in Q1 2026 and Q3 to date',
+      SPS_FY25_BULLET,
       'Own full-cycle mid-market sales to operators and CTOs, leading technical discovery and demos around supply-chain integrations',
       'Serve as a go-to frontline partner to directors and VPs, identifying rep bottlenecks and shaping AI workflow improvements with go-to-market engineers',
-      'Helped lead the AI email-drafting pilot and presented the sales-team launch demo. Reported sales-floor results: users convert leads 10–20% faster and close deals approximately 1.5x faster than non-users',
+      `Helped lead the AI email-drafting pilot and presented the sales-team launch demo. ${SPS_AI_REPORTED_RESULTS}`,
     ],
   },
   {
@@ -47,7 +59,7 @@ export const experience = [
   {
     dates: 'Nov 2022 – Jan 2025',
     company: 'SPS Commerce',
-    note: '58% ARR growth · FY24',
+    note: '58% portfolio ARR growth · FY24',
     title: 'Mid-Market Account Executive',
     fullTitle: 'Mid-Market Account Executive',
     bullets: [
@@ -80,10 +92,10 @@ export const spsCaseStudy = {
   title: 'Turning rep feedback into a useful AI sales workflow',
   body:
     'Repetitive customer-email drafting was taking time away from customer conversations. After identifying the problem and requesting AI access, I joined an existing SPS initiative, helped lead the sales-side pilot, and worked with go-to-market engineers to shape the solution around real rep workflows. I presented the launch demo to the sales team and continue to help directors and VPs identify bottlenecks and useful improvements.',
-  comparison:
-    'Reported sales-floor comparison: users convert leads 10–20% faster and close deals approximately 1.5x faster than non-users.',
+  reportedResults: SPS_AI_REPORTED_RESULTS,
   contribution:
     'Contribution: frontline workflow input, pilot leadership, requirements feedback, and launch demonstration — not sole development of the company\'s tool.',
+  asOfNote: `Performance standings on this page are current as of ${PERFORMANCE_AS_OF}.`,
 }
 
 export const methodology = [

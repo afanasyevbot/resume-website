@@ -1,8 +1,17 @@
 import type { ProfessionalContext } from './types'
+import {
+  PERFORMANCE_AS_OF,
+  SPS_AI_REPORTED_RESULTS,
+  SPS_FY25_BULLET,
+  SPS_PERFORMANCE_EXPERIENCE_LINE,
+  SPS_PERFORMANCE_RESUME_BULLET,
+  homepageProofPoints,
+  performanceSourceFacts,
+} from './performanceFacts'
 
 export const professionalContext: ProfessionalContext = {
   summary:
-    'Account executive with five years of B2B SaaS sales experience, combining full-cycle selling, AI workflow improvement, and hands-on software delivery. At SPS Commerce, partners with directors, VPs, and go-to-market engineers to improve sales workflows; finished Q1 2026 ranked #1 of 30 account executives with 102.6% FY25 quota and the division\'s highest close rate. Through Fidelis Strategy, builds custom AI software from business discovery through deployment, including the Buyer Engine for Paradise Capital and products Fidelis Pulse and Fidelis Advisor.',
+    'Account executive with five years of B2B SaaS sales experience, combining full-cycle selling, AI workflow improvement, and hands-on software delivery. At SPS Commerce, partners with directors, VPs, and go-to-market engineers to improve sales workflows; top performer in Q1 2026 and Q3 to date with 2026 YTD ranked #3 of 30 account executives as of September 16, 2026. Through Fidelis Strategy, builds custom AI software from business discovery through deployment, including the Buyer Engine for Paradise Capital and products Fidelis Pulse and Fidelis Advisor.',
 
   identity: {
     name: 'Matthew Afanasiev',
@@ -22,12 +31,14 @@ export const professionalContext: ProfessionalContext = {
       company: 'SPS Commerce',
       dates: 'Feb 2025 – Present',
       preview:
-        'Finished Q1 2026 ranked #1 of 30 account executives. Partners with leadership on AI workflow improvements alongside full-cycle supply chain sales.',
+        'Top performer in Q1 2026 and Q3 to date. Partners with leadership on AI workflow improvements alongside full-cycle supply chain sales.',
       bullets: [
-        'Finished Q1 2026 ranked #1 of 30 account executives; achieved 102.6% of FY25 quota with the division\'s highest close rate',
+        SPS_PERFORMANCE_EXPERIENCE_LINE,
+        'Top performer in Q1 2026 and Q3 to date',
+        SPS_FY25_BULLET,
         'Own full-cycle mid-market sales to operators and CTOs, leading technical discovery and demos around supply-chain integrations',
         'Serve as a go-to frontline partner to directors and VPs, identifying rep bottlenecks and shaping AI workflow improvements with go-to-market engineers',
-        'Helped lead the AI email-drafting pilot and presented the sales-team launch demo. Reported sales-floor results: users convert leads 10–20% faster and close deals approximately 1.5x faster than non-users',
+        `Helped lead the AI email-drafting pilot and presented the sales-team launch demo. ${SPS_AI_REPORTED_RESULTS}`,
       ],
       aiContext: {
         situation:
@@ -35,7 +46,7 @@ export const professionalContext: ProfessionalContext = {
         approach:
           'Consultative from the first conversation. The job is less about pitching features and more about teaching — helping prospects understand what they actually need, what questions to ask, and what a good solution looks like before they are ready to commit. Walk them through standing up on SPS supply chain solutions end to end. A growing and increasingly important part of every conversation is educating companies on how AI agents can be integrated directly into their supply chain and order management workflows, turning manual and reactive processes into automated, intelligent ones. Most buyers have heard about AI but have no idea how to apply it to their operations. Being able to explain that credibly, and connect it to their specific workflow, is a genuine differentiator in the sales process.',
         results:
-          'Finished Q1 2026 ranked #1 of 30 account executives. 102.6% FY25 quota attainment with the division\'s highest close rate. Reported pilot results: users convert leads 10–20% faster and close deals approximately 1.5x faster than non-users.',
+          `Top performer in Q1 2026 and Q3 to date; ranked #3 of 30 account executives YTD as of ${PERFORMANCE_AS_OF}. ${SPS_FY25_BULLET} ${SPS_AI_REPORTED_RESULTS}`,
         lessons:
           'Pattern recognition beats activity volume. When you understand which accounts have real pain and which do not, you stop chasing and start closing.',
       },
@@ -160,24 +171,18 @@ export const professionalContext: ProfessionalContext = {
     ],
   },
 
-  headlineMetrics: [
-    { value: '#1', label: 'Of 30 AEs · Q1 2026' },
-    { value: '102.6%', label: 'FY25 Attainment' },
-    { value: '58%', label: 'ARR Growth · FY24' },
-    { value: '5 yrs', label: 'B2B SaaS Sales' },
-  ],
+  headlineMetrics: homepageProofPoints.map((point) => ({
+    value: point.value,
+    label: point.label,
+  })),
 
   keyStats: [
-    'Finished Q1 2026 ranked #1 of 30 account executives at SPS Commerce',
-    '102.6% FY25 quota attainment with the division\'s highest close rate',
-    'Reported AI pilot results: users convert leads 10–20% faster and close deals approximately 1.5x faster than non-users',
-    '58% ARR growth year-over-year in FY24 (Mid-Market AE)',
+    ...performanceSourceFacts,
+    '58% portfolio ARR growth year-over-year in FY24 across 500+ managed accounts (Mid-Market AE; not company-wide SPS ARR)',
     '#1 of 40 AEs at 151% quota attainment (Community Sales)',
-    '500+ account portfolio at peak (Mid-Market)',
     '5 years B2B SaaS sales experience',
-    'Currently first or second among 30 account executives year-to-date at SPS Commerce',
-    '5,500+ pull requests shipped in six months across client and product builds',
     'Buyer Engine client result: buyer-list preparation reduced from weeks to minutes (Paradise Capital)',
+    '5,500+ pull requests shipped in six months across client and product builds (builder context; not a resume headline stat)',
   ],
 
   starStories: [
@@ -310,12 +315,10 @@ export const professionalContext: ProfessionalContext = {
     },
   ],
 
-  resumeStats: [
-    { big: '#1', sub: 'OF 30 AEs · Q1 2026' },
-    { big: '102.6%', sub: 'FY25 ATTAINMENT' },
-    { big: '58%', sub: 'ARR GROWTH · FY24' },
-    { big: '5 yrs', sub: 'B2B SAAS SALES' },
-  ],
+  resumeStats: homepageProofPoints.map((point) => ({
+    big: point.value,
+    sub: point.label.toUpperCase(),
+  })),
 
   resumeSkills: [
     {
@@ -330,14 +333,14 @@ export const professionalContext: ProfessionalContext = {
     {
       category: 'AI & TECH',
       items:
-        'LLM APIs, agentic workflows, API integrations, FastAPI, Next.js, Postgres, Supabase, 5,500+ pull requests in six months',
+        'LLM APIs, agentic workflows, API integrations, FastAPI, Next.js, Postgres, Supabase',
     },
   ],
 
   positioning: {
     openTo: 'Account executive and go-to-market (AE & GTM) roles in B2B SaaS',
     currentRole:
-      'Net New AE at SPS Commerce. Finished Q1 2026 ranked #1 of 30 account executives; currently first or second among 30 AEs year-to-date. Full-cycle sales for complex B2B SaaS, partnering with directors and VPs on AI workflow improvements. Based in Minneapolis.',
+      `Net New AE at SPS Commerce. Top performer in Q1 2026 and Q3 to date; ranked #3 of 30 account executives YTD as of ${PERFORMANCE_AS_OF}. Full-cycle sales for complex B2B SaaS, partnering with directors and VPs on AI workflow improvements. Based in Minneapolis.`,
     salesHeadline: 'Account Executive | AI Systems & GTM',
     gtmHeadline: 'Account Executive | AI Systems & GTM',
     fidelisValue:
@@ -373,7 +376,7 @@ export const professionalContext: ProfessionalContext = {
     deep: [
       'Full-cycle B2B SaaS sales (hunting, discovery, demo, negotiation, close)',
       'Consultative discovery and ROI modeling with C-suite buyers',
-      'AI systems building with Claude API, Anthropic Agent SDK, and RAG pipelines; 5,500+ pull requests shipped in six months',
+      'AI systems building with Claude API, Anthropic Agent SDK, and RAG pipelines',
       'Pipeline building from zero, prospecting, ICP targeting, territory strategy',
       'Multi-stakeholder sales cycles across IT, finance, and operations',
     ],

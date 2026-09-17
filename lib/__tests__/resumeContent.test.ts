@@ -7,6 +7,7 @@ import {
   formatAllResumeVariantsForPrompt,
   formatResumeVariantForPrompt,
 } from '../resumeContent'
+import { SPS_PERFORMANCE_RESUME_BULLET } from '../performanceFacts'
 
 describe('resumeContent', () => {
   it('maps classic-ats to sales and AI archetypes to gtm', () => {
@@ -24,10 +25,11 @@ describe('resumeContent', () => {
     expect(RESUME_HEADLINE).toBe('Account Executive | AI Systems & GTM')
   })
 
-  it('sales variant matches the updated resume structure', () => {
+  it('sales variant uses the approved performance bullet', () => {
     expect(resumeVariants.sales.summary).toContain('five years of B2B SaaS sales experience')
     expect(resumeVariants.sales.projects.length).toBe(3)
-    expect(resumeVariants.sales.roles[0].bullets[0]).toContain('#1 of 30 account executives')
+    expect(resumeVariants.sales.roles[0].bullets[0]).toBe(SPS_PERFORMANCE_RESUME_BULLET)
+    expect(resumeVariants.sales.roles[0].bullets[1]).toContain('102.6% of FY25 quota')
   })
 
   it('gtm variant leads with AI workflow bullets', () => {

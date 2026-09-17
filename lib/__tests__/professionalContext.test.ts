@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { professionalContext } from '../professionalContext'
+import { homepageProofPoints } from '../performanceFacts'
 
 describe('professionalContext canonical facts', () => {
   it('uses the updated personal email', () => {
@@ -14,20 +15,21 @@ describe('professionalContext canonical facts', () => {
     expect(names).toContain('AI Lead Generation')
   })
 
-  it('includes the M&A Valuation System', () => {
-    const names = professionalContext.projects.map((p) => p.name)
-    expect(names).toContain('M&A Valuation System')
+  it('uses the three approved homepage proof points', () => {
+    expect(professionalContext.headlineMetrics).toHaveLength(3)
+    expect(professionalContext.headlineMetrics.map((m) => m.value)).toEqual(
+      homepageProofPoints.map((p) => p.value),
+    )
   })
 
   it('summary reflects updated positioning without monetized Pulse claims', () => {
     expect(professionalContext.summary).toContain('Account executive with five years')
+    expect(professionalContext.summary).toContain('top performer in Q1 2026 and Q3 to date')
     expect(professionalContext.summary).not.toMatch(/monetized/i)
-    expect(professionalContext.summary).not.toMatch(/7 production systems/i)
   })
 
-  it('headline metrics no longer use a production-system count', () => {
-    expect(professionalContext.headlineMetrics.some((m) => m.label.toLowerCase().includes('production systems'))).toBe(
-      false,
-    )
+  it('preserves precise performance source facts for Ask', () => {
+    expect(professionalContext.keyStats.some((s) => s.includes('Q3 2026 to date: tied for #1'))).toBe(true)
+    expect(professionalContext.keyStats.some((s) => s.includes('ranked #3 of 30'))).toBe(true)
   })
 })

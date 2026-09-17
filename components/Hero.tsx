@@ -1,13 +1,6 @@
 import Image from 'next/image'
 import { RESUME_PDF_PATHS } from '@/lib/resumeContent'
-import { heroCurrentRoleNote, heroIntro, heroTagline, professionalLabel } from '@/lib/siteContent'
-
-const stats = [
-  { number: '#1', label: 'of 30 AEs · Q1 2026' },
-  { number: '102.6%', label: 'FY25 attainment' },
-  { number: '58%', label: 'ARR growth · FY24' },
-  { number: '5 yrs', label: 'B2B SaaS sales' },
-]
+import { heroCurrentRoleNote, heroIntro, heroTagline, homepageProofPoints, professionalLabel } from '@/lib/siteContent'
 
 export default function Hero() {
   return (
@@ -59,18 +52,23 @@ export default function Hero() {
       </div>
 
       <div className="relative z-10 mt-20 sm:mt-24">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-          {stats.map((stat, i) => (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
+          {homepageProofPoints.map((stat, i) => (
             <div
               key={stat.label}
-              className="stat-tile text-center px-4 py-7 sm:px-5 sm:py-7 reveal-up"
+              className="stat-tile text-center px-4 py-7 sm:px-5 sm:py-8 reveal-up"
               style={{ animationDelay: `${i * 80}ms` }}
-              aria-label={`${stat.number} ${stat.label}`}
+              aria-label={`${stat.value} ${stat.label}. ${stat.note}`}
             >
-              <p className="font-display text-[30px] sm:text-[44px] font-semibold text-ink leading-none tracking-[-0.03em] tabular-nums">
-                {stat.number}
+              <p
+                className={`font-display font-semibold text-ink leading-[1.05] tracking-[-0.03em] ${
+                  stat.value === '58%' ? 'text-[30px] sm:text-[44px] tabular-nums' : 'text-[22px] sm:text-[28px]'
+                }`}
+              >
+                {stat.value}
               </p>
               <p className="text-[10px] sm:text-[13px] text-muted leading-[1.5] sm:leading-[1.45] mt-3">{stat.label}</p>
+              <p className="text-[10px] sm:text-[12px] text-ghost leading-[1.45] mt-2">{stat.note}</p>
             </div>
           ))}
         </div>
