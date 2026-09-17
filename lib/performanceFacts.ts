@@ -1,12 +1,10 @@
-/** Do not advance without an explicit new performance confirmation from Matthew. */
-export const PERFORMANCE_AS_OF = 'September 16, 2026'
-export const PERFORMANCE_AS_OF_SHORT = 'Sep 16, 2026'
+/** Do not advance performance standings without an explicit new confirmation from Matthew. */
 
 export const SPS_PERFORMANCE_RESUME_BULLET =
-  "Top performer in Q1 2026 and Q3 to date; ranked #3 of 30 account executives YTD and tracking toward President's Club (as of Sep 16, 2026)."
+  "Top performer in Q1 2026 and Q3 to date; ranked #3 of 30 account executives YTD and tracking toward President's Club."
 
 export const SPS_PERFORMANCE_EXPERIENCE_LINE =
-  "Ranked #3 of 30 account executives for 2026 year-to-date; tracking toward 2026 President's Club. As of September 16, 2026."
+  "Ranked #3 of 30 account executives for 2026 year-to-date; tracking toward 2026 President's Club."
 
 export const SPS_FY25_BULLET =
   "Achieved 102.6% of FY25 quota with the division's highest close rate."
@@ -18,7 +16,7 @@ export const homepageProofPoints = [
   {
     value: 'Top performer',
     label: 'Q1 2026 & Q3 to date',
-    note: `Current standing as of ${PERFORMANCE_AS_OF}.`,
+    note: 'Nonexclusive performance label; not a formal award.',
   },
   {
     value: '58%',
@@ -36,8 +34,8 @@ export const homepageProofPoints = [
 export const performanceSourceFacts = [
   'Public performance label: Top performer in Q1 2026 and Q3 to date (nonexclusive category, not a formal award).',
   'Q1 2026: ranked #1 of 30 account executives (completed period).',
-  'Q3 2026 to date: tied for #1 (in-progress standing as of September 16, 2026; do not describe as an outright or completed Q3 win).',
-  '2026 year-to-date: ranked #3 of 30 account executives as of September 16, 2026.',
+  'Q3 2026 to date: tied for #1 (in-progress standing; do not describe as an outright or completed Q3 win).',
+  '2026 year-to-date: ranked #3 of 30 account executives.',
   "President's Club: tracking toward 2026 President's Club; this is a trajectory/forecast, not an award already earned.",
   "Achieved 102.6% of FY25 quota with the division's highest close rate.",
   SPS_AI_REPORTED_RESULTS,

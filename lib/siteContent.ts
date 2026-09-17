@@ -1,5 +1,4 @@
 import {
-  PERFORMANCE_AS_OF,
   SPS_AI_REPORTED_RESULTS,
   SPS_FY25_BULLET,
   SPS_PERFORMANCE_EXPERIENCE_LINE,
@@ -94,7 +93,6 @@ export const spsCaseStudy = {
   reportedResults: SPS_AI_REPORTED_RESULTS,
   contribution:
     'Contribution: frontline workflow input, pilot leadership, requirements feedback, and launch demonstration — not sole development of the company\'s tool.',
-  asOfNote: `Performance standings on this page are current as of ${PERFORMANCE_AS_OF}.`,
 }
 
 export const methodology = [

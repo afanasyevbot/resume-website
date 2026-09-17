@@ -1,6 +1,6 @@
 import type { ProfessionalContext } from './types'
 import { formatAllResumeVariantsForPrompt, contactLine, RESUME_CONTACT } from './resumeContent'
-import { PERFORMANCE_AS_OF, performanceSourceFacts } from './performanceFacts'
+import { performanceSourceFacts } from './performanceFacts'
 
 export function buildSystemPrompt(ctx: ProfessionalContext): string {
   const rolesText = ctx.roles
@@ -94,7 +94,7 @@ ${ctx.headlineMetrics.map((m) => `- ${m.value} ${m.label}`).join('\n')}
 
 ---
 
-## PERFORMANCE STANDINGS (as of ${PERFORMANCE_AS_OF})
+## PERFORMANCE STANDINGS
 ${performanceSourceFacts.map((fact) => `- ${fact}`).join('\n')}
 
 ---

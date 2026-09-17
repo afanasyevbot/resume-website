@@ -1,6 +1,5 @@
 import type { ProfessionalContext } from './types'
 import {
-  PERFORMANCE_AS_OF,
   SPS_AI_REPORTED_RESULTS,
   SPS_FY25_BULLET,
   SPS_PERFORMANCE_EXPERIENCE_LINE,
@@ -10,7 +9,7 @@ import {
 
 export const professionalContext: ProfessionalContext = {
   summary:
-    'Account executive with five years of B2B SaaS sales experience, combining full-cycle selling, AI workflow improvement, and hands-on software delivery. At SPS Commerce, partners with directors, VPs, and go-to-market engineers to improve sales workflows; top performer in Q1 2026 and Q3 to date with 2026 YTD ranked #3 of 30 account executives as of September 16, 2026. Through Fidelis Strategy, builds custom AI software from business discovery through deployment, including the Buyer Engine for Paradise Capital and products Fidelis Pulse and Fidelis Advisor.',
+    'Account executive with five years of B2B SaaS sales experience, combining full-cycle selling, AI workflow improvement, and hands-on software delivery. At SPS Commerce, partners with directors, VPs, and go-to-market engineers to improve sales workflows; top performer in Q1 2026 and Q3 to date with 2026 YTD ranked #3 of 30 account executives. Through Fidelis Strategy, builds custom AI software from business discovery through deployment, including the Buyer Engine for Paradise Capital and products Fidelis Pulse and Fidelis Advisor.',
 
   identity: {
     name: 'Matthew Afanasiev',
@@ -45,7 +44,7 @@ export const professionalContext: ProfessionalContext = {
         approach:
           'Consultative from the first conversation. The job is less about pitching features and more about teaching — helping prospects understand what they actually need, what questions to ask, and what a good solution looks like before they are ready to commit. Walk them through standing up on SPS supply chain solutions end to end. A growing and increasingly important part of every conversation is educating companies on how AI agents can be integrated directly into their supply chain and order management workflows, turning manual and reactive processes into automated, intelligent ones. Most buyers have heard about AI but have no idea how to apply it to their operations. Being able to explain that credibly, and connect it to their specific workflow, is a genuine differentiator in the sales process.',
         results:
-          `Top performer in Q1 2026 and Q3 to date; ranked #3 of 30 account executives YTD as of ${PERFORMANCE_AS_OF}. ${SPS_FY25_BULLET} ${SPS_AI_REPORTED_RESULTS}`,
+          `Top performer in Q1 2026 and Q3 to date; ranked #3 of 30 account executives YTD. ${SPS_FY25_BULLET} ${SPS_AI_REPORTED_RESULTS}`,
         lessons:
           'Pattern recognition beats activity volume. When you understand which accounts have real pain and which do not, you stop chasing and start closing.',
       },
@@ -408,7 +407,7 @@ export const professionalContext: ProfessionalContext = {
     'Do not claim to train or fine-tune AI models, Matthew uses and builds on top of APIs',
     'Do not name the specific AI vendor/API in application copy, say "multiple AI APIs" or "API integrations" (internal data may name it)',
     'Do not claim a $1M+ quota, his quota is mid-market sized but growing',
-    'Do not describe Q3 2026 as a completed or outright win; Q3 first place is tied and in progress as of September 16, 2026',
+    'Do not describe Q3 2026 as a completed or outright win; Q3 first place is tied and still in progress',
     'Do not describe President\'s Club as an award already earned; it is a trajectory/forecast',
     'Do not present SPS AI pilot metrics as Matthew\'s personal conversion gains; they compare users versus non-users',
     'Do not auto-advance performance standings or as-of dates without a new user confirmation',

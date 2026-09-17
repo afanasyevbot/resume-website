@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest'
 import {
-  PERFORMANCE_AS_OF,
   SPS_AI_REPORTED_RESULTS,
   SPS_PERFORMANCE_EXPERIENCE_LINE,
   SPS_PERFORMANCE_RESUME_BULLET,
@@ -25,8 +24,9 @@ describe('performanceFacts', () => {
   })
 
   it('includes the approved experience detail line', () => {
-    expect(SPS_PERFORMANCE_EXPERIENCE_LINE).toContain('Ranked #3 of 30 account executives for 2026 year-to-date')
-    expect(SPS_PERFORMANCE_EXPERIENCE_LINE).toContain(PERFORMANCE_AS_OF)
+    expect(SPS_PERFORMANCE_EXPERIENCE_LINE).toBe(
+      "Ranked #3 of 30 account executives for 2026 year-to-date; tracking toward 2026 President's Club.",
+    )
   })
 
   it('preserves source facts for Q1, Q3, and YTD without overstating Q3', () => {
