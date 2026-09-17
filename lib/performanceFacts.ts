@@ -16,12 +16,11 @@ export const homepageProofPoints = [
   {
     value: 'Top performer',
     label: 'Q1 2026 & Q3 to date',
-    note: 'Nonexclusive performance label; not a formal award.',
   },
   {
     value: '58%',
     label: 'Portfolio ARR growth · FY24',
-    note: 'Managed portfolio across 500+ accounts; not company-wide SPS ARR.',
+    note: 'Managed portfolio across 500+ accounts.',
   },
   {
     value: 'Weeks → minutes',
@@ -32,7 +31,7 @@ export const homepageProofPoints = [
 
 /** Precise standings for Ask / role-fit context — not all are public homepage labels. */
 export const performanceSourceFacts = [
-  'Public performance label: Top performer in Q1 2026 and Q3 to date (nonexclusive category, not a formal award).',
+  'Public performance label: Top performer in Q1 2026 and Q3 to date.',
   'Q1 2026: ranked #1 of 30 account executives (completed period).',
   'Q3 2026 to date: tied for #1 (in-progress standing; do not describe as an outright or completed Q3 win).',
   '2026 year-to-date: ranked #3 of 30 account executives.',

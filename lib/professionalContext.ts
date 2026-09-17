@@ -176,7 +176,7 @@ export const professionalContext: ProfessionalContext = {
 
   keyStats: [
     ...performanceSourceFacts,
-    '58% portfolio ARR growth year-over-year in FY24 across 500+ managed accounts (Mid-Market AE; not company-wide SPS ARR)',
+    '58% portfolio ARR growth year-over-year in FY24 across 500+ managed accounts (Mid-Market AE)',
     '#1 of 40 AEs at 151% quota attainment (Community Sales)',
     '5 years B2B SaaS sales experience',
     'Buyer Engine client result: buyer-list preparation reduced from weeks to minutes (Paradise Capital)',
