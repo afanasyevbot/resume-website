@@ -527,6 +527,7 @@ input:focus-visible {
   .card-lift:hover,
   .stat-tile:hover,
   .btn-primary:hover,
+  .btn-header-ask:hover,
   .btn-ghost:hover {
     transform: none;
   }
