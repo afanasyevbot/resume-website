@@ -9,10 +9,30 @@ import {
   professionalLabel,
 } from '@/lib/siteContent'
 
+function StatValue({ value }: { value: string }) {
+  if (value === '#1 ranked rep YTD') {
+    return (
+      <div className="flex flex-col items-center gap-0.5 sm:gap-1">
+        <span className="font-display font-semibold text-ink leading-none tracking-[-0.04em] text-[40px] sm:text-[52px] tabular-nums">
+          #1
+        </span>
+        <span className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] text-[15px] sm:text-[18px]">
+          ranked rep YTD
+        </span>
+      </div>
+    )
+  }
+
+  return (
+    <p className={`font-display font-semibold text-ink leading-[1.05] tracking-[-0.03em] ${statValueClass(value)}`}>
+      {value}
+    </p>
+  )
+}
+
 function statValueClass(value: string) {
   if (value === '200%') return 'text-[30px] sm:text-[44px] tabular-nums'
   if (value === 'Division record') return 'text-[18px] sm:text-[24px] leading-[1.12]'
-  if (value === '#1 ranked rep YTD') return 'text-[17px] sm:text-[22px] leading-[1.12]'
   return 'text-[22px] sm:text-[28px]'
 }
 
@@ -75,9 +95,7 @@ export default function Hero() {
               style={{ animationDelay: `${i * 80}ms` }}
               aria-label={`${stat.value} ${stat.label}`}
             >
-              <p className={`font-display font-semibold text-ink leading-[1.05] tracking-[-0.03em] ${statValueClass(stat.value)}`}>
-                {stat.value}
-              </p>
+              <StatValue value={stat.value} />
               <p className="text-[10px] sm:text-[13px] text-muted leading-[1.5] sm:leading-[1.45] mt-3">{stat.label}</p>
             </div>
           ))}
