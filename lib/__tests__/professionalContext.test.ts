@@ -22,14 +22,18 @@ describe('professionalContext canonical facts', () => {
     )
   })
 
-  it('summary reflects updated positioning without monetized Pulse claims', () => {
+  it('summary reflects updated sales positioning', () => {
     expect(professionalContext.summary).toContain('Account executive with five years')
-    expect(professionalContext.summary).toContain('top performer in Q1 2026 and Q3 to date')
+    expect(professionalContext.summary).toContain('#1 ranked rep YTD')
+    expect(professionalContext.summary).toContain('200% of quota in Q3')
+    expect(professionalContext.summary).not.toMatch(/Paradise/i)
     expect(professionalContext.summary).not.toMatch(/monetized/i)
   })
 
   it('preserves precise performance source facts for Ask', () => {
-    expect(professionalContext.keyStats.some((s) => s.includes('Q3 2026 to date: tied for #1'))).toBe(true)
-    expect(professionalContext.keyStats.some((s) => s.includes('ranked #3 of 30'))).toBe(true)
+    expect(professionalContext.keyStats.some((s) => s.includes('200% of quota in Q3'))).toBe(true)
+    expect(professionalContext.keyStats.some((s) => s.includes('#1 ranked rep YTD'))).toBe(true)
+    expect(professionalContext.keyStats.join(' ')).not.toMatch(/ranked #3 of 30/i)
+    expect(professionalContext.keyStats.join(' ')).not.toMatch(/Top performer in Q1 2026/i)
   })
 })

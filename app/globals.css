@@ -218,6 +218,18 @@ input:focus-visible {
     0 0 0 1px color-mix(in srgb, var(--color-gold) 12%, transparent);
 }
 
+.stat-tile-hero {
+  background: var(--glass-bg-strong);
+  border-color: color-mix(in srgb, var(--color-gold) 28%, var(--glass-border));
+  box-shadow:
+    var(--glass-shadow),
+    0 0 0 1px color-mix(in srgb, var(--color-gold) 10%, transparent);
+}
+
+.hero-role-panel {
+  border-color: color-mix(in srgb, var(--color-gold) 22%, var(--glass-border));
+}
+
 .stat-tile {
   background: var(--glass-bg);
   backdrop-filter: blur(22px) saturate(1.45);
