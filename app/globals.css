@@ -226,9 +226,6 @@ input:focus-visible {
     0 0 0 1px color-mix(in srgb, var(--color-gold) 10%, transparent);
 }
 
-.hero-role-panel {
-  border-color: color-mix(in srgb, var(--color-gold) 22%, var(--glass-border));
-}
 
 .stat-tile {
   background: var(--glass-bg);
