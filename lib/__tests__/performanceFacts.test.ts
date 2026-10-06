@@ -25,7 +25,7 @@ describe('performanceFacts', () => {
 
   it('keeps the exact SPS AI reported-results wording', () => {
     expect(SPS_AI_REPORTED_RESULTS).toBe(
-      'Reported sales-floor results: reps using the pilot converted leads 10-20% faster and closed deals approximately 1.5x faster than non-users.',
+      'Reported sales-floor results: users convert leads 10-20% faster and close deals approximately 1.5x faster than non-users.',
     )
   })
 
@@ -38,6 +38,7 @@ describe('performanceFacts', () => {
     expect(performanceSourceFacts.some((f) => f.includes('#1 ranked rep YTD'))).toBe(true)
     expect(performanceSourceFacts.some((f) => f.includes('200% of quota in Q3'))).toBe(true)
     expect(performanceSourceFacts.some((f) => f.includes('Do not say "#1 of 30"'))).toBe(true)
+    expect(performanceSourceFacts.some((f) => f.includes('Never describe Matthew as third'))).toBe(true)
     expect(performanceSourceFacts.join(' ')).not.toMatch(/ranked #3 of 30/i)
   })
 

@@ -13,6 +13,10 @@ vi.mock('@anthropic-ai/sdk', () => ({
   }),
 }))
 
+vi.mock('@/lib/env', () => ({
+  anthropicKey: () => 'sk-ant-api03-' + 'x'.repeat(90),
+}))
+
 describe('POST /api/chat', () => {
   beforeEach(() => {
     process.env.ANTHROPIC_API_KEY = 'test-key'

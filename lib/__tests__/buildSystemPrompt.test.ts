@@ -37,8 +37,8 @@ describe('buildSystemPrompt', () => {
     expect(prompt).toContain('PERFORMANCE STANDINGS')
     expect(prompt).toContain('#1 ranked rep YTD')
     expect(prompt).toContain('200% of quota in Q3')
-    expect(prompt).not.toContain('ranked #3 of 30')
-    expect(prompt).not.toContain('tied for #1')
+    expect(prompt).not.toMatch(/ranked #3 of 30 account executives/i)
+    expect(prompt).not.toMatch(/Top performer in Q1 2026/i)
   })
 
   it('documents facts needed for sales-performance questions', () => {
@@ -46,6 +46,7 @@ describe('buildSystemPrompt', () => {
     expect(prompt).toContain('division record for most sales in a month')
     expect(prompt).toContain("President's Club qualification")
     expect(prompt).toContain('102.6% of FY25 quota')
+    expect(prompt).toContain('Never say third, #3, or ranked #3 of 30')
     expect(prompt).not.toMatch(/Paradise Capital/i)
   })
 })

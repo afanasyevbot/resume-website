@@ -1,7 +1,7 @@
 import {
   SPS_AI_REPORTED_RESULTS,
   SPS_FY25_BULLET,
-  SPS_PERFORMANCE_EXPERIENCE_LINE,
+  SPS_PERFORMANCE_RESUME_BULLET,
   homepageProofPoints,
 } from '@/lib/performanceFacts'
 
@@ -36,8 +36,7 @@ export const experience = [
     title: 'Net New AE · Supply Chain Performance',
     fullTitle: 'Net New Subscriber Account Executive, Supply Chain Performance',
     bullets: [
-      '#1 ranked rep YTD at SPS Commerce',
-      SPS_PERFORMANCE_EXPERIENCE_LINE,
+      SPS_PERFORMANCE_RESUME_BULLET,
       SPS_FY25_BULLET,
       'Own full-cycle mid-market sales to operators and CTOs, leading technical discovery and demos around supply-chain integrations',
       'Serve as a go-to frontline partner to directors and VPs, identifying rep bottlenecks and shaping AI workflow improvements with go-to-market engineers',
@@ -52,7 +51,7 @@ export const experience = [
     title: 'Founder & Growth Strategy Consultant',
     fullTitle: 'Founder & Growth Strategy Consultant',
     bullets: [
-      'Built Buyer Engine for an M&A advisory client and partner on custom AI workflows, translating operating needs into software and ongoing improvements',
+      'Partner with an M&A advisory client on its Buyer Engine and custom AI workflows, translating M&A operating needs into software and ongoing improvements',
       'Own client discovery, proposals, commercial agreement, solution design, deployment, and ongoing development',
     ],
   },

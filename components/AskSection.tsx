@@ -13,10 +13,10 @@ interface Message {
 }
 
 const SUGGESTED_CHIPS = [
+  'How good is he at sales?',
   'What were his deal sizes?',
   'What industries has he sold into?',
   'How does he sell?',
-  'What is his go-to-market experience?',
 ]
 
 const QUESTION_LIMIT = 5

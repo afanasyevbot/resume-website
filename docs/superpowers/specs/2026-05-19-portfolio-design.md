@@ -104,10 +104,9 @@ I've been on both sides — and I do both well.
 **Stats bar (4 cells, grid, 1px gold-dark dividers):**
 | Stat | Label |
 |---|---|
-| #1 | Q1 2026 · Net New |
-| 58% | ARR Growth · FY24 |
-| 6+ | AI Systems Shipped |
-| 5yr | Sales Experience |
+| #1 ranked rep YTD | SPS Commerce |
+| 200% | Of quota in Q3 |
+| Division record | Most sales in a month |
 
 ---
 
@@ -227,18 +226,18 @@ For each role: title, company, dates, standard bullets, plus `aiContext: { situa
 - No vertical restrictions
 
 ### Key Stats
-- #1 Q1 2026 net-new production company-wide
-- 5th of 30 AEs FY25, 102.6% quota attainment
-- 58% ARR growth FY24
+- #1 ranked rep YTD at SPS Commerce
+- 200% of quota in Q3; division record for most sales in a month
+- Leading President's Club qualification
+- 102.6% of FY25 quota, division's highest close rate
+- 58% ARR growth FY24 across 500+ accounts
 - #1 of 40 AEs, 151% attainment (Community Sales)
-- $99K closed in 2 months against $29K ramp quota
-- Closed $50K individual deals
 
 ### STAR Stories (10)
 Pipeline from nothing · Winning skeptical exec · ROI changed outcome · Multi-stakeholder long cycle · Persistence pays · Failure (skipped discovery) · Budget objection · New product launch · Turning miss into 58% growth · Repeatable pipeline
 
 ### AI Projects (6)
-Fidelis Pulse · Paradise Buyer Engine · Paradise Lead Gen · Agent Legend Lead Gen · Glow Routine · Grace Church
+Fidelis Pulse · Buyer Engine (M&A advisory client) · AI Lead Generation · Glow Routine · Grace Church · Fidelis Advisor
 
 ### Skills Matrix
 Deep / Conversant / Not My Zone (as above)

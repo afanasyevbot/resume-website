@@ -10,7 +10,7 @@ export const SPS_FY25_BULLET =
   "Achieved 102.6% of FY25 quota with the division's highest close rate."
 
 export const SPS_AI_REPORTED_RESULTS =
-  'Reported sales-floor results: reps using the pilot converted leads 10-20% faster and closed deals approximately 1.5x faster than non-users.'
+  'Reported sales-floor results: users convert leads 10-20% faster and close deals approximately 1.5x faster than non-users.'
 
 export const homepageProofPoints = [
   {
@@ -30,6 +30,7 @@ export const homepageProofPoints = [
 /** Precise standings for Ask / role-fit context — not all are public homepage labels. */
 export const performanceSourceFacts = [
   '#1 ranked rep YTD at SPS Commerce. Use this exact framing. Do not say "#1 of 30" or cite a numeric rank out of 30.',
+  'Never describe Matthew as third, #3, ranked third, or #3 of 30 year-to-date. That standing is outdated and wrong.',
   '200% of quota in Q3 (full quarter).',
   'Broke the division record for most sales in a month.',
   "Leading President's Club qualification. This is current standing toward the club, not the same as having already won the award.",

@@ -3,6 +3,7 @@ import {
   SPS_AI_REPORTED_RESULTS,
   SPS_FY25_BULLET,
   SPS_PERFORMANCE_EXPERIENCE_LINE,
+  SPS_PERFORMANCE_RESUME_BULLET,
   homepageProofPoints,
   performanceSourceFacts,
 } from './performanceFacts'
@@ -31,8 +32,7 @@ export const professionalContext: ProfessionalContext = {
       preview:
         '#1 ranked rep YTD. 200% of quota in Q3. Partners with leadership on AI workflow improvements alongside full-cycle supply chain sales.',
       bullets: [
-        '#1 ranked rep YTD at SPS Commerce',
-        SPS_PERFORMANCE_EXPERIENCE_LINE,
+        SPS_PERFORMANCE_RESUME_BULLET,
         SPS_FY25_BULLET,
         'Own full-cycle mid-market sales to operators and CTOs, leading technical discovery and demos around supply-chain integrations',
         'Serve as a go-to frontline partner to directors and VPs, identifying rep bottlenecks and shaping AI workflow improvements with go-to-market engineers',
@@ -57,7 +57,7 @@ export const professionalContext: ProfessionalContext = {
       preview:
         'Built Buyer Engine for an M&A advisory client. Owns client discovery through deployment while carrying full quota at SPS.',
       bullets: [
-        'Built Buyer Engine for an M&A advisory client and partner on custom AI workflows, translating operating needs into software and ongoing improvements',
+        'Partner with an M&A advisory client on its Buyer Engine and custom AI workflows, translating M&A operating needs into software and ongoing improvements',
         'Own client discovery, proposals, commercial agreement, solution design, deployment, and ongoing development',
         'Built Fidelis Pulse (owner dashboards) and Fidelis Advisor (M&A client workspaces) as separate products',
         'Built AI lead-generation systems and other client platforms with Next.js, FastAPI, Supabase, and LLM APIs',
@@ -409,6 +409,7 @@ export const professionalContext: ProfessionalContext = {
     'Do not claim a $1M+ quota, his quota is mid-market sized but growing',
     'Do not say "#1 of 30" for YTD ranking; use "#1 ranked rep YTD at SPS Commerce"',
     'Do not describe President\'s Club as an award already earned; Matthew is leading qualification toward it',
+    'Never say Matthew is third, #3, ranked third, or #3 of 30 year-to-date',
     'Do not present SPS AI pilot metrics as Matthew\'s personal conversion gains; they compare users versus non-users',
     'Do not auto-advance performance standings or as-of dates without a new user confirmation',
     'Decline gracefully if asked personal questions unrelated to professional background',

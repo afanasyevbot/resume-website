@@ -66,18 +66,18 @@ const SHARED_BULLETS = {
 }
 
 const FIDELIS_SALES_BULLETS = [
-  'Built Buyer Engine for an M&A advisory client and partner on custom AI workflows, translating operating needs into software and ongoing improvements.',
+  'Partner with an M&A advisory client on its Buyer Engine and custom AI workflows, translating M&A operating needs into software and ongoing improvements.',
   'Own client discovery, proposals, commercial agreement, solution design, deployment, and ongoing development.',
 ]
 
 const FIDELIS_GTM_BULLETS = [
-  "Translate an M&A advisory client's workflows into custom software and agentic solutions, including the Buyer Engine; guide scoping and ongoing development.",
+  'Partner with an M&A advisory client on custom software and agentic workflows, including the Buyer Engine; guide scoping and ongoing development.',
   'Own client discovery, solution scoping, proposals, commercial agreement, deployment, and maintenance.',
 ]
 
 const BUILT_PROJECTS: ResumeProjectBlock[] = [
   {
-    name: 'Buyer Engine | M&A advisory client',
+    name: 'Buyer Engine | M&A Advisory Client',
     description:
       'Built and maintain an M&A platform that finds, enriches, and ranks prospective acquirers. Client reports reducing buyer-list preparation from weeks to minutes.',
     stack: 'FastAPI · Anthropic Agent SDK · Supabase',
@@ -136,7 +136,7 @@ export const resumeVariants: Record<ResumeVariant, ResumeVariantContent> = {
       {
         category: 'Sales',
         items:
-          'Full-cycle SaaS sales, technical discovery, demos, ROI selling, outbound prospecting, Salesforce',
+          'Full-cycle B2B SaaS sales, technical discovery, demos, ROI selling, outbound prospecting, Salesforce',
       },
       {
         category: 'GTM & AI Adoption',
@@ -144,7 +144,8 @@ export const resumeVariants: Record<ResumeVariant, ResumeVariantContent> = {
       },
       {
         category: 'AI & Technical',
-        items: 'LLM APIs, agentic workflows, API integrations, FastAPI, Next.js, Postgres, Supabase',
+        items:
+          'Custom software delivery, agentic workflows, LLM APIs, API integrations, FastAPI, Next.js, Postgres, Supabase',
       },
     ],
   },
