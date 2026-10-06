@@ -73,10 +73,11 @@ export default function SiteHeader() {
           <button
             type="button"
             onClick={openAsk}
-            className="inline-flex items-center justify-center min-h-[44px] px-3 sm:px-5 rounded-full glass-tile glass-tile-lift text-[12px] font-medium text-ink"
+            className="btn-header-ask shrink-0"
+            aria-label="Ask about Matthew"
           >
-            <span className="sm:hidden">Ask</span>
-            <span className="hidden sm:inline">Ask a question</span>
+            <span className="sm:hidden">Ask me</span>
+            <span className="hidden sm:inline">Ask about me</span>
           </button>
         </div>
       </div>
