@@ -16,7 +16,7 @@ export default function SystemsSection() {
           Products &amp; systems I built
         </h2>
         <p className="text-[15px] sm:text-[16px] leading-[1.65] mt-4 max-w-[52ch] text-muted">
-          Client platforms and own products built while carrying quota — from M&amp;A buyer research to owner dashboards and lead generation.
+          Client platforms and own products built while carrying quota, from M&amp;A buyer research to owner dashboards and lead generation.
         </p>
       </div>
 
@@ -25,7 +25,7 @@ export default function SystemsSection() {
           <div className="p-7 sm:p-8">
             <Image
               src="/images/logos/paradise-capital.avif"
-              alt="Paradise Capital"
+              alt="M&A advisory firm"
               width={220}
               height={48}
               className="h-9 sm:h-10 w-auto mb-5"
@@ -49,7 +49,7 @@ export default function SystemsSection() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-[14px] text-ink font-semibold mt-5 hover:underline underline-offset-4"
             >
-              Read the Paradise Capital case study
+              Read the M&amp;A advisory case study
               <Image src="/icons/external-link.svg" alt="" aria-hidden width={14} height={14} />
             </a>
             <p className="text-[12px] text-ghost mt-5 pt-5 border-t border-border">

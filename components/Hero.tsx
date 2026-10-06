@@ -1,10 +1,45 @@
 import Image from 'next/image'
 import { RESUME_PDF_PATHS } from '@/lib/resumeContent'
-import { heroCurrentRoleNote, heroIntro, heroTagline, homepageProofPoints, professionalLabel } from '@/lib/siteContent'
+import {
+  heroCurrentRoleNote,
+  heroIntro,
+  heroPerformanceHighlight,
+  heroTagline,
+  homepageProofPoints,
+  professionalLabel,
+} from '@/lib/siteContent'
+
+function StatValue({ value }: { value: string }) {
+  if (value === '#1 ranked rep YTD') {
+    return (
+      <div className="flex flex-col items-center gap-0.5 sm:gap-1">
+        <span className="font-display font-semibold text-ink leading-none tracking-[-0.04em] text-[40px] sm:text-[52px] tabular-nums">
+          #1
+        </span>
+        <span className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] text-[15px] sm:text-[18px]">
+          ranked rep YTD
+        </span>
+      </div>
+    )
+  }
+
+  return (
+    <p className={`font-display font-semibold text-ink leading-[1.05] tracking-[-0.03em] ${statValueClass(value)}`}>
+      {value}
+    </p>
+  )
+}
+
+function statValueClass(value: string) {
+  if (value === '200%') return 'text-[30px] sm:text-[44px] tabular-nums'
+  if (value === 'Division record') return 'text-[18px] sm:text-[24px] leading-[1.12]'
+  return 'text-[22px] sm:text-[28px]'
+}
 
 export default function Hero() {
   return (
     <section className="relative pt-[112px] sm:pt-[116px] pb-16 sm:pb-20 overflow-hidden">
+      <p className="sr-only">{heroPerformanceHighlight}</p>
       <div className="relative reveal-up">
         <div
           className="pointer-events-none hidden md:block absolute top-1/2 -translate-y-1/2 right-0 lg:-right-6 xl:-right-4 w-[min(46vw,280px)] lg:w-[400px] xl:w-[460px] aspect-[7/9] hero-portrait-arch z-0"
@@ -56,32 +91,17 @@ export default function Hero() {
           {homepageProofPoints.map((stat, i) => (
             <div
               key={stat.label}
-              className="stat-tile text-center px-4 py-7 sm:px-5 sm:py-8 reveal-up"
+              className="stat-tile stat-tile-hero text-center px-4 py-7 sm:px-5 sm:py-8 reveal-up"
               style={{ animationDelay: `${i * 80}ms` }}
-              aria-label={
-                'note' in stat && stat.note
-                  ? `${stat.value} ${stat.label}. ${stat.note}`
-                  : `${stat.value} ${stat.label}`
-              }
+              aria-label={`${stat.value} ${stat.label}`}
             >
-              <p
-                className={`font-display font-semibold text-ink leading-[1.05] tracking-[-0.03em] ${
-                  stat.value === '58%' ? 'text-[30px] sm:text-[44px] tabular-nums' : 'text-[22px] sm:text-[28px]'
-                }`}
-              >
-                {stat.value}
-              </p>
+              <StatValue value={stat.value} />
               <p className="text-[10px] sm:text-[13px] text-muted leading-[1.5] sm:leading-[1.45] mt-3">{stat.label}</p>
-              {'note' in stat && stat.note ? (
-                <p className="text-[10px] sm:text-[12px] text-ghost leading-[1.45] mt-2">{stat.note}</p>
-              ) : null}
             </div>
           ))}
         </div>
         <div className="glass-panel mt-12 sm:mt-12 px-5 py-8 sm:px-10 sm:py-9 max-w-[56ch] mx-auto text-center">
-          <p className="text-[14px] sm:text-[15px] text-muted leading-[1.7]">
-            {heroCurrentRoleNote}
-          </p>
+          <p className="text-[14px] sm:text-[15px] text-muted leading-[1.7]">{heroCurrentRoleNote}</p>
         </div>
       </div>
     </section>

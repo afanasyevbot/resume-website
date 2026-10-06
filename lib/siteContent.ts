@@ -1,7 +1,7 @@
 import {
   SPS_AI_REPORTED_RESULTS,
   SPS_FY25_BULLET,
-  SPS_PERFORMANCE_EXPERIENCE_LINE,
+  SPS_PERFORMANCE_RESUME_BULLET,
   homepageProofPoints,
 } from '@/lib/performanceFacts'
 
@@ -17,11 +17,13 @@ export const fidelisUrl = 'https://fidelisstrategy.net'
 export const paradiseCaseStudyUrl = 'https://fidelisstrategy.net/'
 
 export const professionalLabel = 'Account Executive | AI Systems & GTM'
+export const heroPerformanceHighlight =
+  '#1 ranked rep YTD at SPS Commerce. 200% of quota in Q3. Broke the division record for most sales in a month.'
 export const heroTagline = 'I sell complex software and build AI systems around real business needs.'
 export const heroIntro =
   'Five years of B2B SaaS sales experience. At SPS Commerce, I sell complex solutions and partner with directors, VPs, and go-to-market engineers to improve sales workflows. Through Fidelis Strategy, I build custom AI software from business discovery through deployment.'
 export const heroCurrentRoleNote =
-  'Current role: Net New AE at SPS Commerce. Partnering with directors and VPs on AI workflow improvements. Based in Minneapolis.'
+  'Current role: Net New AE at SPS Commerce. Leading President\'s Club qualification. Also building production AI systems for an M&A advisory client and own products.'
 export const personalSignature = 'MY WHY: Faith · Family · First generation'
 
 export { homepageProofPoints }
@@ -34,8 +36,7 @@ export const experience = [
     title: 'Net New AE · Supply Chain Performance',
     fullTitle: 'Net New Subscriber Account Executive, Supply Chain Performance',
     bullets: [
-      'Top performer in Q1 2026 and Q3 to date',
-      SPS_PERFORMANCE_EXPERIENCE_LINE,
+      SPS_PERFORMANCE_RESUME_BULLET,
       SPS_FY25_BULLET,
       'Own full-cycle mid-market sales to operators and CTOs, leading technical discovery and demos around supply-chain integrations',
       'Serve as a go-to frontline partner to directors and VPs, identifying rep bottlenecks and shaping AI workflow improvements with go-to-market engineers',
@@ -50,7 +51,7 @@ export const experience = [
     title: 'Founder & Growth Strategy Consultant',
     fullTitle: 'Founder & Growth Strategy Consultant',
     bullets: [
-      'Partner with Paradise Capital on its Buyer Engine and custom AI workflows, translating M&A operating needs into software and ongoing improvements',
+      'Partner with an M&A advisory client on its Buyer Engine and custom AI workflows, translating M&A operating needs into software and ongoing improvements',
       'Own client discovery, proposals, commercial agreement, solution design, deployment, and ongoing development',
     ],
   },
@@ -92,7 +93,7 @@ export const spsCaseStudy = {
     'Repetitive customer-email drafting was taking time away from customer conversations. After identifying the problem and requesting AI access, I joined an existing SPS initiative, helped lead the sales-side pilot, and worked with go-to-market engineers to shape the solution around real rep workflows. I presented the launch demo to the sales team and continue to help directors and VPs identify bottlenecks and useful improvements.',
   reportedResults: SPS_AI_REPORTED_RESULTS,
   contribution:
-    'Contribution: frontline workflow input, pilot leadership, requirements feedback, and launch demonstration — not sole development of the company\'s tool.',
+    'Contribution: frontline workflow input, pilot leadership, requirements feedback, and launch demonstration. Not sole development of the company\'s tool.',
 }
 
 export const methodology = [

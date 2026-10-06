@@ -11,40 +11,40 @@ describe('performanceFacts', () => {
   it('uses the three approved homepage proof points', () => {
     expect(homepageProofPoints).toHaveLength(3)
     expect(homepageProofPoints.map((p) => p.value)).toEqual([
-      'Top performer',
-      '58%',
-      'Weeks → minutes',
+      '#1 ranked rep YTD',
+      '200%',
+      'Division record',
     ])
   })
 
-  it('does not show the old public disclaimers on homepage proof points', () => {
-    const notes = homepageProofPoints.map((p) => ('note' in p ? p.note : '')).join(' ')
-    expect(notes).not.toMatch(/formal award/i)
-    expect(notes).not.toMatch(/company-wide SPS ARR/i)
+  it('does not show legacy disclaimers on homepage proof points', () => {
+    const joined = homepageProofPoints.map((p) => `${p.value} ${p.label}`).join(' ')
+    expect(joined).not.toMatch(/of 30/i)
+    expect(joined).not.toMatch(/Q1 2026/i)
   })
 
   it('keeps the exact SPS AI reported-results wording', () => {
     expect(SPS_AI_REPORTED_RESULTS).toBe(
-      'Reported sales-floor results: users convert leads 10–20% faster and close deals approximately 1.5x faster than non-users.',
+      'Reported sales-floor results: users convert leads 10-20% faster and close deals approximately 1.5x faster than non-users.',
     )
   })
 
   it('includes the approved experience detail line', () => {
-    expect(SPS_PERFORMANCE_EXPERIENCE_LINE).toBe(
-      "Ranked #3 of 30 account executives for 2026 year-to-date; tracking toward 2026 President's Club.",
-    )
+    expect(SPS_PERFORMANCE_EXPERIENCE_LINE).toContain('200% of quota in Q3')
+    expect(SPS_PERFORMANCE_EXPERIENCE_LINE).toContain("President's Club qualification")
   })
 
-  it('preserves source facts for Q1, Q3, and YTD without overstating Q3', () => {
-    expect(performanceSourceFacts.some((f) => f.includes('Q1 2026: ranked #1 of 30'))).toBe(true)
-    expect(performanceSourceFacts.some((f) => f.includes('tied for #1'))).toBe(true)
-    expect(performanceSourceFacts.some((f) => f.includes('do not describe as an outright or completed Q3 win'))).toBe(
-      true,
-    )
+  it('preserves source facts for chat without legacy standings', () => {
+    expect(performanceSourceFacts.some((f) => f.includes('#1 ranked rep YTD'))).toBe(true)
+    expect(performanceSourceFacts.some((f) => f.includes('200% of quota in Q3'))).toBe(true)
+    expect(performanceSourceFacts.some((f) => f.includes('Do not say "#1 of 30"'))).toBe(true)
+    expect(performanceSourceFacts.some((f) => f.includes('Never describe Matthew as third'))).toBe(true)
+    expect(performanceSourceFacts.join(' ')).not.toMatch(/ranked #3 of 30/i)
   })
 
   it('uses the approved resume performance bullet', () => {
-    expect(SPS_PERFORMANCE_RESUME_BULLET).toContain('Top performer in Q1 2026 and Q3 to date')
-    expect(SPS_PERFORMANCE_RESUME_BULLET).toContain("tracking toward President's Club")
+    expect(SPS_PERFORMANCE_RESUME_BULLET).toContain('#1 ranked rep YTD')
+    expect(SPS_PERFORMANCE_RESUME_BULLET).toContain('200% of quota in Q3')
+    expect(SPS_PERFORMANCE_RESUME_BULLET).toContain("President's Club qualification")
   })
 })
