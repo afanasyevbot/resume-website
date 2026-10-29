@@ -258,6 +258,110 @@ function buildStandardPdf(
   drawCentered(ctx, PERSONAL_SIGNATURE, { size: 7.5, color: MID })
 }
 
+function drawRoleWordStyle(ctx: PdfCtx, role: ResumeRoleBlock, width = CONTENT_W) {
+  const header = role.concurrent
+    ? `${role.company} | ${role.dates} (concurrent)`
+    : `${role.company} | ${role.dates}`
+  drawWrapped(ctx, header, { size: 8.2, font: ctx.fontBold, color: DARK, lineHeight: 10.5, maxWidth: width })
+  ctx.y -= 1
+  drawWrapped(ctx, role.title, { size: 8.2, font: ctx.fontBold, color: DARK, lineHeight: 10.5, maxWidth: width })
+  ctx.y -= 2
+  for (const bullet of role.bullets) {
+    drawWrapped(ctx, `• ${bullet}`, { size: 8, color: MID, lineHeight: 10, maxWidth: width })
+    ctx.y -= 1
+  }
+  ctx.y -= 3
+}
+
+/** Single-page public résumé PDF — same curated copy as /resume (Word-style layout). */
+export async function buildPublicResumePdf(variant: ResumeVariant = 'sales'): Promise<Uint8Array> {
+  const content = resumeVariants[variant]
+  const doc = await PDFDocument.create()
+  const page = doc.addPage([PAGE_W, PAGE_H])
+  const fonts = {
+    regular: await doc.embedFont(StandardFonts.Helvetica),
+    bold: await doc.embedFont(StandardFonts.HelveticaBold),
+    italic: await doc.embedFont(StandardFonts.HelveticaOblique),
+  }
+  const ctx = makeCtx(doc, page, fonts)
+
+  drawCentered(ctx, 'MATTHEW AFANASIEV', { font: ctx.fontBold, size: 18, color: DARK })
+  drawCentered(ctx, RESUME_HEADLINE, { font: ctx.fontBold, size: 8.5, color: DARK })
+  for (const line of contactLine().split('\n')) {
+    drawCentered(ctx, line.replace(' | ', '  |  '), { size: 7.5, color: MID })
+  }
+  ctx.y -= 6
+
+  drawWrapped(ctx, content.summary, { size: 8.5, color: MID, lineHeight: 10.5, maxWidth: CONTENT_W })
+  ctx.y -= 4
+
+  drawWrapped(ctx, 'PROFESSIONAL EXPERIENCE', {
+    size: 8,
+    font: ctx.fontBold,
+    color: DARK,
+    lineHeight: 10,
+    maxWidth: CONTENT_W,
+  })
+  ctx.y -= 2
+  for (const role of content.roles) {
+    drawRoleWordStyle(ctx, role)
+  }
+
+  drawWrapped(ctx, 'AI PRODUCTS & SYSTEMS BUILT', {
+    size: 8,
+    font: ctx.fontBold,
+    color: DARK,
+    lineHeight: 10,
+    maxWidth: CONTENT_W,
+  })
+  ctx.y -= 2
+  for (const proj of content.projects) {
+    const stack = proj.stack ? ` Built with ${proj.stack.replaceAll(' · ', ', ')}.` : ''
+    drawWrapped(ctx, `${proj.name} | ${proj.description}${stack}`, {
+      size: 7.8,
+      color: MID,
+      lineHeight: 9.5,
+      maxWidth: CONTENT_W,
+    })
+    ctx.y -= 1
+  }
+
+  ctx.y -= 2
+  drawWrapped(ctx, 'SKILLS', { size: 8, font: ctx.fontBold, color: DARK, lineHeight: 10, maxWidth: CONTENT_W })
+  ctx.y -= 1
+  for (const skill of content.skills) {
+    drawWrapped(ctx, `${skill.category}: ${skill.items}`, {
+      size: 7.8,
+      color: MID,
+      lineHeight: 9.5,
+      maxWidth: CONTENT_W,
+    })
+    ctx.y -= 1
+  }
+
+  ctx.y -= 2
+  drawWrapped(ctx, 'EDUCATION', { size: 8, font: ctx.fontBold, color: DARK, lineHeight: 10, maxWidth: CONTENT_W })
+  ctx.y -= 1
+  drawWrapped(ctx, 'BBA, Marketing Management | University of St. Thomas | 2017 - 2021', {
+    size: 8,
+    font: ctx.fontBold,
+    color: DARK,
+    lineHeight: 10,
+    maxWidth: CONTENT_W,
+  })
+  ctx.y -= 6
+  drawCentered(ctx, PERSONAL_SIGNATURE, { size: 7.5, color: MID })
+
+  if (doc.getPageCount() !== 1) {
+    throw new Error(`public resume PDF must be 1 page, got ${doc.getPageCount()}`)
+  }
+  if (ctx.y < MARGIN) {
+    throw new Error('public resume PDF content overflowed the single page')
+  }
+
+  return doc.save()
+}
+
 export async function buildResumePdf(
   pkg: TailoredPackage,
   role: { company: string; title: string },
