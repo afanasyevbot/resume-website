@@ -3,7 +3,7 @@ import { NextRequest } from 'next/server'
 
 const mockFitResponse = {
   score: 82,
-  verdict: 'Strong match — AI-Native AE',
+  verdict: 'Strong match for AI-Native AE',
   strengths: ['Net-new hunting track record', 'AI systems builder'],
   flags: ['No enterprise experience'],
   recommendation: 'Proceed',

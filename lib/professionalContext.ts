@@ -1,16 +1,15 @@
 import type { ProfessionalContext } from './types'
 import {
-  SPS_AI_REPORTED_RESULTS,
-  SPS_FY25_BULLET,
-  SPS_PERFORMANCE_EXPERIENCE_LINE,
-  SPS_PERFORMANCE_RESUME_BULLET,
   homepageProofPoints,
   performanceSourceFacts,
+  SPS_AI_REPORTED_RESULTS,
+  SPS_FY25_BULLET,
+  SPS_PERFORMANCE_RESUME_BULLET,
 } from './performanceFacts'
+import { RESUME_SUMMARY_SALES } from './resumeContent'
 
 export const professionalContext: ProfessionalContext = {
-  summary:
-    'Account executive with five years of B2B SaaS sales experience, combining full-cycle selling, AI workflow improvement, and hands-on software delivery. At SPS Commerce, #1 ranked rep YTD with 200% of quota in Q3 and the division record for most sales in a month; leading President\'s Club qualification. Through Fidelis Strategy, builds custom AI software from business discovery through deployment, including the Buyer Engine for an M&A advisory client and products Fidelis Pulse and Fidelis Advisor.',
+  summary: `${RESUME_SUMMARY_SALES} Includes the Buyer Engine for an M&A advisory client and products Fidelis Pulse and Fidelis Advisor. At SPS Commerce, #1 ranked rep YTD with 200% of quota in Q3 and the division record for most sales in a month; leading President's Club qualification.`,
 
   identity: {
     name: 'Matthew Afanasiev',
@@ -330,7 +329,7 @@ export const professionalContext: ProfessionalContext = {
     {
       category: 'AI & TECH',
       items:
-        'LLM APIs, agentic workflows, API integrations, FastAPI, Next.js, Postgres, Supabase',
+        'Production builds on FastAPI, Next.js, Postgres, Supabase, and LLM APIs; directed with Claude Code, Cursor, and Codex in natural language',
     },
   ],
 
