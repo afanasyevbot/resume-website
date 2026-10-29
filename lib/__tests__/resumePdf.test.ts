@@ -1,8 +1,6 @@
-import { describe, it, expect, beforeAll } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { execSync } from 'node:child_process'
-import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { buildPublicResumePdf } from '@/lib/engine/pdf/resume'
 import { RESUME_SUMMARY_SALES } from '@/lib/resumeContent'
 
 const outDir = join(process.cwd(), 'public/resume')
@@ -19,13 +17,9 @@ function pdfPages(path: string): number {
   return match ? Number(match[1]) : 0
 }
 
+// The public PDFs are the locked-design resume (built from the master docx),
+// committed as static files. Tests only read them; never regenerate or overwrite.
 describe('public resume PDFs', () => {
-  beforeAll(async () => {
-    const bytes = await buildPublicResumePdf('sales')
-    writeFileSync(SALES_PDF, bytes)
-    writeFileSync(GTM_PDF, bytes)
-  })
-
   it('is exactly one page with updated curated copy', () => {
     expect(pdfPages(SALES_PDF)).toBe(1)
     const text = pdfText(SALES_PDF).replace(/\s+/g, ' ')
