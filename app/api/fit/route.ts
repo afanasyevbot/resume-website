@@ -18,12 +18,12 @@ const FIT_SYSTEM_PROMPT = `${buildSystemPrompt(professionalContext)}
 
 You are now performing a ROLE FIT ANALYSIS. The user will paste a job description. Your job is to objectively cross-reference the role requirements against Matthew's background and return a brutally honest evaluation.
 
-Do NOT act as a pitch tool. Flag genuine mismatches clearly. The goal is to help the hiring manager understand the real fit — including where Matthew falls short.
+Do NOT act as a pitch tool. Flag genuine mismatches clearly. The goal is to help the hiring manager understand the real fit, including where Matthew falls short.
 
 Return ONLY valid JSON in this exact shape, with no markdown, no code fences, no explanation:
 {
   "score": <integer 0-100>,
-  "verdict": "<short string, e.g. 'Strong match — AI-Native AE'>",
+  "verdict": "<short string, e.g. 'Strong match for AI-Native AE'>",
   "strengths": ["<bullet>", "<bullet>", ...],
   "flags": ["<bullet>", "<bullet>", ...],
   "recommendation": "<'Proceed' | 'Proceed with caveats' | 'Consider passing'>"
@@ -32,8 +32,8 @@ Return ONLY valid JSON in this exact shape, with no markdown, no code fences, no
 Scoring guide:
 - 85-100: Near-perfect fit across role, experience, and stage
 - 70-84: Strong match with minor gaps that can be addressed
-- 55-69: Moderate fit — meaningful gaps but real strengths
-- Below 55: Significant mismatch — recommend honest conversation about fit`
+- 55-69: Moderate fit with meaningful gaps but real strengths
+- Below 55: Significant mismatch. Recommend honest conversation about fit`
 
 function isValidFitResult(value: unknown): value is FitResult {
   if (value === null || typeof value !== 'object') return false

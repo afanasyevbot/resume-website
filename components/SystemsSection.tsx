@@ -188,7 +188,7 @@ export default function SystemsSection() {
 
           <article className="card card-lift overflow-hidden">
             <div className="p-7 sm:p-7">
-              <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Pro bono</p>
+              <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ghost mb-2">Church management platform</p>
               <h3 className="font-display font-semibold text-ink leading-[1.15] tracking-[-0.02em] mb-3 text-[20px] sm:text-[22px]">
                 Grace Church
               </h3>

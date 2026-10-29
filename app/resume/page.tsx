@@ -116,7 +116,7 @@ export default async function ResumePage({
             {content.projects.map((p) => (
               <div key={p.name} className="resume-body text-[12.5px] leading-[1.55]">
                 <span className="resume-role font-semibold">{p.name}</span>
-                <span> — {p.description}</span>
+                <span>: {p.description}</span>
                 {p.stack ? <span className="resume-dates"> Built with {p.stack.replaceAll(' · ', ', ')}.</span> : null}
               </div>
             ))}

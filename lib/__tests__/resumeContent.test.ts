@@ -27,7 +27,8 @@ describe('resumeContent', () => {
 
   it('sales variant uses the approved performance bullet', () => {
     expect(resumeVariants.sales.summary).toContain('five years of B2B SaaS sales experience')
-    expect(resumeVariants.sales.projects.length).toBe(3)
+    expect(resumeVariants.sales.summary).toContain('shipping production software')
+    expect(resumeVariants.sales.summary).not.toMatch(/hands-on/i)
     expect(resumeVariants.sales.roles[0].bullets[0]).toBe(SPS_PERFORMANCE_RESUME_BULLET)
     expect(resumeVariants.sales.roles[0].bullets[1]).toContain('102.6% of FY25 quota')
   })

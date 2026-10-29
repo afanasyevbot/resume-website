@@ -27,7 +27,8 @@ describe('professionalContext canonical facts', () => {
     expect(professionalContext.summary).toContain('#1 ranked rep YTD')
     expect(professionalContext.summary).toContain('200% of quota in Q3')
     expect(professionalContext.summary).not.toMatch(/Paradise/i)
-    expect(professionalContext.summary).not.toMatch(/monetized/i)
+    expect(professionalContext.summary).not.toMatch(/hands-on/i)
+    expect(professionalContext.summary).toContain('shipping production software')
   })
 
   it('preserves precise performance source facts for Ask', () => {

@@ -29,6 +29,15 @@ export const RESUME_CONTACT = {
 
 export const PERSONAL_SIGNATURE = 'MY WHY: Faith · Family · First generation'
 
+export const RESUME_SUMMARY_SALES =
+  'Account executive with five years of B2B SaaS sales experience, combining full-cycle selling, AI workflow improvement, and shipping production software by directing AI coding tools (Claude Code, Cursor, Codex) in natural language. Partner with leadership and go-to-market engineers at SPS Commerce; build custom AI systems through Fidelis Strategy from discovery through deployment.'
+
+export const RESUME_SUMMARY_GTM =
+  'Account executive with five years of B2B SaaS sales experience. Partner with directors, VPs, and go-to-market engineers to identify sales bottlenecks, shape AI solutions, and support adoption. Ships production software and agentic workflows through Fidelis Strategy by directing Claude Code, Cursor, and Codex in natural language, connecting business priorities to working systems.'
+
+const AI_TECH_SKILLS =
+  'Production builds on FastAPI, Next.js, Postgres, Supabase, and LLM APIs; directed with Claude Code, Cursor, and Codex in natural language; agentic workflows and API integrations'
+
 export interface ResumeRoleBlock {
   title: string
   company: string
@@ -96,8 +105,7 @@ const BUILT_PROJECTS: ResumeProjectBlock[] = [
 export const resumeVariants: Record<ResumeVariant, ResumeVariantContent> = {
   sales: {
     variant: 'sales',
-    summary:
-      'Account executive with five years of B2B SaaS sales experience, combining full-cycle selling, AI workflow improvement, and hands-on software delivery. Partner with leadership and go-to-market engineers at SPS Commerce; independently build custom AI systems through Fidelis Strategy, from discovery through deployment.',
+    summary: RESUME_SUMMARY_SALES,
     roles: [
       {
         title: 'Net New Subscriber Account Executive, Supply Chain Performance',
@@ -144,15 +152,13 @@ export const resumeVariants: Record<ResumeVariant, ResumeVariantContent> = {
       },
       {
         category: 'AI & Technical',
-        items:
-          'Custom software delivery, agentic workflows, LLM APIs, API integrations, FastAPI, Next.js, Postgres, Supabase',
+        items: AI_TECH_SKILLS,
       },
     ],
   },
   gtm: {
     variant: 'gtm',
-    summary:
-      'Account executive with five years of B2B SaaS sales experience. Partner with directors, VPs, and go-to-market engineers to identify sales bottlenecks, shape AI solutions, and support adoption. Independently build custom software and agentic workflows through Fidelis Strategy, connecting business priorities to working systems.',
+    summary: RESUME_SUMMARY_GTM,
     roles: [
       {
         title: 'Net New Subscriber Account Executive, Supply Chain Performance',
@@ -194,7 +200,7 @@ export const resumeVariants: Record<ResumeVariant, ResumeVariantContent> = {
       },
       {
         category: 'AI & Technical',
-        items: 'Agentic workflows, API integrations, LLM APIs, FastAPI, Next.js, Postgres, Supabase',
+        items: AI_TECH_SKILLS,
       },
       {
         category: 'Sales',
