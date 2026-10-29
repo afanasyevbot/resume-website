@@ -12,12 +12,14 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ### Source of truth
 
-Production deploys come from **Cursor Origin only** — not GitHub.
+**Origin, not GitHub.** Agent work (branches, PRs, merges) and production deploys use Cursor Origin only.
 
 | Remote | URL | Role |
 |--------|-----|------|
-| `cursor-origin` | `https://origin.cursor.com/fidelis/resume-website.git` | **Deploy trigger** — push here to ship |
-| `origin` | GitHub `afanasyevbot/resume-website` | Backup/mirror only — does **not** trigger `matthew-portfolio` production |
+| `cursor-origin` | `https://origin.cursor.com/fidelis/resume-website.git` | **Source of truth** — PRs, merges, and the deploy trigger |
+| `origin` | GitHub `afanasyevbot/resume-website` | Backup/mirror only — do **not** open GitHub PRs; GitHub does **not** ship `matthew-portfolio` |
+
+Do not create or merge GitHub pull requests for this repo. Open Origin PRs against Origin `main`, then push Origin `main` to ship.
 
 ### How to deploy
 

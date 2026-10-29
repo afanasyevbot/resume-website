@@ -1,0 +1,13 @@
+---
+description: This repo's source of truth is Cursor Origin, not GitHub
+alwaysApply: true
+---
+
+# Origin, not GitHub
+
+This repo is **Cursor Origin** (`fidelis/resume-website`). GitHub (`afanasyevbot/resume-website`) is backup only.
+
+- Branch, commit, push, open PRs, and merge on **Origin**.
+- Ship `mafanasiev.me` by pushing `main` to the Origin remote (`cursor-origin`), not by merging on GitHub.
+- Do **not** open GitHub PRs or treat GitHub `main` as production.
+- Remote `origin` may still point at GitHub in some checkouts — use `cursor-origin` / `https://origin.cursor.com/fidelis/resume-website.git` for real work.

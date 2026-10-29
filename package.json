@@ -16,10 +16,10 @@
     "@vercel/blob": "^2.4.0",
     "docx": "^9.7.1",
     "jose": "^6.2.3",
-    "next": "16.2.6",
+    "next": "16.4.1",
     "pdf-lib": "^1.17.1",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
+    "react": "19.2.9",
+    "react-dom": "19.2.9",
     "react-markdown": "^10.1.0"
   },
   "devDependencies": {
@@ -35,5 +35,8 @@
     "typescript": "^5",
     "vercel": "^59.11.7",
     "vitest": "^4.1.6"
+  },
+  "overrides": {
+    "sharp": ">=0.35.5"
   }
 }
